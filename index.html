@@ -1,0 +1,2174 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#111E2A">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Presupuestador">
+<meta name="description" content="Presupuestador rápido desde el celular para herrería, pintura y arreglos del hogar, con catálogo de repuestos y cálculo automático con y sin comisión de Clickie.">
+<title>Presupuestador de Changas</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111E2A'/%3E%3Cpath d='M41 11a11 11 0 0 0-10 15L13 44a4.5 4.5 0 0 0 6.5 6.5L38 32a11 11 0 0 0 15-10l-6.5 6.5-6.5-1.5-1.5-6.5z' fill='none' stroke='%23FF7A2E' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+/* Diseño Taller Móvil: alto contraste, botones grandes para una mano, z-index fijo, transiciones solo de compositor y diálogo nativo. */
+:root{
+  --bg:#E8EDF2; --surface:#F4F7FA; --card:#FFFFFF; --ink:#111E2A; --muted:#526476; --line:#CBD5DF;
+  --accent:#C2410C; --accent-soft:#FFF0E8; --accent-ink:#FFFFFF;
+  --wa:#15803D; --slab:#111E2A; --slab-soft:#1D2E3F; --on-slab:#F1F5F9;
+  --good:#157347; --good-bg:#DCFCE7; --warn:#8A5300; --warn-bg:#FEF3C7;
+  --err:#B91C1C; --err-bg:#FEE2E2;
+  --ml-dot:#EAB308;
+  --shadow:0 1px 3px rgba(17,30,42,.08), 0 1px 2px rgba(17,30,42,.04);
+  --z-bar:20; --z-toast:30; --z-dialog:40;
+  --font:"Archivo", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0D151D; --surface:#15202B; --card:#192633; --ink:#F0F4F8; --muted:#9BB0C4; --line:#2B3C4D;
+  --accent:#FF7A2E; --accent-soft:#2E1D13; --accent-ink:#140E0A;
+  --slab:#1E2E3E; --slab-soft:#273A4D; --on-slab:#F1F5F9;
+  --good:#5EE2A0; --good-bg:#123626; --warn:#FFD66B; --warn-bg:#382B0C;
+  --err:#FCA5A5; --err-bg:#3B1219;
+  --ml-dot:#FACC15;
+  --shadow:0 1px 3px rgba(0,0,0,.3);
+  color-scheme: dark;
+} }
+:root[data-theme="dark"]{
+  --bg:#0D151D; --surface:#15202B; --card:#192633; --ink:#F0F4F8; --muted:#9BB0C4; --line:#2B3C4D;
+  --accent:#FF7A2E; --accent-soft:#2E1D13; --accent-ink:#140E0A;
+  --slab:#1E2E3E; --slab-soft:#273A4D; --on-slab:#F1F5F9;
+  --good:#5EE2A0; --good-bg:#123626; --warn:#FFD66B; --warn-bg:#382B0C;
+  --err:#FCA5A5; --err-bg:#3B1219;
+  --ml-dot:#FACC15;
+  --shadow:0 1px 3px rgba(0,0,0,.3);
+  color-scheme: dark;
+}
+
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.4;font-weight:500}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:inherit}
+p,.banner,.top-sub{text-wrap:pretty}
+::selection{background:var(--accent);color:var(--accent-ink)}
+input,textarea,select{caret-color:var(--accent);accent-color:var(--accent)}
+input[aria-invalid="true"],textarea[aria-invalid="true"]{border-color:var(--err);background:var(--err-bg)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+
+.wrap{max-width:640px;margin:0 auto;padding:16px 14px calc(120px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:14px}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.15}
+h1{font-size:26px;font-weight:900}
+h2{font-size:20px;font-weight:800}
+h3{font-size:17px;font-weight:800}
+.muted{color:var(--muted)}
+.small{font-size:14px}
+.num{font-variant-numeric:tabular-nums}
+.hidden{display:none !important}
+.field-err{color:var(--err);font-size:14px;font-weight:700;margin:0}
+
+.top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.top-sub{font-size:14px;color:var(--muted);margin-top:2px;font-weight:600}
+.chipbtn{white-space:nowrap;flex:none;display:inline-flex;align-items:center;gap:6px;border:2px solid var(--line);background:var(--card);border-radius:999px;padding:9px 14px;font-weight:800;font-size:15px;box-shadow:var(--shadow);transition:transform .12s ease-out}
+.chipbtn:active{transform:scale(.97)}
+.chipbtn svg{width:20px;height:20px;color:var(--accent)}
+.back{border:none;background:none;font-weight:800;font-size:17px;padding:6px 0;min-height:44px;align-self:flex-start;display:inline-flex;gap:6px;align-items:center;color:var(--accent)}
+
+/* Grilla de trabajos */
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;list-style:none;margin:0;padding:0}
+.grid > li{display:flex}
+.job{width:100%;background:var(--card);border:2px solid var(--line);border-radius:18px;padding:14px 10px 12px;display:flex;flex-direction:column;align-items:center;gap:6px;font-weight:800;font-size:17px;text-align:center;min-height:126px;justify-content:center;box-shadow:var(--shadow);transition:transform .12s ease-out}
+.job svg{width:50px;height:50px;color:var(--accent)}
+.job:active{transform:scale(.97)}
+.job small{font-weight:600;font-size:13px;color:var(--muted);line-height:1.25}
+
+/* Tarjetas y avisos */
+.card{background:var(--card);border:1.5px solid var(--line);border-radius:18px;padding:15px;display:flex;flex-direction:column;gap:13px;box-shadow:var(--shadow)}
+.banner{border-radius:14px;padding:12px 14px;font-size:15px;font-weight:600;display:flex;gap:10px;align-items:flex-start}
+.banner.warn{background:var(--warn-bg);color:var(--warn)}
+.banner.good{background:var(--good-bg);color:var(--good)}
+.banner svg{flex:none;width:22px;height:22px;margin-top:1px}
+
+/* Campos y steppers */
+.field{display:flex;flex-direction:column;gap:7px}
+.field > label, .flabel{font-weight:800;font-size:16px}
+.stepper{display:grid;grid-template-columns:58px 1fr 58px;gap:8px;align-items:stretch}
+.stepper button{border:none;border-radius:14px;background:var(--ink);color:var(--card);font-size:30px;font-weight:800;line-height:1;min-height:56px;transition:transform .1s ease-out}
+.stepper button:active{transform:scale(.95)}
+.stepper .val{display:flex;align-items:center;justify-content:center;gap:6px;border:2px solid var(--line);border-radius:14px;background:var(--surface)}
+.stepper input{width:100%;max-width:130px;border:none;background:none;text-align:right;font-size:26px;font-weight:800;font-variant-numeric:tabular-nums;padding:6px 0}
+.stepper .unit{font-weight:700;color:var(--muted);font-size:16px;min-width:28px}
+.stepper.sm{grid-template-columns:46px 1fr 46px}
+.stepper.sm button{min-height:44px;font-size:24px;border-radius:12px}
+.stepper.sm input{font-size:20px}
+
+.opts{display:flex;flex-wrap:wrap;gap:8px}
+.opts.g3{display:grid;grid-template-columns:repeat(3,1fr)}
+.opts.g3 .opt{padding:11px 6px;text-align:center}
+.opt{border:2px solid var(--line);background:var(--surface);border-radius:13px;padding:11px 14px;font-weight:700;font-size:16px;min-height:48px;display:inline-flex;align-items:center;justify-content:center;gap:6px;transition:transform .1s ease-out}
+.opt:active{transform:scale(.97)}
+.opt[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.opt.sm{min-height:38px;padding:7px 11px;font-size:14px;border-radius:999px}
+
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.preset{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 12px;font-size:14px;font-weight:700;color:var(--ink);min-height:38px;transition:transform .1s ease-out}
+.preset:active{transform:scale(.97)}
+
+textarea,input.txt,select.txt{width:100%;border:2px solid var(--line);border-radius:14px;background:var(--surface);padding:11px 12px;font-size:16px}
+textarea{min-height:88px;resize:vertical}
+
+/* Dibujo técnico */
+.drawing{background:var(--surface);border:1.5px solid var(--line);border-radius:14px;padding:8px;display:flex;justify-content:center}
+.drawing svg{width:100%;max-width:420px;height:auto}
+
+/* Tarjeta Total + Comparativa Con/Sin Comisión */
+.total-card{background:var(--slab);color:var(--on-slab);border:none;gap:12px}
+.total-card .big{font-size:42px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1}
+.total-card .muted{color:inherit;opacity:.78}
+.com-switch{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.com-box{border:2px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:var(--on-slab);border-radius:14px;padding:11px 10px;text-align:left;display:flex;flex-direction:column;gap:3px;transition:transform .1s ease-out}
+.com-box:active{transform:scale(.98)}
+.com-box[aria-pressed="true"]{border-color:var(--accent);background:rgba(255,122,46,.16)}
+.com-box .tag{font-size:12px;font-weight:800;text-transform:uppercase;opacity:.9;display:flex;align-items:center;justify-content:space-between;gap:4px}
+.com-box .val{font-size:24px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.1}
+.com-box .sub{font-size:12.5px;opacity:.82;font-weight:600}
+.com-box .dot{width:8px;height:8px;border-radius:999px;background:var(--accent);display:none;flex:none}
+.com-box[aria-pressed="true"] .dot{display:inline-block}
+
+.pocket{display:flex;justify-content:space-between;gap:12px;align-items:center;background:var(--good-bg);color:var(--good);border-radius:14px;padding:12px 14px;font-weight:800}
+.pocket .v{white-space:nowrap;font-size:24px;font-variant-numeric:tabular-nums}
+.pocket small{display:block;font-size:13px;font-weight:700;opacity:.9}
+
+.desglose{display:grid;grid-template-columns:1fr auto;gap:4px 10px;background:rgba(255,255,255,.07);border-radius:12px;padding:10px 12px;font-size:14px}
+.desglose .dl{opacity:.84;font-weight:600}
+.desglose .dv{text-align:right;font-weight:800;font-variant-numeric:tabular-nums}
+.kg{font-size:14px;background:rgba(255,255,255,.08);border-radius:12px;padding:10px 12px;font-weight:700}
+
+/* Filas de materiales y horas */
+.rows{display:flex;flex-direction:column;list-style:none;margin:0;padding:0}
+.row{display:grid;grid-template-columns:1fr auto;gap:6px 10px;padding:12px 0;border-top:1px solid var(--line);align-items:center}
+.row:first-child{border-top:none;padding-top:2px}
+.row .name{font-weight:700;line-height:1.25}
+.row .amt{font-weight:800;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
+.row .sub{font-size:14px;color:var(--muted);grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.row.zero{opacity:.55}
+
+.pricein{width:112px;min-height:42px;border:2px solid var(--line);border-radius:10px;background:var(--surface);padding:5px 8px;font-weight:800;font-variant-numeric:tabular-nums;font-size:16px;text-align:right}
+.pricein.example{border-color:var(--warn);background:var(--warn-bg);color:var(--warn)}
+.mini{display:inline-flex;align-items:center;gap:6px}
+.mini button{width:38px;height:38px;border-radius:10px;border:none;background:var(--ink);color:var(--card);font-weight:800;font-size:20px;line-height:1;display:inline-flex;align-items:center;justify-content:center;transition:transform .1s ease-out}
+.mini button:active{transform:scale(.94)}
+.mini button.del{background:var(--surface);color:var(--muted);border:1.5px solid var(--line)}
+.mini .qval{min-width:34px;text-align:center;font-weight:800;font-variant-numeric:tabular-nums}
+
+.mlbtn{display:inline-flex;align-items:center;gap:6px;background:var(--surface);color:var(--ink);border:1.5px solid var(--line);border-radius:10px;padding:7px 10px;font-size:13px;font-weight:800;text-decoration:none;min-height:36px;white-space:nowrap}
+.mlbtn .mldot{width:8px;height:8px;border-radius:999px;background:var(--ml-dot);flex:none}
+.mlbtn svg{width:14px;height:14px;color:var(--muted)}
+.sum{display:flex;justify-content:space-between;font-weight:800;font-variant-numeric:tabular-nums;padding-top:10px;border-top:2px solid var(--ink);font-size:17px}
+
+/* Botones principales */
+.actions{display:grid;gap:9px}
+.btn{border:none;border-radius:15px;padding:14px 16px;font-weight:800;font-size:17px;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;min-height:54px;transition:transform .1s ease-out}
+.btn:active{transform:scale(.98)}
+.btn svg{width:23px;height:23px;flex:none}
+.btn.primary{background:var(--accent);color:var(--accent-ink)}
+.btn.wa{background:var(--wa);color:#fff}
+.btn.ghost{background:var(--card);border:2px solid var(--line);color:var(--ink)}
+.btn.danger{background:var(--err);color:#fff}
+.btn.copied{background:var(--good);color:#fff}
+.btn.sm{min-height:44px;padding:9px 12px;font-size:15px;border-radius:12px}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.two .btn{font-size:15px;padding:11px 8px;min-height:48px}
+
+/* Barra guiada de 3 pasos en el cotizador */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;background:var(--surface);border:1.5px solid var(--line);border-radius:15px;padding:4px}
+.stepbtn{border:none;background:transparent;color:var(--muted);border-radius:11px;padding:10px 4px;font-size:14px;font-weight:800;min-height:46px;display:flex;align-items:center;justify-content:center;gap:5px;transition:transform .1s ease-out}
+.stepbtn:active{transform:scale(.97)}
+.stepbtn[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.stepbtn .snum{width:22px;height:22px;border-radius:999px;background:var(--line);color:var(--ink);font-size:12.5px;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.stepbtn[aria-selected="true"] .snum{background:var(--accent);color:var(--accent-ink)}
+.stepbtn .sdot{width:7px;height:7px;border-radius:999px;background:var(--warn);flex:none}
+
+.msg{white-space:pre-wrap;background:var(--surface);border-radius:14px;padding:13px;font-size:15px;border:2px dashed var(--line);line-height:1.45}
+
+/* Franja compacta pedir medidas */
+.askbar{background:var(--warn-bg);color:var(--warn);border-radius:14px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.askbar b{font-size:15px}
+.askbar .askacts{display:flex;gap:6px}
+.askbar a,.askbar button{border:none;border-radius:10px;padding:8px 11px;font-size:14px;font-weight:800;display:inline-flex;align-items:center;gap:5px;text-decoration:none;min-height:38px}
+.askbar a{background:var(--wa);color:#fff}
+.askbar button{background:var(--card);color:var(--ink);border:1.5px solid var(--line)}
+.askbar svg{width:17px;height:17px}
+
+/* Barra inferior fija (Acciones de presupuesto O Navegación principal) */
+.bar{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:2px solid var(--line);padding:10px 14px calc(10px + env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:var(--z-bar);box-shadow:0 -2px 10px rgba(17,30,42,.08)}
+.bar .in{max-width:640px;width:100%;display:flex;gap:10px;align-items:center;justify-content:space-between}
+.bar .t{font-size:25px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.05}
+.bar .modepill{border:1.5px solid var(--line);background:var(--surface);border-radius:999px;padding:3px 9px;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:4px;margin-bottom:3px;min-height:26px}
+.bar .modepill.clk{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.bar .modepill.dir{border-color:var(--good);background:var(--good-bg);color:var(--good)}
+.bar .btn{min-height:50px;padding:10px 15px;font-size:16px}
+.bar .acts{display:flex;gap:8px}
+.bar .iconbtn{width:48px;min-height:48px;border-radius:14px;border:2px solid var(--line);background:var(--surface);color:var(--ink);display:flex;align-items:center;justify-content:center}
+.bar .iconbtn svg{width:22px;height:22px}
+
+.nav{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:2px solid var(--line);padding:6px 8px calc(6px + env(safe-area-inset-bottom));display:flex;justify-content:center;z-index:var(--z-bar);box-shadow:0 -2px 10px rgba(17,30,42,.08)}
+.nav .in{max-width:640px;width:100%;display:grid;grid-template-columns:repeat(4,1fr);gap:4px}
+.navbtn{border:none;background:none;border-radius:12px;padding:7px 4px;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12.5px;font-weight:800;color:var(--muted);min-height:54px;justify-content:center}
+.navbtn svg{width:24px;height:24px}
+.navbtn[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+
+/* Carrito flotante en Repuestos */
+.cartbar{position:fixed;left:14px;right:14px;bottom:calc(74px + env(safe-area-inset-bottom));max-width:612px;margin:0 auto;background:var(--slab);color:var(--on-slab);border-radius:16px;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;z-index:var(--z-bar);box-shadow:0 6px 20px rgba(17,30,42,.25)}
+.cartbar .ct{font-size:14px;font-weight:700;line-height:1.25}
+.cartbar .ct b{display:block;font-size:17px;font-variant-numeric:tabular-nums}
+.cartbar .cacts{display:flex;gap:6px;align-items:center}
+.cartbar .clrbtn{border:1.5px solid rgba(255,255,255,.25);background:transparent;color:var(--on-slab);border-radius:11px;width:42px;height:42px;display:flex;align-items:center;justify-content:center}
+.cartbar .clrbtn svg{width:18px;height:18px}
+
+/* Catálogo de repuestos */
+.searchbox{position:relative;display:flex;align-items:center}
+.searchbox input{width:100%;border:2px solid var(--line);border-radius:14px;background:var(--card);padding:12px 42px 12px 42px;font-size:16px;font-weight:600;box-shadow:var(--shadow)}
+.searchbox .sico{position:absolute;left:13px;width:20px;height:20px;color:var(--muted);pointer-events:none}
+.searchbox .clr{position:absolute;right:6px;width:36px;height:36px;border:none;background:none;color:var(--muted);display:flex;align-items:center;justify-content:center}
+.pills{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.pills::-webkit-scrollbar{display:none}
+.pill{flex:none;border:2px solid var(--line);background:var(--card);border-radius:999px;padding:8px 13px;font-size:14px;font-weight:800;min-height:40px}
+.pill[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--card)}
+
+.rep-card{background:var(--card);border:1.5px solid var(--line);border-radius:15px;padding:12px 13px;display:flex;flex-direction:column;gap:9px;box-shadow:var(--shadow)}
+.rep-card.in-cart{border-color:var(--accent);background:var(--accent-soft)}
+.rep-top{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.rep-name{font-weight:800;font-size:16px;line-height:1.2}
+.rep-meta{font-size:13px;color:var(--muted);font-weight:600;margin-top:2px;display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.tag-own{background:var(--good-bg);color:var(--good);padding:2px 7px;border-radius:999px;font-size:11.5px;font-weight:800}
+.tag-ex{background:var(--warn-bg);color:var(--warn);padding:2px 7px;border-radius:999px;font-size:11.5px;font-weight:800}
+.rep-bot{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.rep-bot .left{display:flex;align-items:center;gap:7px}
+.rep-bot .right{display:flex;align-items:center;gap:6px}
+.addqbtn{border:2px solid var(--accent);background:var(--accent-soft);color:var(--accent);border-radius:10px;padding:6px 10px;font-size:13px;font-weight:800;min-height:36px;display:inline-flex;align-items:center;gap:4px}
+.addqbtn svg{width:15px;height:15px}
+
+/* Panel agregar repuesto en trabajo */
+.picker{background:var(--surface);border:2px solid var(--line);border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.picklist{max-height:220px;overflow-y:auto;display:flex;flex-direction:column;gap:6px;list-style:none;margin:0;padding:0}
+.pickitem{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--card);border:1.5px solid var(--line);border-radius:11px;padding:9px 11px;text-align:left;width:100%}
+.pickitem b{font-size:15px;display:block}
+.pickitem small{font-size:13px;color:var(--muted)}
+.pickitem .p{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--accent)}
+
+/* Obra */
+.tabs{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;min-width:96px;border:2px solid var(--line);background:var(--card);border-radius:14px;padding:9px 10px;font-weight:800;font-size:14px;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative}
+.tab svg{width:28px;height:28px;color:var(--accent)}
+.tab[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.tab .cnt{position:absolute;top:5px;right:6px;font-size:11px;background:var(--accent);color:var(--accent-ink);border-radius:999px;padding:1px 6px}
+.ref{display:flex;flex-direction:column;gap:9px;padding:13px 0;border-top:1px solid var(--line)}
+.ref:first-child{border-top:none;padding-top:0}
+.ref.on{background:var(--surface);border-radius:14px;padding:12px;border-top-color:transparent;border:1.5px solid var(--accent)}
+.ref .head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.ref .range{font-size:13.5px;color:var(--muted)}
+.ref .range a{color:var(--muted)}
+.lvl{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.lvl .opt{padding:7px 4px;min-height:44px;font-size:14px;text-align:center;flex-direction:column;gap:1px;line-height:1.15}
+.lvl .opt small{font-weight:600;font-size:12px;opacity:.85}
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.duo .box{border-radius:13px;padding:11px;background:rgba(255,255,255,.08);display:flex;flex-direction:column;gap:2px}
+.duo .box .v{font-size:23px;font-weight:900;font-variant-numeric:tabular-nums;line-height:1.1}
+.duo .box .l{font-size:13px;opacity:.82;font-weight:700}
+.duo .box .p{font-size:13px;color:var(--good-bg);font-weight:700}
+.srcs{font-size:13.5px;color:var(--muted);display:flex;flex-direction:column;gap:2px}
+.srcs a{color:var(--muted);padding:6px 0;display:block}
+
+/* Listas, favoritos, historial, detalles */
+.list{display:flex;flex-direction:column;gap:8px;list-style:none;margin:0;padding:0}
+.item{display:grid;grid-template-columns:1fr auto;gap:2px 10px;align-items:center;text-align:left;background:var(--card);border:2px solid var(--line);border-radius:14px;padding:11px 13px;width:100%;box-shadow:var(--shadow)}
+.item .t1{font-weight:800;font-size:16px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.item .t2{font-size:13.5px;color:var(--muted);font-weight:600}
+.item .t3{font-weight:900;font-variant-numeric:tabular-nums;grid-row:1/3;grid-column:2;text-align:right;white-space:nowrap}
+.item.cont{border-color:var(--accent)}
+.hist{display:grid;grid-template-columns:1fr auto auto;gap:6px;align-items:stretch}
+.draft{display:grid;grid-template-columns:1fr auto;gap:7px}
+.draft .x{width:46px;border-radius:14px;border:2px solid var(--line);background:var(--card);color:var(--muted);display:flex;align-items:center;justify-content:center}
+.draft .x svg{width:19px;height:19px}
+.mk{align-self:center;height:52px;border:2px solid var(--line);background:var(--card);border-radius:12px;min-width:44px;font-weight:900;display:flex;align-items:center;justify-content:center}
+.mk svg{width:20px;height:20px}
+.mk[aria-pressed="true"].ok{background:var(--good);border-color:var(--good);color:#fff}
+.mk[aria-pressed="true"].no{background:var(--muted);border-color:var(--muted);color:var(--card)}
+.pill-badge{display:inline-block;font-size:11.5px;font-weight:800;padding:1px 7px;border-radius:999px;margin-left:5px;vertical-align:1px}
+.pill-badge.clk{background:var(--accent-soft);color:var(--accent)}
+.pill-badge.dir{background:var(--good-bg);color:var(--good)}
+
+.setrow{display:grid;grid-template-columns:1fr 126px;gap:10px;align-items:center;padding:10px 0;border-top:1px solid var(--line)}
+.setrow:first-child{border-top:none}
+.setrow input{width:100%;border:2px solid var(--line);border-radius:10px;background:var(--surface);padding:9px;font-weight:800;font-variant-numeric:tabular-nums;text-align:right}
+.setrow .hint{display:block;font-size:13px;color:var(--muted);font-weight:500}
+.setrow.full{grid-template-columns:1fr;gap:6px}
+.setrow.full input{text-align:left}
+
+details.card{gap:0}
+details.card > summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:auto 1fr auto;gap:2px 10px;align-items:center;min-height:40px}
+details.card > summary::-webkit-details-marker{display:none}
+details.card > summary h2{font-size:18px}
+details.card > summary .sumv{text-align:right;font-weight:800;font-variant-numeric:tabular-nums;color:var(--muted);font-size:15px}
+details.card > summary .chev{width:20px;height:20px;transition:transform .2s ease-out;color:var(--muted)}
+details.card[open] > summary .chev{transform:rotate(180deg)}
+details.card[open] > summary{margin-bottom:12px}
+details.card > .inner{display:flex;flex-direction:column;gap:12px}
+
+.ov{display:inline-block;font-size:13px;font-weight:800;color:var(--accent);border:none;background:none;padding:3px 0;text-align:left}
+.o1{background:var(--surface);border-radius:12px;padding:10px 12px;display:flex;justify-content:space-between;gap:10px;align-items:center;font-weight:700;font-size:15px}
+.o1 button{border:none;background:none;color:var(--accent);font-weight:800}
+.ico{width:19px;height:19px;flex:none;vertical-align:-3px}
+
+/* Diálogo nativo de confirmación para acciones destructivas */
+dialog.dlg{border:1.5px solid var(--line);border-radius:18px;background:var(--card);color:var(--ink);padding:18px;max-width:400px;width:calc(100% - 32px);box-shadow:0 12px 32px rgba(0,0,0,.28);z-index:var(--z-dialog)}
+dialog.dlg::backdrop{background:rgba(17,30,42,.55)}
+dialog.dlg h2{font-size:20px;margin-bottom:8px}
+dialog.dlg p{margin:0 0 16px;font-size:15px;color:var(--muted)}
+
+.toast{position:fixed;left:50%;bottom:calc(92px + env(safe-area-inset-bottom));max-width:calc(100% - 28px);text-align:center;transform:translateX(-50%);background:var(--ink);color:var(--card);padding:11px 16px;border-radius:12px;font-weight:800;font-size:15px;z-index:var(--z-toast);opacity:0;transition:opacity .18s ease-out;pointer-events:none;box-shadow:0 4px 12px rgba(0,0,0,.22)}
+.toast.on{opacity:1}
+
+@media (prefers-reduced-motion: reduce){*{transition:none !important}}
+@media (min-width:540px){ .grid{grid-template-columns:repeat(3,1fr)} }
+</style>
+</head>
+<body>
+<main id="app" class="wrap"></main>
+<div id="bar" class="bar hidden"></div>
+<div id="cartbar" class="cartbar hidden" role="region" aria-label="Repuestos elegidos para cotizar"></div>
+<nav id="nav" class="nav" aria-label="Navegación principal"></nav>
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
+<dialog id="confirmDlg" class="dlg" aria-labelledby="dlgTitle" aria-describedby="dlgDesc">
+  <h2 id="dlgTitle"></h2>
+  <p id="dlgDesc"></p>
+  <div class="two">
+    <button type="button" class="btn ghost sm" id="dlgCancel">Cancelar</button>
+    <button type="button" class="btn danger sm" id="dlgOk">Confirmar</button>
+  </div>
+</dialog>
+
+<script id="core">
+/* ===== NÚCLEO: catálogo de repuestos, trabajos y cálculo con y sin comisión ===== */
+const DEFAULT_CONFIG = {
+  valor_hora: 17500, comision: 15, viaje: 20000, minimo: 80000, recargo: 10,
+  imprevistos: 5, urgencia: 30, redondeo: 1000, validez: 7, iva: false,
+  garantia: "3 meses en la mano de obra", nombre: "", alias: "", visita: 20000, precio_kg: 14000,
+  theme: "auto"
+};
+const CONFIG_HINTS = {
+  valor_hora: ["Cuánto querés ganar por hora", "$"],
+  comision: ["Comisión de Clickie (ej: 15% o 12% Pro)", "%"],
+  viaje: ["Viaje / traslado por trabajo", "$"],
+  minimo: ["Mínimo por salir de casa", "$"],
+  recargo: ["Recargo por ir a comprar materiales", "%"],
+  imprevistos: ["Extra por imprevistos", "%"],
+  urgencia: ["Recargo por urgencia o finde", "%"],
+  redondeo: ["Redondear el precio a", "$"],
+  validez: ["El presupuesto vale por", "días"],
+  visita: ["Visita para ver el trabajo (se descuenta)", "$"],
+  precio_kg: ["Hierro colocado, referencia por kilo", "$/kg"]
+};
+
+/* Fecha de referencia de precios de ejemplo (AMBA; zona norte +10 a 20%). */
+const PRECIOS_FECHA = "nov 2026";
+const MONEY_KEYS = ["valor_hora","viaje","minimo","redondeo","visita","precio_kg"];
+
+/* Categorías del buscador de repuestos */
+const CATS = [
+  ["todos","Todos"],
+  ["herreria","Herrería"],
+  ["pintura","Pintura"],
+  ["plomeria","Plomería"],
+  ["electricidad","Electricidad"],
+  ["albanileria","Albañilería"],
+  ["mosquiteros","Mosquiteros"],
+  ["propios","Agregados"]
+];
+
+/* Catálogo ampliado de repuestos y materiales con búsqueda armada para Mercado Libre */
+const CATALOG = {
+  /* Herrería */
+  cano_2020:{cat:"herreria",n:"Caño estructural 20x20 (1,6 mm)",u:"barra 6 m",p:19500,q:"cano estructural 20x20 1.6 6 metros"},
+  cano_4040:{cat:"herreria",n:"Caño estructural 40x40 (1,6 mm)",u:"barra 6 m",p:39500,q:"cano estructural 40x40 1.6 6 metros"},
+  cano_3030:{cat:"herreria",n:"Caño estructural 30x30 (1,6 mm)",u:"barra 6 m",p:29000,q:"cano estructural 30x30 1.6 6 metros"},
+  planchuela:{cat:"herreria",n:"Planchuela 1 1/4 x 1/8",u:"barra 6 m",p:9800,q:"planchuela hierro 1 1/4 x 1/8 6 metros"},
+  hierro_12:{cat:"herreria",n:"Hierro redondo / cuadrado 12 mm",u:"barra 6 m",p:11500,q:"hierro redondo liso 12 mm 6 metros"},
+  angulo:{cat:"herreria",n:"Hierro ángulo 1 x 1/8",u:"barra 6 m",p:15000,q:"hierro angulo 1 x 1/8 6 metros"},
+  antioxido:{cat:"herreria",n:"Antióxido",u:"lata 1 l",p:12000,q:"pintura antioxido 1 litro"},
+  esmalte:{cat:"herreria",n:"Esmalte sintético",u:"lata 1 l",p:16000,q:"esmalte sintetico 1 litro"},
+  convertidor:{cat:"herreria",n:"Convertidor de óxido 3 en 1",u:"lata 1 l",p:19500,q:"esmalte convertidor de oxido 1 litro"},
+  aguarras:{cat:"herreria",n:"Aguarrás / thinner",u:"botella 1 l",p:5500,q:"aguarras mineral 1 litro"},
+  kit_soldar:{cat:"herreria",n:"Electrodos y discos (consumibles)",u:"por trabajo",p:9000,q:"electrodos 2.5 mm 1 kg"},
+  disco_corte:{cat:"herreria",n:"Disco de corte metal 115 mm",u:"u",p:2200,q:"disco corte metal 115 mm"},
+  grampa:{cat:"herreria",n:"Grampas / brocas de fijación",u:"u",p:1200,q:"grampa amurar hierro"},
+  pomela:{cat:"herreria",n:"Pomelas (bisagras para soldar)",u:"u",p:2500,q:"pomela hierro para soldar"},
+  pasador:{cat:"herreria",n:"Pasador o porta candado",u:"u",p:6000,q:"pasador reforzado hierro porton"},
+  cerradura:{cat:"herreria",n:"Cerradura para puerta / reja",u:"u",p:28000,q:"cerradura doble paleta puerta reja"},
+  rueda_porton:{cat:"herreria",n:"Rueda para portón corredizo",u:"u",p:14000,q:"rueda porton corredizo canal v"},
+
+  /* Pintura */
+  latex:{cat:"pintura",n:"Látex interior",u:"lata 4 l",p:28000,q:"pintura latex interior 4 litros"},
+  latex_20:{cat:"pintura",n:"Látex interior (balde grande)",u:"balde 20 l",p:105000,q:"pintura latex interior 20 litros"},
+  latex_ext:{cat:"pintura",n:"Látex exterior / frente",u:"lata 4 l",p:38000,q:"pintura latex exterior frente 4 litros"},
+  latex_ext_20:{cat:"pintura",n:"Látex exterior (balde grande)",u:"balde 20 l",p:145000,q:"pintura latex exterior frente 20 litros"},
+  enduido:{cat:"pintura",n:"Enduido plástico",u:"balde 4 kg",p:12000,q:"enduido plastico interior 4 kg"},
+  fijador:{cat:"pintura",n:"Fijador sellador",u:"1 l",p:8000,q:"fijador sellador al agua 1 litro"},
+  kit_pintura:{cat:"pintura",n:"Rodillo, pincel, lija y cinta",u:"por trabajo",p:15000,q:"kit rodillo pincel cinta pintor"},
+  esmalte_4:{cat:"pintura",n:"Esmalte sintético",u:"lata 4 l",p:52000,q:"esmalte sintetico 4 litros"},
+  membrana:{cat:"pintura",n:"Membrana líquida",u:"balde 20 kg",p:65000,q:"membrana liquida techos 20 kg"},
+
+  /* Mosquiteros */
+  perfil_mosq:{cat:"mosquiteros",n:"Perfil aluminio para mosquitero",u:"tira 6 m",p:18000,q:"perfil aluminio mosquitero 6 metros"},
+  tela_mosq:{cat:"mosquiteros",n:"Tela mosquitera fibra de vidrio",u:"m²",p:6000,q:"tela mosquitera fibra de vidrio por metro"},
+  esquinero:{cat:"mosquiteros",n:"Escuadras / esquineros",u:"u",p:600,q:"escuadra esquinero mosquitero aluminio"},
+  burlete:{cat:"mosquiteros",n:"Cordón / burlete para tela",u:"m",p:500,q:"cordon goma tela mosquitera"},
+  ruedita:{cat:"mosquiteros",n:"Rueditas para corredizo",u:"u",p:1500,q:"ruedita mosquitero corredizo"},
+  kit_enrollable:{cat:"mosquiteros",n:"Mosquitero enrollable (kit)",u:"u",p:65000,q:"kit mosquitero enrollable ventana"},
+
+  /* Plomería */
+  flexible:{cat:"plomeria",n:"Flexible para canilla",u:"u",p:4500,q:"flexible mallado acero 40 cm"},
+  teflon:{cat:"plomeria",n:"Teflón y sellador",u:"u",p:2500,q:"cinta teflon plomeria"},
+  cuerito:{cat:"plomeria",n:"Vástago / cuerito de canilla",u:"u",p:5500,q:"vastago canilla bronce"},
+  sifon:{cat:"plomeria",n:"Sifón de bacha",u:"u",p:9000,q:"sifon bacha cocina"},
+  silicona:{cat:"plomeria",n:"Silicona selladora antihongos",u:"pomo",p:7000,q:"silicona selladora antihongos bano"},
+  griferia:{cat:"plomeria",n:"Grifería / canilla nueva",u:"u",p:45000,q:"griferia monocomando bacha"},
+  bacha:{cat:"plomeria",n:"Bacha nueva",u:"u",p:60000,q:"bacha acero inoxidable cocina"},
+  maquina:{cat:"plomeria",n:"Máquina destapadora (uso)",u:"uso",p:15000,q:"cinta destapa canerias"},
+  mecanismo:{cat:"plomeria",n:"Mecanismo completo de depósito",u:"u",p:22000,q:"kit reparacion deposito mochila inodoro"},
+  flotante:{cat:"plomeria",n:"Flotante para tanque de agua",u:"u",p:11000,q:"flotante tanque agua 1/2"},
+  tapa_inodoro:{cat:"plomeria",n:"Tapa de inodoro",u:"u",p:25000,q:"tapa asiento inodoro reforzada"},
+  inodoro:{cat:"plomeria",n:"Inodoro nuevo",u:"u",p:120000,q:"inodoro largo loza"},
+  conexion_inodoro:{cat:"plomeria",n:"Conexión y anillo de inodoro",u:"u",p:9000,q:"anillo cera conexion inodoro"},
+
+  /* Electricidad */
+  modulo:{cat:"electricidad",n:"Módulo toma o llave",u:"u",p:3500,q:"modulo tomacorriente 10a"},
+  bastidor:{cat:"electricidad",n:"Bastidor y tapa de luz",u:"u",p:3500,q:"bastidor y tapa luz 5x10"},
+  cable:{cat:"electricidad",n:"Cable unipolar 2,5 mm²",u:"m",p:900,q:"cable unipolar 2.5 mm normalizado"},
+  caja_luz:{cat:"electricidad",n:"Caja rectangular de luz",u:"u",p:1500,q:"caja rectangular luz pvc"},
+  termica:{cat:"electricidad",n:"Llave térmica bipolar",u:"u",p:15000,q:"llave termica bipolar 16a"},
+  disyuntor:{cat:"electricidad",n:"Disyuntor diferencial",u:"u",p:38000,q:"disyuntor diferencial 2x25a"},
+  cinta_aisl:{cat:"electricidad",n:"Cinta aisladora",u:"rollo",p:2500,q:"cinta aisladora pvc 20 metros"},
+
+  /* Albañilería y varios */
+  cemento:{cat:"albanileria",n:"Cemento de albañilería",u:"bolsa 25 kg",p:9000,q:"cemento albanileria plasticor 25 kg"},
+  arena:{cat:"albanileria",n:"Arena",u:"bolsa",p:3500,q:"bolsa arena construccion"},
+  fino_bolsa:{cat:"albanileria",n:"Revoque fino listo",u:"bolsa 25 kg",p:9500,q:"revoque fino bolsa 25 kg"},
+  portland:{cat:"albanileria",n:"Cemento portland",u:"bolsa 50 kg",p:14000,q:"cemento portland 50 kg"},
+  piedra:{cat:"albanileria",n:"Piedra / cascote",u:"bolsa",p:4000,q:"bolsa piedra partida construccion"},
+  pegamento:{cat:"albanileria",n:"Pegamento para cerámica",u:"bolsa 30 kg",p:11000,q:"pegamento ceramica 30 kg"},
+  tarugos:{cat:"albanileria",n:"Tarugos y tornillos",u:"bolsita",p:2000,q:"tarugos 8 mm con tornillos"},
+  mensula:{cat:"albanileria",n:"Ménsulas para estante",u:"u",p:3000,q:"mensula reforzada estante hierro"}
+};
+
+function mlUrl(query){
+  const slug = String(query||"")
+    .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
+    .toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  return "https://listado.mercadolibre.com.ar/" + encodeURIComponent(slug || "ferreteria");
+}
+
+function getAllCatalog(customMats){
+  const all = {...CATALOG};
+  if(customMats){
+    for(const [k,v] of Object.entries(customMats)){
+      all[k] = {cat: v.cat || "propios", n: v.n, u: v.u || "u", p: v.p || 0, q: v.q || v.n, customDef: true};
+    }
+  }
+  return all;
+}
+
+const C = Math.ceil, R1 = x => Math.round(x*10)/10;
+const it = (mat, qty, nota) => ({mat, qty, nota});
+const task = (name, hours) => ({name, hours: Math.max(0.25, Math.round(hours*4)/4)});
+
+const JOBS = [
+ { id:"reja", name:"Reja o portón", hint:"ventana, puerta, portón", icon:"reja", drawing:"reja",
+   presets:[
+     {label:"Ventana 120×100", vals:{uso:"ventana",ancho:120,alto:100,cant:1}},
+     {label:"Ventana 150×110", vals:{uso:"ventana",ancho:150,alto:110,cant:1}},
+     {label:"Puerta 90×200", vals:{uso:"puerta",ancho:90,alto:200,cant:1,cerradura:true}},
+     {label:"Portón 240×200", vals:{uso:"porton",ancho:240,alto:200,cant:1,cerradura:true}}
+   ],
+   fields:[
+    {id:"uso",label:"¿Para qué es?",type:"choice",def:"ventana",options:[["ventana","Reja de ventana"],["puerta","Puerta"],["porton","Portón"]]},
+    {id:"ancho",label:"Ancho",type:"num",unit:"cm",min:30,max:600,step:5,def:120},
+    {id:"alto",label:"Alto",type:"num",unit:"cm",min:30,max:300,step:5,def:100},
+    {id:"cant",label:"¿Cuántas?",type:"num",unit:"",min:1,max:20,step:1,def:1},
+    {id:"sep",label:"Separación entre barrotes",type:"num",unit:"cm",min:8,max:25,step:1,def:12},
+    {id:"pintura",label:"Terminación",type:"choice",def:"pintada",options:[["pintada","Antióxido + esmalte"],["antioxido","Solo antióxido"]]},
+    {id:"cerradura",label:"¿Lleva cerradura?",type:"yesno",def:false,show:i=>i.uso!=="ventana"},
+    {id:"colocar",label:"¿La colocás vos?",type:"yesno",def:true}
+   ],
+   calc(i){
+    const n=i.cant, items=[], tasks=[], warns=[];
+    const marco=2*(i.ancho+i.alto)/100, barrotes=Math.max(0,C(i.ancho/i.sep)-1), m2=i.ancho*i.alto/10000*n;
+    const ventana=i.uso==="ventana", usaCerr=!ventana&&i.cerradura;
+    const m20=(barrotes*i.alto/100+(ventana?marco:0))*n*1.1;
+    items.push(it("cano_2020",C(m20/6),`${barrotes} barrotes`));
+    if(!ventana) items.push(it("cano_4040",C(marco*n*1.1/6),"marco"));
+    items.push(it("planchuela",C((ventana?2:3)*i.ancho/100*n*1.1/6),"travesaños"));
+    const kg=(barrotes*i.alto/100+(ventana?marco:0))*n*0.69+(ventana?0:marco*n*1.86)+(ventana?2:3)*i.ancho/100*n*0.79;
+    const latas=Math.max(1,C(m2/3));
+    items.push(it("antioxido",latas));
+    if(i.pintura==="pintada") items.push(it("esmalte",latas));
+    items.push(it("kit_soldar",m2>4?2:1));
+    if(ventana){ if(i.colocar) items.push(it("grampa",4*n)); }
+    else { items.push(it("pomela",(i.uso==="porton"?4:3)*n)); if(!usaCerr) items.push(it("pasador",n)); if(i.colocar) items.push(it("grampa",6*n)); }
+    if(usaCerr) items.push(it("cerradura",n));
+    tasks.push(task("Medición y corte",0.5+0.3*n), task("Soldadura",n*(1.5+2*i.ancho*i.alto/10000)+(ventana?0:0.5*n)+(usaCerr?0.75*n:0)),
+               task("Antióxido y pintura",0.6*n+0.4*m2));
+    warns.push("Lleva más de un día por el secado de la pintura: avisale al cliente el plazo.");
+    if(i.colocar) tasks.push(task("Colocación y amurado",(ventana?1.5:i.uso==="puerta"?2:3)*n));
+    if(i.uso==="porton"&&i.ancho>300) warns.push("Portón grande: si lleva ruedas y riel, agregalos desde Materiales (+ Agregar repuesto).");
+    if(i.sep>12) warns.push("Más de 12 cm entre barrotes: puede pasar la cabeza de un nene.");
+    const nom={ventana:"Reja de ventana",puerta:"Puerta de hierro",porton:"Portón"}[i.uso];
+    return {items,tasks,warns,kg,secado:true,
+      desc:`${n>1?n+" x ":""}${nom} de ${i.ancho} x ${i.alto} cm`,
+      incluye:["Fabricación a medida",i.pintura==="pintada"?"Antióxido y esmalte (color a elección)":"Antióxido",...(usaCerr?["Cerradura instalada"]:ventana?[]:["Bisagras y pasador"]),...(i.colocar?["Colocación y amurado"]:[])],
+      excluye:["Arreglo de revoque o pintura de la pared",...(!usaCerr&&!ventana?["Cerradura (si se quiere, se cotiza aparte)"]:[])]};
+   }},
+ { id:"soldadura", name:"Soldadura / arreglo", hint:"bisagra, reja floja, portón", icon:"spark",
+   fields:[
+    {id:"horas",label:"¿Cuánto tiempo te lleva?",type:"num",unit:"h",min:0.5,max:12,step:0.5,def:2},
+    {id:"pintar",label:"¿Hay que pintar lo soldado?",type:"yesno",def:true},
+    {id:"domicilio",label:"¿Es en la casa del cliente?",type:"yesno",def:true}
+   ],
+   calc(i){
+    const items=[it("kit_soldar",1)], tasks=[task("Soldadura y ajuste",i.horas)], warns=[];
+    if(i.pintar){ items.push(it("antioxido",1),it("esmalte",1)); tasks.push(task("Retoque de pintura",0.5)); }
+    if(i.domicilio) warns.push("Fijate que haya enchufe cerca para la soldadora.");
+    return {items,tasks,warns,secado:i.pintar,desc:"Arreglo de soldadura",
+      incluye:["Soldadura y ajuste",...(i.pintar?["Antióxido y esmalte en la parte arreglada"]:[])],
+      excluye:["Piezas nuevas no detalladas"]};
+   }},
+ { id:"pintura", name:"Pintar", hint:"paredes, frente, rejas", icon:"rodillo",
+   presets:[
+     {label:"Baño / Cocina", vals:{zona:"interior",largo:8,alto:2.6,aberturas:2,techo:5,manos:2}},
+     {label:"Dormitorio 3×4", vals:{zona:"interior",largo:14,alto:2.6,aberturas:3,techo:12,manos:2}},
+     {label:"Living 4×6", vals:{zona:"interior",largo:20,alto:2.6,aberturas:5,techo:24,manos:2}},
+     {label:"Frente exterior", vals:{zona:"exterior",largo:10,alto:3,aberturas:4,techo:0,manos:2}}
+   ],
+   fields:[
+    {id:"zona",label:"¿Qué vas a pintar?",type:"choice",def:"interior",options:[["interior","Interior"],["exterior","Exterior / Frente"],["rejas","Rejas / Hierro"]]},
+    {id:"largo",label:"Largo total (sumá las paredes o rejas)",type:"num",unit:"m",min:1,max:200,step:0.5,def:12},
+    {id:"alto",label:"Alto",type:"num",unit:"m",min:0.5,max:8,step:0.1,def:2.6},
+    {id:"aberturas",label:"Puertas y ventanas para descontar",type:"num",unit:"m²",min:0,max:50,step:0.5,def:2,show:i=>i.zona!=="rejas"},
+    {id:"techo",label:"Techo (cielorraso) a pintar",type:"num",unit:"m²",min:0,max:200,step:1,def:0,show:i=>i.zona==="interior"},
+    {id:"manos",label:"Manos",type:"num",unit:"",min:1,max:3,step:1,def:2},
+    {id:"estado",label:"¿Cómo está la superficie?",type:"choice",def:"bueno",options:[["bueno","Bien"],["regular","Con grietas / óxido"],["malo","Muy mal / humedad"]]}
+   ],
+   calc(i){
+    const ab = i.zona==="rejas" ? 0 : i.aberturas;
+    const m2=Math.max(1, i.largo*i.alto - ab) + (i.zona==="interior"?i.techo:0);
+    const items=[], tasks=[], warns=[];
+    if(i.zona==="rejas"){
+      const litros = Math.max(1, C(m2*i.manos/6));
+      if(i.estado!=="bueno") items.push(it("antioxido", Math.max(1, C(m2/8))));
+      items.push(it("esmalte", litros, `${R1(m2)} m²`), it("aguarras", 1), it("kit_pintura", 1));
+      tasks.push(task("Lijado y limpieza de óxido", m2*({bueno:0.15,regular:0.35,malo:0.55}[i.estado])),
+                 task("Pintura de rejas/hierro", m2*0.25*i.manos));
+      return {items,tasks,warns,secado:true,desc:`Pintura de rejas/hierro (${R1(m2)} m², ${i.manos} mano${i.manos>1?"s":""})`,
+        incluye:["Lijado y limpieza",...(i.estado!=="bueno"?["Antióxido"]:[]),`Esmalte sintético (${i.manos} manos)`],
+        excluye:["Arreglos de soldadura"]};
+    }
+    const litros = m2 * i.manos / (i.zona==="exterior"?8:10) * 1.1;
+    const baldes20 = Math.floor(litros / 18);
+    const restoL = Math.max(0, litros - baldes20*20);
+    const latas4 = baldes20===0 ? Math.max(1, C(restoL/4)) : (restoL>0.5 ? C(restoL/4) : 0);
+    if(baldes20>0) items.push(it(i.zona==="exterior"?"latex_ext_20":"latex_20", baldes20, `${R1(m2)} m²`));
+    if(latas4>0) items.push(it(i.zona==="exterior"?"latex_ext":"latex", latas4, baldes20?"complemento":`${R1(m2)} m²`));
+    if(i.estado!=="bueno"){
+      items.push(it("fijador", Math.max(1, C(m2/12))), it("enduido", Math.max(1, C(m2/(i.estado==="malo"?8:15)))));
+    }
+    items.push(it("kit_pintura",1));
+    const extK = i.zona==="exterior"?1.2:1;
+    tasks.push(task("Preparación de la pared", m2*({bueno:0.03,regular:0.1,malo:0.18}[i.estado])*extK),
+               task("Pintura", 0.07*m2*i.manos*extK), task("Cubrir, proteger y limpiar",1));
+    if(i.estado==="malo") warns.push("Con humedad: si no se arregla la causa (caño o techo), la pared se vuelve a manchar.");
+    if(i.zona==="exterior") warns.push("Exterior: fijate si necesitás escalera alta o andamio.");
+    const tipoTxt = i.zona==="exterior"?"exterior":"interior";
+    return {items,tasks,warns,secado:true,desc:`Pintura ${tipoTxt} de ${R1(m2)} m² (${i.manos} mano${i.manos>1?"s":""})`,
+      incluye:[i.zona==="exterior"?"Látex exterior":"Látex interior",...(i.estado!=="bueno"?["Enduido y fijador"]:[]),`${i.manos} mano(s) de pintura`,"Protección de pisos y limpieza"],
+      excluye:["Aberturas, rejas y zócalos","Arreglo de la causa de la humedad"]};
+   }},
+ { id:"mosquitero", name:"Mosquitero", hint:"ventana o puerta", icon:"mosq", drawing:"mosq",
+   presets:[
+     {label:"Ventana 120×100", vals:{ancho:120,alto:100,cant:1}},
+     {label:"Ventana 150×110", vals:{ancho:150,alto:110,cant:1}},
+     {label:"Puerta balcón 80×200", vals:{ancho:80,alto:200,cant:1,tipo:"corredizo"}}
+   ],
+   fields:[
+    {id:"ancho",label:"Ancho",type:"num",unit:"cm",min:20,max:400,step:5,def:120},
+    {id:"alto",label:"Alto",type:"num",unit:"cm",min:20,max:300,step:5,def:100},
+    {id:"cant",label:"¿Cuántos?",type:"num",unit:"",min:1,max:30,step:1,def:1},
+    {id:"tipo",label:"Tipo",type:"choice",def:"fijo",options:[["fijo","Fijo"],["corredizo","Corredizo"],["enrollable","Enrollable"]]}
+   ],
+   calc(i){
+    const n=i.cant, items=[], tasks=[], warns=[];
+    if(i.tipo==="enrollable"){
+      items.push(it("kit_enrollable",n), it("tarugos",C(n/2)));
+      tasks.push(task("Colocación",0.75*n));
+    } else {
+      const per=2*(i.ancho+i.alto)/100;
+      items.push(it("perfil_mosq",C(per*n*1.1/6)), it("tela_mosq",R1(i.ancho*i.alto/10000*1.15*n)),
+                 it("esquinero",4*n), it("burlete",C(per*1.1*n)));
+      if(i.tipo==="corredizo") items.push(it("ruedita",2*n));
+      tasks.push(task("Armado a medida",(i.tipo==="corredizo"?1:0.75)*n), task("Colocación",0.5*n));
+      if(i.ancho>150||i.alto>200) warns.push("Es grande: conviene un travesaño en el medio para que la tela no se afloje.");
+    }
+    return {items,tasks,warns,
+      desc:`${n>1?n+" mosquiteros":"Mosquitero"} ${i.tipo} de ${i.ancho} x ${i.alto} cm`,
+      incluye:["Mosquitero armado a medida","Tela de fibra de vidrio","Colocación"],
+      excluye:["Arreglo del marco de la ventana"]};
+   }},
+ { id:"bacha", name:"Bacha o canilla", hint:"pérdida, cambio, destape", icon:"canilla",
+   fields:[
+    {id:"tareas",label:"¿Qué hay que hacer?",type:"multi",def:["canilla"],options:[["canilla","Cambiar canilla"],["perdida","Arreglar pérdida"],["sifon","Cambiar sifón"],["destapar","Destapar"],["completa","Cambiar la bacha entera"]]},
+    {id:"cliente",label:"¿La canilla o bacha la compra el cliente?",type:"yesno",def:true}
+   ],
+   calc(i){
+    const t=new Set(i.tareas), items=[], tasks=[], warns=[];
+    if(t.has("canilla")){ if(!i.cliente) items.push(it("griferia",1)); items.push(it("flexible",2),it("teflon",1)); tasks.push(task("Cambio de canilla",1)); }
+    if(t.has("perdida")){ items.push(it("flexible",2),it("teflon",1)); tasks.push(task("Arreglo de pérdida",0.75)); }
+    if(t.has("sifon")||t.has("completa")) items.push(it("sifon",1));
+    if(t.has("sifon")) tasks.push(task("Cambio de sifón",0.5));
+    if(t.has("destapar")){ items.push(it("maquina",1)); tasks.push(task("Destape",1)); }
+    if(t.has("completa")){ if(!i.cliente) items.push(it("bacha",1)); items.push(it("silicona",1),it("flexible",2)); tasks.push(task("Cambio de bacha",2.5)); }
+    if(!t.size) warns.push("Elegí qué hay que hacer.");
+    return {items,tasks,warns,desc:"Trabajo en bacha / canilla",
+      incluye:[...(t.has("canilla")?["Cambio de canilla"]:[]),...(t.has("perdida")?["Arreglo de pérdida"]:[]),...(t.has("sifon")?["Cambio de sifón"]:[]),...(t.has("destapar")?["Destape con máquina"]:[]),...(t.has("completa")?["Cambio de bacha completa"]:[]),"Flexibles y sellado"],
+      excluye:[...(i.cliente?["La canilla / bacha nueva (la compra el cliente)"]:[]),"Mesada o cerámica si se rompe al sacar lo viejo"]};
+   }},
+ { id:"inodoro", name:"Inodoro / depósito", hint:"pierde, no carga, cambio", icon:"inodoro",
+   fields:[
+    {id:"tareas",label:"¿Qué hay que hacer?",type:"multi",def:["mecanismo"],options:[["mecanismo","Arreglar depósito"],["perdida","Pérdida en la conexión"],["tapa","Cambiar tapa"],["completo","Cambiar el inodoro"]]},
+    {id:"cliente",label:"¿El inodoro o la tapa los compra el cliente?",type:"yesno",def:true}
+   ],
+   calc(i){
+    const t=new Set(i.tareas), items=[], tasks=[], warns=[];
+    if(t.has("mecanismo")){ items.push(it("mecanismo",1)); tasks.push(task("Cambio de mecanismo",1)); }
+    if(t.has("perdida")){ items.push(it("flexible",1),it("teflon",1)); tasks.push(task("Arreglo de pérdida",0.5)); }
+    if(t.has("tapa")){ if(!i.cliente) items.push(it("tapa_inodoro",1)); tasks.push(task("Cambio de tapa",0.25)); }
+    if(t.has("completo")){ if(!i.cliente) items.push(it("inodoro",1)); items.push(it("conexion_inodoro",1),it("silicona",1),it("flexible",1)); tasks.push(task("Cambio de inodoro",3)); }
+    if(!t.size) warns.push("Elegí qué hay que hacer.");
+    return {items,tasks,warns,desc:"Trabajo en inodoro / depósito",
+      incluye:[...(t.has("mecanismo")?["Mecanismo nuevo del depósito"]:[]),...(t.has("perdida")?["Arreglo de pérdida"]:[]),...(t.has("tapa")?["Cambio de tapa"]:[]),...(t.has("completo")?["Cambio de inodoro con conexión nueva"]:[])],
+      excluye:[...(i.cliente&&(t.has("tapa")||t.has("completo"))?["El inodoro / tapa nuevos (los compra el cliente)"]:[]),"Cerámica rota alrededor"]};
+   }},
+ { id:"luz", name:"Enchufes y luces", hint:"cambiar, agregar, térmica", icon:"enchufe",
+   fields:[
+    {id:"tomas",label:"Enchufes o llaves para cambiar",type:"num",unit:"",min:0,max:30,step:1,def:2},
+    {id:"lamparas",label:"Lámparas o apliques para colocar",type:"num",unit:"",min:0,max:30,step:1,def:0},
+    {id:"bocas",label:"Enchufes nuevos (donde no hay)",type:"num",unit:"",min:0,max:20,step:1,def:0},
+    {id:"metros",label:"Metros de cable por enchufe nuevo",type:"num",unit:"m",min:1,max:30,step:1,def:6,show:i=>i.bocas>0}
+   ],
+   calc(i){
+    const items=[], tasks=[], warns=["Si hay que tocar el tablero general o hacer una instalación nueva, conviene electricista matriculado."];
+    const mod=i.tomas+i.bocas;
+    if(mod){ items.push(it("modulo",mod),it("bastidor",mod)); }
+    if(i.bocas){ items.push(it("cable",C(i.bocas*i.metros*3),"fase, neutro y tierra"),it("caja_luz",i.bocas)); tasks.push(task("Enchufes nuevos",1.5*i.bocas)); }
+    if(i.tomas) tasks.push(task("Cambio de enchufes / llaves",0.35*i.tomas));
+    if(i.lamparas){ items.push(it("tarugos",C(i.lamparas/2))); tasks.push(task("Colocación de lámparas",0.6*i.lamparas)); }
+    return {items,tasks,warns,desc:"Trabajo de electricidad",
+      incluye:[...(i.tomas?[`Cambio de ${i.tomas} enchufe(s)/llave(s)`]:[]),...(i.lamparas?[`Colocación de ${i.lamparas} lámpara(s)`]:[]),...(i.bocas?[`${i.bocas} enchufe(s) nuevo(s) con cable`]:[])],
+      excluye:["Lámparas y artefactos (los compra el cliente)","Arreglos en el tablero"]};
+   }},
+ { id:"colgar", name:"Colgar y amurar", hint:"estantes, cortinas, TV", icon:"estante",
+   fields:[
+    {id:"estantes",label:"Estantes",type:"num",unit:"",min:0,max:20,step:1,def:2},
+    {id:"cortineros",label:"Barrales o cortineros",type:"num",unit:"",min:0,max:20,step:1,def:0},
+    {id:"tv",label:"Televisores en la pared",type:"num",unit:"",min:0,max:10,step:1,def:0},
+    {id:"cuadros",label:"Cuadros o espejos",type:"num",unit:"",min:0,max:30,step:1,def:0},
+    {id:"pared",label:"La pared es de",type:"choice",def:"ladrillo",options:[["ladrillo","Ladrillo"],["hormigon","Hormigón"],["durlock","Durlock"]]}
+   ],
+   calc(i){
+    const k=i.pared==="hormigon"?1.3:1, items=[], tasks=[], warns=[];
+    const bolsitas=C(i.estantes+i.cortineros+i.tv+i.cuadros*0.5);
+    if(bolsitas) items.push(it("tarugos",bolsitas));
+    if(i.estantes){ items.push(it("mensula",2*i.estantes)); tasks.push(task("Estantes",0.6*i.estantes*k)); }
+    if(i.cortineros) tasks.push(task("Barrales / cortineros",0.6*i.cortineros*k));
+    if(i.tv) tasks.push(task("TV en la pared",1.5*i.tv*k));
+    if(i.cuadros) tasks.push(task("Cuadros / espejos",0.25*i.cuadros*k));
+    if(i.pared==="durlock") warns.push("En durlock usá tarugos especiales (tipo mariposa) y buscá los montantes.");
+    if(!bolsitas) warns.push("Cargá al menos una cosa para colgar.");
+    return {items,tasks,warns,desc:"Colocación en pared",
+      incluye:["Medición, nivelado y colocación","Tarugos y tornillos"],
+      excluye:[...(i.tv?["Soporte de TV (lo compra el cliente)"]:[]),"Estantes, barrales y cuadros (los pone el cliente)"]};
+   }},
+ { id:"pared", name:"Arreglo de pared", hint:"revoque, agujero", icon:"ladrillos",
+   fields:[
+    {id:"m2",label:"Tamaño del arreglo",type:"num",unit:"m²",min:0.1,max:20,step:0.1,def:0.5},
+    {id:"retoque",label:"¿Retocar la pintura después?",type:"yesno",def:true}
+   ],
+   calc(i){
+    const items=[it("cemento",Math.max(1,C(i.m2/1.2))), it("arena",Math.max(1,C(i.m2*2))), it("enduido",1)], warns=[];
+    const tasks=[task("Picado y limpieza",0.5+0.5*i.m2), task("Revoque grueso y fino",1+1.5*i.m2)];
+    if(i.retoque) tasks.push(task("Retoque de pintura",1));
+    warns.push("El revoque tiene que secar: puede hacer falta volver otro día para pintar.");
+    return {items,tasks,warns,secado:true,desc:`Arreglo de pared de ${i.m2} m²`,
+      incluye:["Picado de la parte floja","Revoque grueso y fino",...(i.retoque?["Retoque de pintura"]:[])],
+      excluye:["Pintura de toda la pared","Arreglo de caños si aparecen rotos"]};
+   }},
+ { id:"otro", name:"Otro / Changa rápida", hint:"horas + repuestos a elección", icon:"llave",
+   fields:[
+    {id:"texto",label:"¿Qué trabajo es?",type:"text",def:"Trabajo a medida"},
+    {id:"horas",label:"Horas de trabajo",type:"num",unit:"h",min:0.5,max:80,step:0.5,def:2},
+    {id:"mat",label:"Otros materiales sin detallar ($)",type:"num",unit:"$",min:0,max:5000000,step:1000,def:0}
+   ],
+   calc(i){
+    const items=i.mat>0?[{custom:true,name:"Otros materiales",unit:"total",qty:1,price:i.mat}]:[];
+    return {items,tasks:[task(i.texto||"Trabajo",i.horas)],warns:[],desc:i.texto||"Trabajo a medida",
+      incluye:[i.texto||"Trabajo a medida"],excluye:[]};
+   }}
+];
+
+/* ===== PRECIOS DE OBRA DE REFERENCIA (mercado, CABA/GBA) ===== */
+const RUBROS=[
+  ["herr","Herrería","reja"],
+  ["pint","Pintura","rodillo"],
+  ["alb","Albañilería","ladrillos"],
+  ["elec","Electricidad","enchufe"],
+  ["plom","Plomería","canilla"]
+];
+const SRC={
+  tr:{n:"Todo Resuelto",f:"nov 2026",url:"https://todoresuelto.com/blog/mano-obra-albanileria-precios-argentina-2026"},
+  sv:{n:"Servidos",f:"nov 2026",url:"https://servidos.ar/blog/trabajos-de-albanileria-en-buenos-aires"},
+  mu:{n:"Muovi",f:"oct 2026",url:"https://www.muovi.com.ar/blog/cuanto-cobra-un-albanil-argentina-2026/"},
+  sve:{n:"Servidos",f:"jul 2026",url:"https://servidos.ar/blog/cuanto-cuesta-electricista-buenos-aires"},
+  svu:{n:"Servidos",f:"jul 2026",url:"https://servidos.ar/blog/cuanto-cuesta-tomacorrientes-usb-departamento-buenos-aires"},
+  c26:{n:"Canal 26",f:"jul 2026",url:"https://www.canal26.com/espectaculos/2026/07/17/lista-actualizada-de-salarios-cuanto-cobran-un-albanil-un-electricista-y-un-plomero-en-julio-2026/"},
+  ipe:{n:"iProfesional",f:"2026",url:"https://www.iprofesional.com/actualidad/464939-cuanto-cobra-un-electricista-hoy-precios-de-arreglos-y-obras"},
+  pd:{n:"PropData vía iProfesional",f:"oct-nov 2026",url:"https://www.iprofesional.com/actualidad/468170-cuanto-cuesta-pintar-un-departamento-de-60-m-costos-y-materiales"},
+  svn:{n:"Servidos y Solvit",f:"jun-nov 2026",url:"https://servidos.ar/servicios/electricista/buenos-aires"},
+  svf:{n:"Servidos",f:"ago 2026",url:"https://servidos.ar/blog/cuanto-cuesta-pintar-frente-fachada-buenos-aires"},
+  svh:{n:"Servidos",f:"nov 2026",url:"https://servidos.ar/servicios/herreria/buenos-aires"},
+  svp:{n:"Servidos",f:"nov 2026",url:"https://servidos.ar/servicios/plomero/buenos-aires"}
+};
+const REF=[
+ {r:"herr",id:"reja_mo",n:"Fabricación reja de ventana (solo mano de obra)",u:"m²",lo:65000,hi:125000,s:"svh",mat:[["cano_2020",1.5],["planchuela",0.5],["antioxido",0.35],["esmalte",0.35]]},
+ {r:"herr",id:"puerta_mo",n:"Puerta o portón de hierro (solo mano de obra)",u:"m²",lo:85000,hi:155000,s:"svh",mat:[["cano_4040",1],["cano_2020",1.5],["pomela",1.5],["antioxido",0.5],["esmalte",0.5]]},
+ {r:"herr",id:"sold_punto",n:"Arreglo de soldadura a domicilio",u:"trabajo",lo:45000,hi:95000,s:"svh",mat:[["kit_soldar",1]]},
+ {r:"herr",id:"coloc_reja",n:"Colocación y amurado de reja",u:"u",lo:40000,hi:85000,s:"svh",mat:[["grampa",4],["cemento",0.5]]},
+
+ {r:"pint",id:"pint_int",n:"Pintura interior, látex 2 manos",u:"m²",lo:4500,hi:9000,s:"pd",mat:[["latex",0.05]]},
+ {r:"pint",id:"enduido",n:"Enduido y lijado (se suma)",u:"m²",lo:3000,hi:9000,s:"svf",mat:[["enduido",0.07],["fijador",0.08]]},
+ {r:"pint",id:"pint_ext",n:"Pintura de frente o exterior",u:"m²",lo:5000,hi:11500,s:"svf",mat:[["latex_ext",0.06]]},
+ {r:"pint",id:"pint_reja",n:"Pintar rejas / aberturas (lijado + 2 manos)",u:"m²",lo:9000,hi:18000,s:"svf",mat:[["esmalte",0.25],["antioxido",0.2]]},
+
+ {r:"alb",id:"rgrueso",n:"Revoque grueso",u:"m²",lo:11300,hi:25300,s:"tr",mat:[["cemento",0.15],["arena",1]]},
+ {r:"alb",id:"rfino",n:"Revoque fino",u:"m²",lo:9400,hi:14600,s:"tr",mat:[["fino_bolsa",0.2]]},
+ {r:"alb",id:"contrapiso",n:"Contrapiso (8 a 10 cm)",u:"m²",lo:15500,hi:24800,s:"tr",mat:[["portland",0.3],["arena",2],["piedra",2]]},
+ {r:"alb",id:"carpeta",n:"Carpeta",u:"m²",lo:13400,hi:17700,s:"tr",mat:[["portland",0.15],["arena",1]]},
+ {r:"alb",id:"ceramica",n:"Colocación de cerámica",u:"m²",lo:9000,hi:28000,s:"mu",mat:[["pegamento",0.2]],nota:"la cerámica la compra el cliente"},
+ {r:"alb",id:"impermeab",n:"Impermeabilización",u:"m²",lo:7000,hi:16000,s:"mu",mat:[["membrana",0.1]]},
+ {r:"alb",id:"jornada",n:"Jornada de oficial",u:"día",lo:54000,hi:91500,s:"sv",mat:[],nota:"ayudante aparte"},
+
+ {r:"elec",id:"visita",n:"Visita y diagnóstico",u:"visita",lo:26000,hi:94500,s:"svn",mat:[],nota:"zona norte, abajo; CABA, arriba"},
+ {r:"elec",id:"toma",n:"Cambio de enchufe o llave",u:"u",lo:25000,hi:25000,desde:true,s:"c26",mat:[["modulo",1]]},
+ {r:"elec",id:"luminaria",n:"Colocar lámpara o aplique",u:"u",lo:30000,hi:60000,s:"c26",mat:[["tarugos",0.5]],nota:"la lámpara la compra el cliente"},
+ {r:"elec",id:"boca",n:"Agregar boca nueva",u:"boca",lo:26000,hi:52000,s:"svu",mat:[["cable",18],["caja_luz",1],["modulo",1],["bastidor",1]]},
+ {r:"elec",id:"termica",n:"Cambio de térmica",u:"u",lo:22000,hi:41000,s:"ipe",mat:[["termica",1]]},
+ {r:"elec",id:"recableado",n:"Recableado de un ambiente",u:"ambiente",lo:150000,hi:310000,s:"sve",mat:[["cable",60]]},
+ {r:"elec",id:"tablero",n:"Tablero nuevo 4 a 6 circuitos",u:"u",lo:155000,hi:310000,s:"sve",mat:[],incluye:true,nota:"el precio ya incluye materiales"},
+
+ {r:"plom",id:"plom_canilla",n:"Cambio de canilla / grifería",u:"u",lo:35000,hi:65000,s:"svp",mat:[["flexible",2],["teflon",1]],nota:"grifería aparte"},
+ {r:"plom",id:"plom_dep",n:"Cambio mecanismo de depósito",u:"u",lo:35000,hi:65000,s:"svp",mat:[["mecanismo",1]]},
+ {r:"plom",id:"plom_destape",n:"Destape de cañería con máquina",u:"trabajo",lo:45000,hi:95000,s:"svp",mat:[["maquina",1]]},
+ {r:"plom",id:"plom_inod",n:"Colocación de inodoro",u:"u",lo:65000,hi:120000,s:"svp",mat:[["conexion_inodoro",1],["silicona",1]],nota:"inodoro aparte"}
+];
+
+const MERCADO_REJA={lo:114000,hi:223000,src:"Servidos",f:"nov 2026",url:"https://servidos.ar/servicios/herreria/buenos-aires"};
+function refMercado(job,inputs,total){
+  if(!job||job.id!=="reja"||inputs.uso!=="ventana") return null;
+  const m2=inputs.ancho*inputs.alto/10000*inputs.cant;
+  if(!(m2>0)) return null;
+  const lo=Math.round(MERCADO_REJA.lo*m2/1000)*1000, hi=Math.round(MERCADO_REJA.hi*m2/1000)*1000;
+  return {lo,hi,m2,estado:total<lo?"bajo":total>hi?"alto":"ok"};
+}
+const NIVEL={bajo:["Barato",0],medio:["Medio",0.5],alto:["Caro",1]};
+function refPrice(it,lvl){ return Math.round(it.lo+(it.hi-it.lo)*NIVEL[lvl][1]); }
+
+function computeObra(lines,cfg,prices,opts,customMats){
+  const cat = getAllCatalog(customMats);
+  const rows=[], need={};
+  for(const it of REF){
+    const L=lines[it.id]; if(!L||!L.qty) continue;
+    const pu=refPrice(it,L.lvl), mo=pu*L.qty;
+    rows.push({it,qty:L.qty,lvl:L.lvl,pu,mo});
+    it.mat.forEach(([m,c])=>need[m]=(need[m]||0)+c*L.qty);
+  }
+  const mats=Object.entries(need).map(([k,q])=>{
+    const c=cat[k]||CATALOG[k], qty=Math.ceil(q-1e-9), price=prices[k]??c.p;
+    return {key:k,name:c.n,unit:c.u,q:c.q||c.n,qty,price,cost:qty*price,example:!(k in prices)&&!c.customDef};
+  });
+  const mo=rows.reduce((a,r)=>a+r.mo,0), matCost=mats.reduce((a,m)=>a+m.cost,0);
+  const viaje=rows.length?(opts.viaje??cfg.viaje):0;
+  const paso=cfg.redondeo||1, ivaF=cfg.iva?1.21:1;
+  const comPct = Math.min(60, Math.max(0, Number(cfg.comision)||0));
+  const minT=Math.ceil(cfg.minimo/paso)*paso;
+
+  function calcObraMode(usarCom, absorber){
+    const effCom = usarCom ? comPct : 0;
+    const comF = (usarCom && !absorber) ? 1/(1 - effCom/100) : 1;
+    const up = x => Math.ceil(x * comF * ivaF / paso) * paso;
+    const minAplicado = rows.length > 0 && up(mo + viaje) < minT;
+    const sinMat = rows.length ? Math.max(minT, up(mo + viaje)) : 0;
+    const conMat = rows.length ? Math.max(minT, up(mo + viaje + matCost*(1 + cfg.recargo/100))) : 0;
+    const pocket = t => { const s = t/ivaF; return s - s*effCom/100; };
+    const comSin = (sinMat/ivaF)*effCom/100;
+    const comCon = (conMat/ivaF)*effCom/100;
+    return {sinMat, conMat, minAplicado, comSin, comCon,
+      bolsilloSin: pocket(sinMat), bolsilloCon: pocket(conMat) - matCost};
+  }
+
+  const usarCom = opts.usarComision !== false;
+  const absorber = !!opts.absorberCom;
+  const conCom = calcObraMode(true, absorber);
+  const sinCom = calcObraMode(false, false);
+  const act = usarCom ? conCom : sinCom;
+  return {rows,mats,mo,matCost,viaje,usarCom,absorber,conCom,sinCom,...act};
+}
+
+function obraMessage(res,cfg,conMat){
+  const L=[`¡Hola! Te paso el presupuesto${cfg.nombre?" de "+cfg.nombre:""}:`,""];
+  const PL={boca:"bocas",visita:"visitas","día":"días",ambiente:"ambientes",trabajo:"trabajos"};
+  res.rows.forEach(r=>L.push(`• ${r.it.n}: ${fmtQ(r.qty)} ${r.qty>1&&PL[r.it.u]?PL[r.it.u]:r.it.u}`));
+  L.push("");
+  if(conMat){
+    L.push(`💰 Total con materiales: ${ars(res.conMat)}${cfg.iva?" (IVA incluido)":""}`);
+    L.push(`(Solo mano de obra serían ${ars(res.sinMat)} y los materiales los comprás vos.)`);
+  } else {
+    L.push(`💰 Mano de obra: ${ars(res.sinMat)}${cfg.iva?" (IVA incluido)":""}`);
+    L.push("Los materiales van aparte: te paso la lista.");
+  }
+  const notas=res.rows.map(r=>r.it.nota).filter(Boolean);
+  if(notas.length) L.push("Ojo: "+[...new Set(notas)].join("; ")+".");
+  if(!res.usarCom && cfg.alias) L.push(`Alias para la seña: ${cfg.alias}`);
+  L.push(`Precio válido por ${cfg.validez} días.`);
+  if(cfg.garantia) L.push(`Garantía: ${cfg.garantia}.`);
+  return L.join("\n");
+}
+
+function defaults(job){ const o={}; job.fields.forEach(f=>o[f.id]=Array.isArray(f.def)?[...f.def]:f.def); return o; }
+
+/* Cálculo principal de un trabajo: devuelve SIEMPRE ambos modos (conCom y sinCom) y el activo en el nivel raíz. */
+function compute(job, inputs, cfg, prices, hoursOv, opts, extraMats, qtyOv, customMats){
+  const cat = getAllCatalog(customMats);
+  const r = job.calc(inputs);
+  const qOv = qtyOv || {};
+
+  const mats = r.items.filter(x=>x.qty>0).map((x, idx)=>{
+    if(x.custom) return {id:"custom_"+idx,key:null,name:x.name,unit:x.unit,q:x.name,qty:x.qty,autoQty:x.qty,price:x.price,cost:x.qty*x.price,example:false};
+    const c = cat[x.mat] || CATALOG[x.mat];
+    const price = prices[x.mat] ?? c.p;
+    const qty = qOv[x.mat] !== undefined ? qOv[x.mat] : x.qty;
+    return {id:"mat_"+x.mat,key:x.mat,name:c.n,unit:c.u,q:c.q||c.n,qty,autoQty:x.qty,nota:x.nota,price,cost:qty*price,example:!(x.mat in prices)&&!c.customDef};
+  });
+
+  /* Sumar repuestos agregados a mano por el usuario */
+  (extraMats || []).forEach((em, idx)=>{
+    if(em.key && cat[em.key]){
+      const c = cat[em.key];
+      const price = prices[em.key] ?? c.p;
+      mats.push({id:"ex_"+idx,extraIdx:idx,key:em.key,name:c.n,unit:c.u,q:c.q||c.n,qty:em.qty,autoQty:em.qty,nota:"agregado",price,cost:em.qty*price,example:!(em.key in prices)&&!c.customDef});
+    } else {
+      mats.push({id:"ex_"+idx,extraIdx:idx,key:null,name:em.name||"Repuesto",unit:em.unit||"u",q:em.name||"repuesto",qty:em.qty,autoQty:em.qty,nota:"agregado",price:em.price||0,cost:(em.qty||0)*(em.price||0),example:false});
+    }
+  });
+
+  const tasks = r.tasks.map(t=>({...t,auto:t.hours,manual:hoursOv[t.name]!==undefined,hours:hoursOv[t.name]??t.hours}));
+  const horas = tasks.reduce((a,t)=>a+t.hours,0);
+  const matCost = mats.reduce((a,m)=>a+m.cost,0);
+  const matCobrado = opts.clienteCompra ? 0 : matCost*(1+cfg.recargo/100);
+  const mo = horas*cfg.valor_hora*(opts.urgente ? 1+cfg.urgencia/100 : 1);
+  const viaje = opts.viaje ?? cfg.viaje;
+  const neto = (matCobrado + mo + viaje)*(1 + cfg.imprevistos/100);
+  const ivaF = cfg.iva ? 1.21 : 1;
+  const paso = cfg.redondeo || 1;
+  const comPct = Math.min(60, Math.max(0, Number(cfg.comision)||0));
+
+  function calcMode(useCom){
+    const cPct = useCom ? comPct : 0;
+    let base = neto / (1 - cPct/100);
+    const bajoMinimo = base < cfg.minimo;
+    let usoMinimo = false;
+    if(bajoMinimo && !opts.sinMinimo){ base = cfg.minimo; usoMinimo = true; }
+    const total = Math.ceil(base * ivaF / paso) * paso;
+    const sinIva = total / ivaF;
+    const iva = total - sinIva;
+    const comision = sinIva * cPct / 100;
+    const bolsillo = total - iva - comision - (opts.clienteCompra ? 0 : matCost);
+    const porHora = horas ? (bolsillo - viaje) / horas : 0;
+    return {total, iva, comision, comPct:cPct, bolsillo, porHora, usoMinimo, bajoMinimo};
+  }
+
+  const usarComision = opts.usarComision !== false;
+  const conCom = calcMode(true);
+  const sinCom = calcMode(false);
+  const act = usarComision ? conCom : sinCom;
+
+  const warns = [...r.warns];
+  if(act.usoMinimo) warns.push(`Se aplicó tu mínimo de ${ars(cfg.minimo)}. Si es un trabajo chico y querés bajarlo, en Opciones podés sacar el mínimo.`);
+  const dias = Math.max(1, Math.ceil(horas/7)) + (r.secado ? 1 : 0);
+  if(horas && act.porHora < cfg.valor_hora * 0.98) warns.push("Por hora te queda menos de lo que querés ganar. Revisá horas o precios de repuestos.");
+
+  return {
+    ...r, mats, tasks, horas, matCost, matCobrado, mo, viaje, neto, dias,
+    usarComision, conCom, sinCom, ...act, warns,
+    matCliente: opts.clienteCompra ? 0 : Math.round(matCobrado * ivaF)
+  };
+}
+
+const ars = x => "$\u00a0" + Math.round(x).toLocaleString("es-AR");
+const fmtQ = q => String(Math.round(q*100)/100).replace(".",",");
+
+const PEDIR={
+ mosquitero:["Ancho y alto de la ventana o puerta (por dentro del marco), en cm","¿Cuántos son?","¿Fijo, corredizo o enrollable?","Una foto de la abertura"],
+ reja:["Ancho y alto del hueco, en cm","¿Es para ventana, puerta o portón? ¿Cuántas?","Foto de frente de la abertura","¿En qué piso es?","Si te gusta algún modelo, mandame una foto"],
+ soldadura:["Foto de lo que hay que soldar (de cerca y de lejos)","¿Se puede llevar al taller o es en tu casa?","¿Hay un enchufe cerca?"],
+ bacha:["Foto de la bacha y de abajo de la mesada","¿Qué pasa? ¿Pierde, está tapada o la querés cambiar?","¿La canilla o bacha nueva ya la tenés?"],
+ inodoro:["Foto del inodoro y del depósito (abierto si se puede)","¿Qué pasa? ¿Pierde, no carga o no corta?","¿El repuesto o el inodoro nuevo ya lo tenés?"],
+ luz:["¿Cuántos enchufes o llaves hay que cambiar?","¿Hay que agregar enchufes donde no hay? ¿Cuántos?","Foto del tablero (la cajita de las térmicas)","¿Las lámparas ya las tenés?"],
+ colgar:["¿Qué hay que colgar y cuántos? (estantes, cortinas, tele, cuadros)","¿La pared es de ladrillo, hormigón o durlock?","¿El soporte de la tele ya lo tenés?"],
+ pintura:["Largo y alto de las paredes o rejas a pintar (o cuántos ambientes)","¿Va el techo también?","Fotos de las paredes (si hay humedad o grietas, de cerca)","¿Qué color querés?"],
+ pared:["Foto de la parte a arreglar con algo al lado para ver el tamaño","¿Hay humedad?","¿Después hay que pintar?"],
+ otro:["Contame bien qué hay que hacer","Fotos del lugar","Medidas aproximadas"]
+};
+function pedirMessage(job,cfg){
+  const items=[...(PEDIR[job.id]||PEDIR.otro),"Barrio o zona","¿Para cuándo lo necesitás?"];
+  return [`¡Hola!${cfg.nombre?" Soy "+cfg.nombre+".":""} Para pasarte un precio justo (${job.name.toLowerCase()}) necesito que me mandes:`,
+    ...items.map((x,k)=>`${k+1}. ${x}`),"","Con eso te paso el presupuesto enseguida. ¡Gracias!"].join("\n");
+}
+function rango(total,cfg){ const p=cfg.redondeo||1; return [Math.floor(total*0.9/p)*p, Math.ceil(total*1.25/p)*p]; }
+
+function clientMessage(res, cfg, opts){
+  const L=[], o1=opts.opcion1, iva=cfg.iva?" (IVA incluido)":"";
+  const esDirecto = opts.usarComision === false;
+  L.push(`¡Hola! Te paso el presupuesto${cfg.nombre?" de "+cfg.nombre:""}:`);
+  if(o1){
+    L.push("",`1️⃣ ${o1.desc}: ${ars(o1.total)}${iva}`,`2️⃣ ${res.desc}: ${ars(res.total)}${iva}`);
+    const same=JSON.stringify(o1.incluye)===JSON.stringify(res.incluye);
+    if(same){ L.push("","✅ Incluye:"); res.incluye.forEach(x=>L.push("• "+x)); }
+    else { L.push("","✅ La opción 1 incluye:"); o1.incluye.forEach(x=>L.push("• "+x)); L.push("","✅ La opción 2 incluye:"); res.incluye.forEach(x=>L.push("• "+x)); }
+  } else {
+    L.push(`🔧 ${res.desc}`);
+    if(res.incluye.length){ L.push("","✅ Incluye:"); res.incluye.forEach(x=>L.push("• "+x)); }
+  }
+  if(opts.clienteCompra) L.push("• Los materiales los comprás vos (te paso la lista)");
+  if(res.excluye.length){ L.push("","❌ No incluye:"); res.excluye.forEach(x=>L.push("• "+x)); }
+  if(res.dias) L.push("",res.dias===1?"⏱ Tiempo: lo hago en el día.":`⏱ Tiempo: unos ${res.dias} días${res.secado?" (contando el secado)":""}.`);
+  if(o1){ L.push("","Decime cuál te sirve y lo agendamos."); }
+  else if(opts.rango){ const [lo,hi]=rango(res.total,cfg);
+    L.push("",`💰 Precio estimado: entre ${ars(lo)} y ${ars(hi)}${iva}`,`El precio final te lo confirmo cuando vea el trabajo.${cfg.visita?` La visita sale ${ars(cfg.visita)} y se descuenta si lo hacemos.`:""}`); }
+  else {
+    L.push("",`💰 Total: ${ars(res.total)}${iva}`);
+    if(esDirecto && res.matCliente>0) L.push(`Para arrancar te pido ${ars(res.matCliente)} para comprar los materiales, y el resto al terminar.`);
+  }
+  if(esDirecto && cfg.alias) L.push(`Alias para la seña: ${cfg.alias}`);
+  L.push(`Precio válido por ${cfg.validez} días.`);
+  if(cfg.garantia) L.push(`Garantía: ${cfg.garantia}.`);
+  return L.join("\n");
+}
+
+function shoppingList(res){
+  return ["Lista de materiales:",...res.mats.filter(m=>m.qty>0).map(m=>`• ${fmtQ(m.qty)} ${m.unit} — ${m.name}`)].join("\n");
+}
+
+if(typeof module!=="undefined") module.exports={
+  refMercado,MERCADO_REJA,PRECIOS_FECHA,pedirMessage,rango,REF,computeObra,obraMessage,
+  JOBS,CATALOG,CATS,DEFAULT_CONFIG,compute,defaults,clientMessage,shoppingList,ars,mlUrl,getAllCatalog
+};
+</script>
+
+<script>
+/* ===== INTERFAZ MÓVIL ===== */
+const ICONS={
+ mosq:'<rect x="7" y="7" width="34" height="34" rx="2"/><path d="M7 15.5h34M7 24h34M7 32.5h34M15.5 7v34M24 7v34M32.5 7v34" stroke-width="1.6"/>',
+ reja:'<rect x="6" y="8" width="36" height="32" rx="1"/><path d="M14 8v32M22 8v32M30 8v32M38 8v32M6 18h36M6 30h36"/>',
+ spark:'<path d="M8 40l14-14"/><path d="M22 26l4-4"/><path d="M30 10v6M38 18h-6M35 12l-4 4M36 26l-4-3M24 12l3 4"/><circle cx="27" cy="21" r="2.5" fill="currentColor"/>',
+ canilla:'<path d="M10 20h18a6 6 0 0 1 6 6v4"/><path d="M10 15v10M18 12h-6M15 12v3"/><path d="M34 34c0 2-1.5 4-3 6M34 34c0 2 1.5 4 3 6" stroke-width="2.2"/><path d="M6 44h36"/>',
+ inodoro:'<path d="M14 6h14v14H14z"/><path d="M10 22h28c0 8-5 12-11 13v7H19v-7c-6-1-9-5-9-13z"/>',
+ enchufe:'<rect x="8" y="8" width="32" height="32" rx="6"/><circle cx="24" cy="24" r="9"/><circle cx="20.5" cy="24" r="1.6" fill="currentColor"/><circle cx="27.5" cy="24" r="1.6" fill="currentColor"/>',
+ estante:'<path d="M6 16h36M6 32h36"/><path d="M12 16l6 6M36 16l-6 6M12 32l6 6M36 32l-6 6"/><rect x="14" y="6" width="6" height="10"/><rect x="24" y="9" width="8" height="7"/>',
+ rodillo:'<rect x="8" y="6" width="26" height="10" rx="3"/><path d="M34 11h5v10H22v6"/><rect x="19" y="27" width="6" height="15" rx="2"/>',
+ ladrillos:'<rect x="5" y="9" width="38" height="30" rx="1"/><path d="M5 19h38M5 29h38M17 9v10M31 9v10M11 19v10M24 19v10M37 19v10M17 29v10M31 29v10"/>',
+ llave:'<path d="M30 6a9 9 0 0 0-8 12L7 33a3.5 3.5 0 0 0 5 5l15-15a9 9 0 0 0 12-8l-5 5-5-1-1-5z"/>',
+ gear:'<circle cx="24" cy="24" r="6"/><path d="M24 5v6M24 37v6M5 24h6M37 24h6M10.5 10.5l4.3 4.3M33.2 33.2l4.3 4.3M10.5 37.5l4.3-4.3M33.2 14.8l4.3-4.3"/>',
+ back:'<path d="M30 10L16 24l14 14"/>',
+ alert:'<path d="M24 6l20 36H4z"/><path d="M24 19v11M24 35v1"/>',
+ copy:'<rect x="15" y="15" width="25" height="27" rx="3"/><path d="M33 15V9a3 3 0 0 0-3-3H11a3 3 0 0 0-3 3v24a3 3 0 0 0 3 3h4"/>',
+ wa:'<path d="M8 40l2.5-8A16 16 0 1 1 17 38z"/><path d="M18 17c0 7 6 13 13 13l2-3-4-2-2 2c-2-1-4-3-5-5l2-2-2-4z" fill="currentColor" stroke="none"/>',
+ sparkle:'<path d="M24 6l3.5 10.5L38 20l-10.5 3.5L24 34l-3.5-10.5L10 20l10.5-3.5z"/><path d="M38 32l1.5 4.5L44 38l-4.5 1.5L38 44l-1.5-4.5L32 38l4.5-1.5z"/>',
+ cart:'<path d="M5 8h6l4 22h22l4-15H13"/><circle cx="18" cy="38" r="3"/><circle cx="34" cy="38" r="3"/>',
+ star:'<path d="M24 5l5.9 12 13.1 1.9-9.5 9.3 2.2 13.1L24 35.1l-11.7 6.2 2.2-13.1L5 18.9 18.1 17z"/>',
+ check:'<path d="M9 25l10 10 20-22"/>',
+ x:'<path d="M12 12l24 24M36 12L12 36"/>',
+ plus:'<path d="M24 10v28M10 24h28"/>',
+ layers:'<rect x="6" y="6" width="22" height="22" rx="3"/><rect x="20" y="20" width="22" height="22" rx="3"/>',
+ chev:'<path d="M12 18l12 12 12-12"/>',
+ resume:'<path d="M14 10v28l24-14z"/>',
+ search:'<circle cx="21" cy="21" r="13"/><path d="M31 31l10 10"/>',
+ box:'<path d="M8 16l16-8 16 8v16l-16 8-16-8z"/><path d="M8 16l16 8 16-8M24 24v16"/>',
+ ext:'<path d="M28 10h10v10M38 10L22 26"/><path d="M34 26v12H10V14h12"/>'
+};
+const svg=(k,extra="")=>`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${ICONS[k]}</svg>`;
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+
+const LS={
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+};
+
+let cfg={...DEFAULT_CONFIG,...LS.get("presu_cfg",{})};
+let prices=LS.get("presu_prices",{});
+let customMats=LS.get("presu_custom_mats",{});
+let favs=LS.get("presu_favs",[]);
+let hist=LS.get("presu_hist",[]);
+
+function applyTheme(){
+  const r=document.documentElement;
+  if(cfg.theme==="dark"||cfg.theme==="light") r.setAttribute("data-theme",cfg.theme);
+  else r.removeAttribute("data-theme");
+}
+applyTheme();
+
+const kgPropio=()=>LS.get("presu_cfg",{}).precio_kg!==undefined;
+const fmtN=x=>Math.round(x).toLocaleString("es-AR");
+
+const S={
+  screen:"home",
+  job:null,
+  step:1,
+  inputs:null,
+  hoursOv:{},
+  qtyOv:{},
+  extraMats:[],
+  cliente:"",
+  opts:{clienteCompra:false,urgente:false,viaje:null,rango:false,opcion1:null,sinMinimo:false,usarComision:true},
+  open:{materiales:true},
+  pickerOpen:false,
+  pickerQuery:"",
+  repQuery:"",
+  repCat:"todos",
+  repCart:{},
+  newRepOpen:false,
+  newRepDraft:"",
+  errs:{},
+  note:null
+};
+
+const O={rubro:"herr",lines:{},conMat:true,usarComision:true,absorberCom:false,viaje:null};
+
+const app=document.getElementById("app"), bar=document.getElementById("bar"), cartbar=document.getElementById("cartbar"), nav=document.getElementById("nav");
+const dlg=document.getElementById("confirmDlg");
+let dlgAction=null, dlgTrigger=null;
+
+function askConfirm(title, desc, okLabel, triggerEl, onOk){
+  if(!dlg || typeof dlg.showModal!=="function"){ onOk(); return; }
+  document.getElementById("dlgTitle").textContent=title;
+  document.getElementById("dlgDesc").textContent=desc;
+  const okBtn=document.getElementById("dlgOk");
+  okBtn.textContent=okLabel||"Confirmar";
+  dlgAction=onOk;
+  dlgTrigger=triggerEl||document.activeElement;
+  dlg.showModal();
+  document.getElementById("dlgCancel").focus();
+}
+function closeDlg(){
+  if(dlg && dlg.open) dlg.close();
+  if(dlgTrigger && typeof dlgTrigger.focus==="function") dlgTrigger.focus();
+  dlgAction=null; dlgTrigger=null;
+}
+if(dlg){
+  document.getElementById("dlgCancel").addEventListener("click", closeDlg);
+  document.getElementById("dlgOk").addEventListener("click",()=>{ const fn=dlgAction; closeDlg(); if(fn) fn(); });
+  dlg.addEventListener("cancel",e=>{ e.preventDefault(); closeDlg(); });
+}
+
+function toast(t){
+  const el=document.getElementById("toast");
+  el.textContent=t; el.classList.add("on");
+  clearTimeout(toast._t);
+  toast._t=setTimeout(()=>el.classList.remove("on"),2000);
+}
+
+const mlLink=(q,name)=>`<a class="mlbtn" target="_blank" rel="noopener" href="${mlUrl(q||name)}" aria-label="Ver precio de ${esc(name)} en Mercado Libre"><span class="mldot" aria-hidden="true"></span>Ver en ML ${svg("ext")}</a>`;
+
+function go(screen){ S.screen=screen; S.errs={}; render(); window.scrollTo(0,0); }
+
+function openJob(id, inputs, extraMats, initialStep){
+  S.job=JOBS.find(j=>j.id===id)||JOBS[0];
+  S.step=initialStep||1;
+  S.inputs={...defaults(S.job),...(inputs||{})};
+  S.hoursOv={};
+  S.qtyOv={};
+  S.extraMats=extraMats ? JSON.parse(JSON.stringify(extraMats)) : [];
+  S.cliente="";
+  S.opts={clienteCompra:false,urgente:false,viaje:null,rango:false,opcion1:null,sinMinimo:false,usarComision:true};
+  S.histId=null;
+  S.pickerOpen=false;
+  S.pickerQuery="";
+  S.errs={};
+  S.open={materiales:true};
+  go("job");
+}
+
+function renderCartBar(){
+  if(!cartbar) return;
+  const items = Object.entries(S.repCart).filter(([,q])=>q>0);
+  if(S.screen!=="repuestos" || !items.length){
+    cartbar.classList.add("hidden");
+    app.style.paddingBottom="";
+    return;
+  }
+  const all=getAllCatalog(customMats);
+  let totalQty=0, totalCost=0;
+  items.forEach(([k,q])=>{ totalQty+=q; totalCost+=q*(prices[k]??all[k]?.p??0); });
+  cartbar.classList.remove("hidden");
+  app.style.paddingBottom="calc(190px + env(safe-area-inset-bottom))";
+  cartbar.innerHTML=`
+    <div class="ct"><span>${totalQty} repuesto${totalQty>1?"s":""} elegido${totalQty>1?"s":""}</span><b>${ars(totalCost)}</b></div>
+    <div class="cacts">
+      <button type="button" class="clrbtn" data-act="cartclear" aria-label="Vaciar repuestos elegidos">${svg("x")}</button>
+      <button type="button" class="btn primary sm" data-act="cartquote">Armar presupuesto →</button>
+    </div>`;
+}
+
+function renderNav(){
+  renderCartBar();
+  if(S.screen==="job"){ nav.classList.add("hidden"); return; }
+  nav.classList.remove("hidden");
+  const tabs=[
+    ["home","Cotizar","llave"],
+    ["repuestos","Repuestos","box"],
+    ["obra","Por m²","ladrillos"],
+    ["precios","Mis datos","gear"]
+  ];
+  nav.innerHTML=`<div class="in">${tabs.map(([id,label,ic])=>`
+    <button type="button" class="navbtn" data-go="${id}" ${S.screen===id?'aria-current="page"':""}>
+      ${svg(ic)}<span>${label}</span>
+    </button>`).join("")}</div>`;
+}
+
+/* ---------- HOME ---------- */
+const ORDER=["reja","soldadura","pintura","mosquitero","bacha","inodoro","luz","colgar","pared","otro"];
+function renderHome(){
+  const propios=Object.keys(prices).length + Object.keys(customMats).length;
+  const draft=LS.get("presu_draft",null);
+  bar.classList.add("hidden");
+  renderNav();
+
+  app.innerHTML=`
+  <div class="top">
+    <div>
+      <h1>¿Qué trabajo es?</h1>
+      <p class="top-sub" style="margin:2px 0 0">Elegí el trabajo · calcula con y sin Clickie</p>
+    </div>
+    <button type="button" class="chipbtn" data-go="repuestos">${svg("search")} Repuestos</button>
+  </div>
+
+  ${propios<4?`<div class="banner warn">${svg("alert")}<div>Los precios de repuestos son de referencia (${PRECIOS_FECHA}). En <b>Repuestos</b> podés ver el precio de hoy en Mercado Libre con un toque y guardar lo que pagás.</div></div>`:""}
+
+  ${draft&&JOBS.find(j=>j.id===draft.jobId)?`<div class="draft">
+    <button type="button" class="item cont" data-act="draft">
+      <span class="t1">Seguir: ${esc(draft.cliente?draft.cliente+" · ":"")}${esc(draft.desc)}</span>
+      <span class="t2">Quedó sin terminar · tocá para volver</span>
+      <span class="t3">${ars(draft.total)}</span>
+    </button>
+    <button type="button" class="x" data-act="nodraft" aria-label="Descartar borrador">${svg("x")}</button>
+  </div>`:""}
+
+  ${favs.length?`<h2>${svg("star",'class="ico" style="color:var(--accent)"')} Mis frecuentes</h2>
+  <ul class="list">${favs.map((f,k)=>`<li class="draft">
+    <button type="button" class="item" data-fav="${k}">
+      <span class="t1">${esc(f.name)}</span>
+      <span class="t2">${esc((JOBS.find(j=>j.id===f.jobId)||JOBS[0]).name)} · tocá para cotizar</span>
+      <span class="t3">${svg("resume",'class="ico" style="color:var(--accent)"')}</span>
+    </button>
+    <button type="button" class="x" data-delfav="${k}" aria-label="Borrar frecuente ${esc(f.name)}">${svg("x")}</button>
+  </li>`).join("")}</ul>`:""}
+
+  <h2 class="sr-only">Lista de trabajos</h2>
+  <ul class="grid">
+    ${ORDER.map(id=>JOBS.find(j=>j.id===id)).map(j=>`<li>
+      <button type="button" class="job" data-job="${j.id}">${svg(j.icon)}<span>${esc(j.name)}</span><small>${esc(j.hint)}</small></button>
+    </li>`).join("")}
+  </ul>
+
+  ${hist.length?`<h2>Últimos presupuestos</h2>${histStats()}
+  <ul class="list">${hist.slice(0,8).map((x,k)=>`<li class="hist">
+    <button type="button" class="item" data-hist="${k}">
+      <span class="t1">${esc(x.cliente?x.cliente+" · ":"")}${esc(x.desc)}</span>
+      <span class="t2">${new Date(x.date).toLocaleDateString("es-AR",{day:"numeric",month:"short"})}
+        <span class="pill-badge ${x.usarComision===false?"dir":"clk"}">${x.usarComision===false?"Directo":"Clickie"}</span>
+      </span>
+      <span class="t3">${ars(x.total)}</span>
+    </button>
+    <button type="button" class="mk ok" data-mk="${k}" data-v="si" aria-pressed="${x.estado==="si"}" aria-label="Marcar como aceptado">${svg("check")}</button>
+    <button type="button" class="mk no" data-mk="${k}" data-v="no" aria-pressed="${x.estado==="no"}" aria-label="Marcar como rechazado">${svg("x")}</button>
+  </li>`).join("")}</ul>`:""}`;
+}
+
+/* ---------- REPUESTOS (BUSCADOR FÁCIL + MERCADO LIBRE + CARRITO) ---------- */
+function renderRepuestos(){
+  bar.classList.add("hidden");
+  renderNav();
+  const all = getAllCatalog(customMats);
+  const q = S.repQuery.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+
+  const entries = Object.entries(all).filter(([k,c])=>{
+    if(S.repCat!=="todos"){
+      if(S.repCat==="propios" && !c.customDef) return false;
+      if(S.repCat!=="propios" && c.cat!==S.repCat) return false;
+    }
+    if(!q) return true;
+    const hay = (c.n+" "+c.u+" "+c.cat).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+    return hay.includes(q);
+  });
+
+  app.innerHTML=`
+  <div class="top">
+    <div>
+      <h1>Repuestos y precios</h1>
+      <p class="top-sub" style="margin:2px 0 0">Buscá, mirá el precio hoy o sumá varios para presupuestar</p>
+    </div>
+    <button type="button" class="chipbtn" data-act="togglenewrep" aria-expanded="${S.newRepOpen}" aria-controls="newrep-panel">${svg("plus")} Nuevo</button>
+  </div>
+
+  ${S.newRepOpen?`<section id="newrep-panel" class="card" aria-label="Agregar repuesto propio">
+    <h2>Agregar repuesto o material propio</h2>
+    <div class="field">
+      <label for="nr_n">Nombre</label>
+      <input id="nr_n" class="txt" value="${esc(S.newRepDraft)}" placeholder="Ej: Cerradura reforzada, Chapa 18, Caño 1/2" aria-invalid="${!!S.errs.nr}" ${S.errs.nr?'aria-describedby="nr_err"':""}>
+      ${S.errs.nr?`<p id="nr_err" class="field-err" role="alert">${esc(S.errs.nr)}</p>`:""}
+    </div>
+    <div class="two">
+      <div class="field"><label for="nr_u">Se compra por</label><input id="nr_u" class="txt" placeholder="u, m, barra, lata" value="u"></div>
+      <div class="field"><label for="nr_p">Precio ($)</label><input id="nr_p" class="txt num" inputmode="numeric" placeholder="15.000"></div>
+    </div>
+    <div class="field"><label for="nr_c">Rubro</label>
+      <select id="nr_c" class="txt">
+        <option value="herreria">Herrería</option>
+        <option value="pintura">Pintura</option>
+        <option value="plomeria">Plomería</option>
+        <option value="electricidad">Electricidad</option>
+        <option value="albanileria">Albañilería y varios</option>
+        <option value="mosquiteros">Mosquiteros</option>
+      </select>
+    </div>
+    <div class="two">
+      <button type="button" class="btn ghost sm" data-act="togglenewrep">Cancelar</button>
+      <button type="button" class="btn primary sm" data-act="savenewrep">Guardar repuesto</button>
+    </div>
+  </section>`:""}
+
+  <div class="searchbox">
+    ${svg("search",'class="sico"')}
+    <input id="repsearch" type="search" aria-label="Buscar repuesto por nombre o rubro" placeholder="Buscar repuesto… ej: caño, látex, disco, flexible" value="${esc(S.repQuery)}">
+    ${S.repQuery?`<button type="button" class="clr" data-act="clrrep" aria-label="Borrar búsqueda">${svg("x")}</button>`:""}
+  </div>
+
+  <div class="pills" role="group" aria-label="Filtrar por rubro">
+    ${CATS.map(([id,label])=>`<button type="button" class="pill" data-repcat="${id}" aria-pressed="${S.repCat===id}">${label}</button>`).join("")}
+  </div>
+
+  <details class="card">
+    <summary><h2>¿Aumentó todo?</h2><span class="sumv">Subir % de una</span>${svg("chev",'class="chev"')}</summary>
+    <div class="inner">
+      <p class="small muted" style="margin:0">Sube todos los precios que vos cargaste (y tus repuestos propios) de una sola vez:</p>
+      <div class="two">
+        <button type="button" class="btn ghost sm" data-subir="5">+5% a mis precios</button>
+        <button type="button" class="btn ghost sm" data-subir="10">+10% a mis precios</button>
+      </div>
+    </div>
+  </details>
+
+  ${entries.length ? `<ul class="list">
+    ${entries.map(([k,c])=>{
+      const own = (k in prices) || c.customDef;
+      const p = prices[k] ?? c.p;
+      const inCart = S.repCart[k] || 0;
+      return `<li class="rep-card ${inCart?"in-cart":""}">
+        <div class="rep-top">
+          <div>
+            <div class="rep-name">${esc(c.n)}</div>
+            <div class="rep-meta">
+              <span>por ${esc(c.u)}</span>
+              <span class="${own?"tag-own":"tag-ex"}">${own?"Tu precio":"Referencia"}</span>
+            </div>
+          </div>
+          ${c.customDef?`<button type="button" style="border:none;background:none;color:var(--muted);padding:6px;min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center" data-delcustom="${k}" aria-label="Eliminar ${esc(c.n)}">${svg("x",'class="ico"')}</button>`:""}
+        </div>
+        <div class="rep-bot">
+          <div class="left">
+            <span class="small muted" aria-hidden="true">$</span>
+            <input id="rp_${k}" class="pricein ${own?"":"example"} num" data-price="${k}" inputmode="numeric" value="${fmtN(p)}" aria-label="Precio de ${esc(c.n)}">
+          </div>
+          <div class="right">
+            ${mlLink(c.q||c.n, c.n)}
+            ${inCart
+              ? `<span class="mini"><button type="button" data-cartq="${k}" data-d="-1" aria-label="Quitar uno de ${esc(c.n)}">−</button><b class="qval num">${inCart}</b><button type="button" data-cartq="${k}" data-d="1" aria-label="Sumar uno de ${esc(c.n)}">+</button></span>`
+              : `<button type="button" class="addqbtn" data-cartq="${k}" data-d="1">${svg("plus")} Sumar</button>`}
+          </div>
+        </div>
+      </li>`;
+    }).join("")}
+  </ul>` : `<div class="card">
+    <p class="muted" style="margin:0">No encontré <b>"${esc(S.repQuery)}"</b> en tu lista.</p>
+    <button type="button" class="btn primary sm" data-act="newfromsearch">${svg("plus")} Agregar "${esc(S.repQuery)}" a mis repuestos</button>
+    <a class="ov" target="_blank" rel="noopener" href="${mlUrl(S.repQuery)}">O ver precio de "${esc(S.repQuery)}" en Mercado Libre ↗</a>
+  </div>`}`;
+}
+
+/* ---------- JOB (COTIZADOR) ---------- */
+function fieldHTML(f){
+  if(f.show && !f.show(S.inputs)) return "";
+  const v=S.inputs[f.id];
+  if(f.type==="num") return `<div class="field"><label for="f_${f.id}">${esc(f.label)}</label>
+    <div class="stepper"><button type="button" data-step="${f.id}" data-d="-1" aria-label="Disminuir ${esc(f.label)}">−</button>
+    <div class="val"><input id="f_${f.id}" data-num="${f.id}" inputmode="decimal" value="${String(v).replace(".",",")}"><span class="unit">${esc(f.unit)}</span></div>
+    <button type="button" data-step="${f.id}" data-d="1" aria-label="Aumentar ${esc(f.label)}">+</button></div></div>`;
+  if(f.type==="choice") return `<div class="field"><span class="flabel">${esc(f.label)}</span><div class="opts ${f.options.length===3?"g3":""}" role="group" aria-label="${esc(f.label)}">
+    ${f.options.map(([k,l])=>`<button type="button" class="opt" data-choice="${f.id}" data-v="${k}" aria-pressed="${v===k}">${esc(l)}</button>`).join("")}</div></div>`;
+  if(f.type==="multi") return `<div class="field"><span class="flabel">${esc(f.label)} <span class="muted small">(podés marcar varias)</span></span><div class="opts" role="group" aria-label="${esc(f.label)}">
+    ${f.options.map(([k,l])=>{const on=v.includes(k);return `<button type="button" class="opt" data-multi="${f.id}" data-v="${k}" aria-pressed="${on}">${svg(on?"check":"plus",'class="ico"')}${esc(l)}</button>`;}).join("")}</div></div>`;
+  if(f.type==="yesno") return `<div class="field"><span class="flabel">${esc(f.label)}</span><div class="opts" role="group" aria-label="${esc(f.label)}">
+    <button type="button" class="opt" data-yes="${f.id}" data-v="1" aria-pressed="${v===true}" style="min-width:96px">Sí</button>
+    <button type="button" class="opt" data-yes="${f.id}" data-v="0" aria-pressed="${v===false}" style="min-width:96px">No</button></div></div>`;
+  if(f.type==="text") return `<div class="field"><label for="f_${f.id}">${esc(f.label)}</label><input class="txt" id="f_${f.id}" data-text="${f.id}" value="${esc(v)}"></div>`;
+}
+
+function drawing(){
+  const j=S.job,i=S.inputs; if(!j.drawing) return "";
+  const W=360,H=210,pad=34, A=i.ancho, B=i.alto, s=Math.min((W-2*pad)/A,(H-2*pad)/B);
+  const w=A*s,h=B*s,x=(W-w)/2,y=(H-h)/2+4;
+  let inner="";
+  if(j.drawing==="mosq"){ const g=Math.max(6,Math.min(w,h)/10); let p="";
+    for(let k=x+g;k<x+w;k+=g)p+=`M${k} ${y}V${y+h}`; for(let k=y+g;k<y+h;k+=g)p+=`M${x} ${k}H${x+w}`;
+    inner=`<path d="${p}" stroke="var(--muted)" stroke-width=".8" opacity=".6"/>`;
+    if(i.tipo==="corredizo") inner+=`<path d="M${x} ${y+h+6}H${x+w}" stroke="var(--ink)" stroke-width="3"/>`;
+    if(i.tipo==="enrollable") inner+=`<rect x="${x-4}" y="${y-12}" width="${w+8}" height="12" rx="3" fill="var(--ink)"/>`;
+  } else { const n=Math.max(0,Math.ceil(A/i.sep)-1); let p="";
+    for(let k=1;k<=n;k++){const xx=x+w*k/(n+1);p+=`M${xx} ${y}V${y+h}`;}
+    const tv=i.uso==="ventana"?2:3; for(let k=1;k<=tv;k++){const yy=y+h*k/(tv+1);p+=`M${x} ${yy}H${x+w}`;}
+    inner=`<path d="${p}" stroke="var(--ink)" stroke-width="2.4"/>`;
+    if(i.uso!=="ventana"||i.cerradura) inner+=`<circle cx="${x+w-8}" cy="${y+h/2}" r="4.5" fill="var(--accent)"/>`;
+    inner+=`<text x="${W/2}" y="${H-2}" text-anchor="middle" font-size="12" fill="var(--muted)" font-weight="700">${n} barrotes cada ${i.sep} cm</text>`;
+  }
+  return `<div class="drawing"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Dibujo ${A} por ${B} centímetros">
+    <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="var(--card)" stroke="var(--ink)" stroke-width="4" rx="2"/>${inner}
+    <g fill="var(--accent)" font-weight="800" font-size="15" font-family="Archivo, sans-serif">
+    <text x="${W/2}" y="${y-(j.drawing==="mosq"&&i.tipo==="enrollable"?18:8)}" text-anchor="middle">${A} cm</text>
+    <text x="${x-8}" y="${y+h/2}" text-anchor="end" dominant-baseline="middle">${B} cm</text></g></svg></div>`;
+}
+
+function sec(key,title,sumv,inner){
+  return `<details class="card" data-sec="${key}" ${S.open[key]?"open":""}><summary><h2>${title}</h2><span class="sumv">${sumv}</span>${svg("chev",'class="chev"')}</summary><div class="inner">${inner}</div></details>`;
+}
+
+function pickerHTML(){
+  const all = getAllCatalog(customMats);
+  const q = S.pickerQuery.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+  const list = Object.entries(all).filter(([k,c])=>{
+    if(!q) return true;
+    return (c.n+" "+c.cat).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").includes(q);
+  }).slice(0,25);
+
+  return `<div id="mat-picker" class="picker">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <b>Agregar repuesto o material</b>
+      <button type="button" class="ov" data-act="closepicker">Cerrar</button>
+    </div>
+    <input id="pickq" class="txt" aria-label="Buscar repuesto para agregar" placeholder="Buscar en tu lista… ej: cerradura, disco, cable" value="${esc(S.pickerQuery)}">
+    <ul class="picklist">
+      ${list.map(([k,c])=>`<li><button type="button" class="pickitem" data-pickmat="${k}">
+        <span><b>${esc(c.n)}</b><small>por ${esc(c.u)}</small></span>
+        <span class="p">${ars(prices[k]??c.p)} +</span>
+      </button></li>`).join("")}
+    </ul>
+    <div style="border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column;gap:8px">
+      <span class="small muted"><b>¿No está en la lista?</b> Agregalo rápido acá:</span>
+      <input id="ex_n" class="txt" aria-label="Nombre del repuesto nuevo" placeholder="Nombre del repuesto" aria-invalid="${!!S.errs.ex}" ${S.errs.ex?'aria-describedby="ex_err"':""}>
+      ${S.errs.ex?`<p id="ex_err" class="field-err" role="alert">${esc(S.errs.ex)}</p>`:""}
+      <div class="two">
+        <input id="ex_p" class="txt num" inputmode="numeric" aria-label="Precio del repuesto nuevo" placeholder="Precio ($)">
+        <button type="button" class="btn primary sm" data-act="addcustomex">${svg("plus")} Sumar</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderJob(){
+  renderNav();
+  const j=S.job;
+  const res=compute(j,S.inputs,cfg,prices,S.hoursOv,S.opts,S.extraMats,S.qtyOv,customMats);
+  S.res=res;
+  const mk=refMercado(j,S.inputs,res.total);
+  const nEj=res.mats.filter(m=>m.example&&m.qty>0).length;
+  const msg=clientMessage(res,cfg,S.opts);
+  const wa="https://wa.me/?text="+encodeURIComponent(msg);
+  const tick=on=>svg(on?"check":"plus",'class="ico"');
+  const esClickie = res.usarComision;
+  const st = S.step || 1;
+
+  const trabajo=`<ul class="rows">${res.tasks.map((t,k)=>`<li class="row">
+      <span class="name">${esc(t.name)}${t.manual?`<br><button type="button" class="ov" data-hreset="${esc(t.name)}">ajustado · volver a ${fmtQ(t.auto)} h</button>`:""}</span>
+      <span class="mini">
+        <button type="button" data-h="${k}" data-d="-0.5" aria-label="Restar media hora a ${esc(t.name)}">−</button>
+        <b class="qval num">${fmtQ(t.hours)} h</b>
+        <button type="button" data-h="${k}" data-d="0.5" aria-label="Sumar media hora a ${esc(t.name)}">+</button>
+      </span>
+    </li>`).join("")}</ul>
+    <div class="opts"><button type="button" class="opt" data-opt="urgente" aria-pressed="${S.opts.urgente}">${tick(S.opts.urgente)}Urgente o finde (+${cfg.urgencia}%)</button></div>
+    <div class="row"><label class="name" for="viajein">Viaje / traslado</label><input id="viajein" class="pricein num" data-viaje inputmode="numeric" value="${fmtN(res.viaje)}"></div>`;
+
+  const materiales=`
+    <div class="opts"><button type="button" class="opt" data-opt="clienteCompra" aria-pressed="${S.opts.clienteCompra}">${tick(S.opts.clienteCompra)}Los materiales los compra el cliente</button></div>
+    ${res.mats.length?`<ul class="rows">${res.mats.map(m=>`<li class="row ${m.qty===0?"zero":""}">
+      <span class="name">${esc(m.name)}</span>
+      <span class="amt">${ars(m.cost)}</span>
+      <span class="sub">
+        <span class="mini">
+          ${m.extraIdx!==undefined
+            ? `<button type="button" data-exq="${m.extraIdx}" data-d="-1" aria-label="Restar ${esc(m.name)}">−</button><b class="qval num">${fmtQ(m.qty)}</b><button type="button" data-exq="${m.extraIdx}" data-d="1" aria-label="Sumar ${esc(m.name)}">+</button><button type="button" class="del" data-exdel="${m.extraIdx}" aria-label="Quitar ${esc(m.name)}">${svg("x",'style="width:16px;height:16px"')}</button>`
+            : m.key
+              ? `<button type="button" data-mq="${m.key}" data-d="-1" aria-label="Restar ${esc(m.name)}">−</button><b class="qval num">${fmtQ(m.qty)}</b><button type="button" data-mq="${m.key}" data-d="1" aria-label="Sumar ${esc(m.name)}">+</button>`
+              : `<b class="num">${fmtQ(m.qty)}</b>`}
+        </span>
+        <span>${esc(m.unit)}${m.nota?" · "+esc(m.nota):""}</span>
+      </span>
+      <span class="sub">
+        <span>Precio c/u $</span>
+        ${m.key
+          ? `<input id="mp_${m.key}" class="pricein ${m.example?"example":""} num" data-price="${m.key}" inputmode="numeric" value="${fmtN(m.price)}" aria-label="Precio de ${esc(m.name)}">`
+          : m.extraIdx!==undefined
+            ? `<input id="ep_${m.extraIdx}" class="pricein num" data-exprice="${m.extraIdx}" inputmode="numeric" value="${fmtN(m.price)}" aria-label="Precio de ${esc(m.name)}">`
+            : `<b class="num">${ars(m.price)}</b>`}
+        ${mlLink(m.q||m.name, m.name)}
+      </span>
+    </li>`).join("")}</ul>
+    <div class="sum"><span>Materiales (tu costo)</span><span class="num">${ars(res.matCost)}</span></div>
+    ${nEj?`<p class="small muted" style="margin:0">${nEj} precio${nEj>1?"s":""} en amarillo son de referencia. Tocá <b>Ver en ML</b> para chequear hoy y escribilo acá: queda guardado.</p>`:""}`
+    :`<p class="muted" style="margin:0">Todavía no hay repuestos cargados.</p>`}
+    ${S.pickerOpen ? pickerHTML() : `<button type="button" class="btn ghost sm" data-act="openpicker" aria-expanded="false" aria-controls="mat-picker">${svg("plus")} Agregar otro repuesto o material</button>`}
+    ${res.mats.some(m=>m.qty>0)?`<button type="button" class="btn ghost sm" data-act="lista">${svg("cart")} Copiar lista para la ferretería</button>`:""}`;
+
+  const opciones=`${S.opts.opcion1?`<div class="o1"><span>Opción 1: ${esc(S.opts.opcion1.desc)} · ${ars(S.opts.opcion1.total)}</span><button type="button" data-act="quitaro1">Quitar</button></div>
+      <p class="small muted" style="margin:0">Lo de arriba es la opción 2. Cambiá lo que quieras y el mensaje manda las dos.</p>`
+    :`<button type="button" class="btn ghost sm" data-act="opcion1">${svg("layers")} Mandar 2 opciones (ej: simple y reforzada)</button>
+      <button type="button" class="opt" data-opt="rango" aria-pressed="${S.opts.rango}">${tick(S.opts.rango)}No lo vi todavía: mandar un rango de precio</button>`}
+    ${res.bajoMinimo?`<button type="button" class="opt" data-opt="sinMinimo" aria-pressed="${!!S.opts.sinMinimo}">${tick(!!S.opts.sinMinimo)}No cobrar el mínimo esta vez (trabajo chico)</button>`:""}
+    <button type="button" class="btn ghost sm" data-act="fav">${svg("star")} Guardar como trabajo frecuente</button>
+    <input class="txt hidden" id="favname" aria-label="Nombre para guardar como frecuente" placeholder="Nombre, ej: Reja ventana común">`;
+
+  let bodyHTML = "";
+  if(st === 1){
+    bodyHTML = `
+    <div class="askbar">
+      <b>¿Faltan medidas?</b>
+      <div class="askacts">
+        <a target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(pedirMessage(j,cfg))}">${svg("wa")} Pedir</a>
+        <button type="button" data-act="pedircopiar">${svg("copy")} Copiar</button>
+      </div>
+    </div>
+    <section class="card" id="fields" aria-label="Datos del trabajo">
+      <h2 class="sr-only">Medidas y detalles</h2>
+      ${j.presets?`<div class="field"><span class="flabel small muted">Medidas rápidas</span><div class="presets">${j.presets.map((p,idx)=>`<button type="button" class="preset" data-preset="${idx}">${esc(p.label)}</button>`).join("")}</div></div>`:""}
+      ${drawing()}
+      ${j.fields.map(fieldHTML).join("")}
+    </section>
+    <div class="two">
+      <button type="button" class="btn ghost" data-stepgo="2">Revisar repuestos</button>
+      <button type="button" class="btn primary" data-stepgo="3">Ver precio y enviar →</button>
+    </div>`;
+  } else if(st === 2){
+    bodyHTML = `
+    <section class="card" aria-label="Materiales y repuestos">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+        <h2>Repuestos y materiales</h2>
+        <span class="small muted num">${ars(res.matCost)}</span>
+      </div>
+      ${materiales}
+    </section>
+    <section class="card" aria-label="Horas y viaje">
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
+        <h2>Horas y viaje</h2>
+        <span class="small muted num">${fmtQ(res.horas)} h</span>
+      </div>
+      ${trabajo}
+    </section>
+    <button type="button" class="btn primary" data-stepgo="3">Siguiente: ver precio y enviar →</button>`;
+  } else {
+    bodyHTML = `
+    <section class="card total-card" id="result" aria-label="Resumen de precio">
+      <h2 class="sr-only">Precio con y sin comisión</h2>
+      <span class="small" style="opacity:.85;font-weight:700">Tocá cómo lo vas a pasar (calcula solo):</span>
+      <div class="com-switch" role="group" aria-label="Elegir con o sin comisión de Clickie">
+        <button type="button" class="com-box" data-com="1" aria-pressed="${esClickie}">
+          <span class="tag">Con Clickie (+${cfg.comision}%) <span class="dot"></span></span>
+          <span class="val">${ars(res.conCom.total)}</span>
+          <span class="sub">Clickie: ${ars(res.conCom.comision)}</span>
+        </button>
+        <button type="button" class="com-box" data-com="0" aria-pressed="${!esClickie}">
+          <span class="tag">Sin comisión <span class="dot"></span></span>
+          <span class="val">${ars(res.sinCom.total)}</span>
+          <span class="sub">Particular / WhatsApp</span>
+        </button>
+      </div>
+
+      <div class="pocket">
+        <div>
+          <span>Te queda limpio</span>
+          <small>${fmtQ(res.horas)} h · ~${ars(res.porHora)}/h${res.viaje?` (más viaje)`:""}</small>
+        </div>
+        <span class="v">${ars(res.bolsillo)}</span>
+      </div>
+
+      <div class="desglose">
+        <span class="dl">Mano de obra (${fmtQ(res.horas)} h)</span><span class="dv">${ars(res.mo)}</span>
+        ${res.matCost>0?`<span class="dl">Repuestos / materiales${S.opts.clienteCompra?" (paga cliente)":""}</span><span class="dv">${S.opts.clienteCompra?"$ 0":ars(res.matCobrado)}</span>`:""}
+        ${res.viaje>0?`<span class="dl">Viaje / traslado</span><span class="dv">${ars(res.viaje)}</span>`:""}
+        <span class="dl">Comisión Clickie (${esClickie?cfg.comision+"%":"sin comisión"})</span><span class="dv">${esClickie?ars(res.comision):"$ 0"}</span>
+        ${cfg.iva?`<span class="dl">IVA (21%)</span><span class="dv">${ars(res.iva)}</span>`:""}
+      </div>
+
+      ${mk?`<div class="kg">Mercado (reja ventana, ${PRECIOS_FECHA}): ${ars(mk.lo)} a ${ars(mk.hi)} · ${mk.estado==="ok"?"estás en precio":mk.estado==="bajo"?"estás barato: revisá no regalar trabajo":"estás por arriba del promedio"}</div>`:""}
+      ${res.kg?`<div class="kg">≈ ${fmtQ(Math.round(res.kg*10)/10)} kg de hierro · por kilo serían ${ars(Math.ceil(res.kg*cfg.precio_kg/(cfg.redondeo||1))*(cfg.redondeo||1))}${kgPropio()?"":" (ref.)"}</div>`:""}
+    </section>
+
+    ${res.warns.map(w=>`<div class="banner warn">${svg("alert")}<div>${esc(w)}</div></div>`).join("")}
+
+    <section class="card" id="mensaje">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
+        <h2>Mensaje listo</h2>
+        <span class="pill-badge ${esClickie?"clk":"dir"}">${esClickie?"Para Clickie":"Particular"}</span>
+      </div>
+      <div class="msg" id="msgtxt">${esc(msg)}</div>
+      <div class="actions">
+        ${esClickie
+          ? `<button type="button" class="btn primary" data-act="copiar">${svg("copy")} Copiar para pegar en Clickie</button>
+             <div class="two">
+               <button type="button" class="btn ghost" data-act="copiarnum">${svg("copy")} Solo el monto</button>
+               <a class="btn wa" data-act="wa" target="_blank" rel="noopener" href="${wa}">${svg("wa")} WhatsApp</a>
+             </div>`
+          : `<a class="btn wa" data-act="wa" target="_blank" rel="noopener" href="${wa}">${svg("wa")} Mandar por WhatsApp</a>
+             <button type="button" class="btn primary" data-act="copiar">${svg("copy")} Copiar presupuesto</button>`}
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="field"><label for="clientein" class="small muted">Anotar cliente (opcional, queda en tu historial)</label>
+        <input id="clientein" class="txt" data-cliente placeholder="Ej: Marta - Depto 3B" value="${esc(S.cliente)}">
+      </div>
+    </section>
+
+    ${sec("opciones","Más opciones",S.opts.opcion1?"2 opciones":S.opts.rango?"rango":S.opts.sinMinimo?"sin mínimo":"ver",opciones)}`;
+  }
+
+  app.innerHTML=`
+  <div class="top">
+    <button type="button" class="back" data-act="home">${svg("back",'style="width:22px;height:22px"')} Inicio</button>
+    <span class="small muted num">${fmtQ(res.horas)} h · ${res.mats.filter(m=>m.qty>0).length} mat.</span>
+  </div>
+  <h1>${esc(j.name)}</h1>
+
+  <div class="steps" role="tablist" aria-label="Pasos del presupuesto">
+    <button type="button" class="stepbtn" role="tab" data-stepgo="1" aria-selected="${st===1}"><span class="snum">1</span>Medidas</button>
+    <button type="button" class="stepbtn" role="tab" data-stepgo="2" aria-selected="${st===2}"><span class="snum">2</span>Repuestos${nEj?'<span class="sdot" title="Hay precios de referencia"></span>':""}</button>
+    <button type="button" class="stepbtn" role="tab" data-stepgo="3" aria-selected="${st===3}"><span class="snum">3</span>Enviar</button>
+  </div>
+
+  ${S.note?`<div class="banner good">${svg("sparkle")}<div>${esc(S.note)}</div></div>`:""}
+  ${bodyHTML}`;
+
+  bar.classList.remove("hidden");
+  bar.innerHTML=`<div class="in">
+    <div>
+      <button type="button" class="modepill ${esClickie?"clk":"dir"}" data-act="flipcom" aria-label="Cambiar entre Clickie y Directo sin comisión">
+        ${esClickie?`Clickie +${cfg.comision}% ⇄`:"Directo 0% ⇄"}
+      </button>
+      <div class="t">${ars(res.total)}</div>
+    </div>
+    <div class="acts">
+      ${st < 3
+        ? `<button type="button" class="btn primary" data-stepgo="${st+1}">${st===1?"Repuestos →":"Ver y enviar →"}</button>`
+        : esClickie
+          ? `<a class="iconbtn" data-act="wa" target="_blank" rel="noopener" href="${wa}" aria-label="Mandar por WhatsApp">${svg("wa")}</a>
+             <button type="button" class="btn primary" data-act="copiar">${svg("copy")} Copiar</button>`
+          : `<button type="button" class="iconbtn" data-act="copiar" aria-label="Copiar presupuesto">${svg("copy")}</button>
+             <a class="btn wa" data-act="wa" target="_blank" rel="noopener" href="${wa}">${svg("wa")} Mandar</a>`}
+    </div>
+  </div>`;
+
+  LS.set("presu_draft",{
+    jobId:j.id, inputs:S.inputs, hoursOv:S.hoursOv, qtyOv:S.qtyOv, extraMats:S.extraMats, cliente:S.cliente,
+    opts:{...S.opts,opcion1:null}, desc:res.desc, total:res.total
+  });
+}
+
+/* ---------- OBRA (PRECIOS POR M² / UNIDAD) ---------- */
+function renderObra(){
+  const res=computeObra(O.lines,cfg,prices,{viaje:O.viaje,usarComision:O.usarComision,absorberCom:O.absorberCom},customMats);
+  S.obraRes=res;
+  const cnt=r=>REF.filter(x=>x.r===r&&O.lines[x.id]&&O.lines[x.id].qty).length;
+  const items=REF.filter(x=>x.r===O.rubro);
+  const rubroLabel=(RUBROS.find(([k])=>k===O.rubro)||["","Trabajos"])[1];
+  const usados=[...new Set(REF.map(x=>x.s))];
+  const esClickie = res.usarCom;
+  renderNav();
+
+  app.innerHTML=`
+  <h1>Precios por m² o unidad</h1>
+  <p class="muted small" style="margin:0">Referencias de mercado (CABA/GBA). Elegí barato, medio o caro y la cantidad. Podés mezclar rubros.</p>
+
+  <div class="tabs" role="group" aria-label="Elegir rubro">${RUBROS.map(([k,l,ic])=>`<button type="button" class="tab" data-rubro="${k}" aria-pressed="${O.rubro===k}">${svg(ic)}${l}${cnt(k)?`<span class="cnt">${cnt(k)}</span>`:""}</button>`).join("")}</div>
+
+  <section class="card" aria-label="${esc(rubroLabel)}">
+    <h2>${esc(rubroLabel)}</h2>
+    ${items.map(it=>{
+      const L=O.lines[it.id]||{qty:0,lvl:"medio"};
+      const src=SRC[it.s];
+      return `<div class="ref ${L.qty?"on":""}">
+        <div class="head"><h3>${esc(it.n)}</h3>${L.qty?`<b class="num">${ars(refPrice(it,L.lvl)*L.qty)}</b>`:""}</div>
+        <div class="range">Mercado: ${it.desde?"desde "+ars(it.lo):ars(it.lo)+" a "+ars(it.hi)} / ${esc(it.u)} · <a href="${src.url}" target="_blank" rel="noopener">${esc(src.n)}</a>${it.nota?" · "+esc(it.nota):""}</div>
+        ${it.desde?"":`<div class="lvl" role="group" aria-label="Nivel de precio para ${esc(it.n)}">${Object.entries(NIVEL).map(([k,[l]])=>`<button type="button" class="opt" data-lvl="${it.id}" data-v="${k}" aria-pressed="${L.lvl===k}">${l}<small>${ars(refPrice(it,k))}</small></button>`).join("")}</div>`}
+        <div class="stepper sm">
+          <button type="button" data-oq="${it.id}" data-d="-1" aria-label="Restar ${esc(it.n)}">−</button>
+          <div class="val"><input id="oq_${it.id}" data-oqin="${it.id}" inputmode="decimal" aria-label="Cantidad de ${esc(it.n)}" value="${String(L.qty).replace(".",",")}"><span class="unit">${esc(it.u)}</span></div>
+          <button type="button" data-oq="${it.id}" data-d="1" aria-label="Sumar ${esc(it.n)}">+</button>
+        </div>
+      </div>`;}).join("")}
+  </section>
+
+  ${res.rows.length?`
+  <section class="card total-card" aria-label="Total de obra">
+    <span class="small" style="opacity:.85;font-weight:700">¿Con o sin comisión de Clickie?</span>
+    <div class="com-switch" role="group" aria-label="Elegir con o sin comisión de Clickie">
+      <button type="button" class="com-box" data-ocom="1" aria-pressed="${esClickie}">
+        <span class="tag">Con Clickie (${cfg.comision}%) <span class="dot"></span></span>
+        <span class="val">${ars(O.conMat?res.conCom.conMat:res.conCom.sinMat)}</span>
+        <span class="sub">${O.absorberCom?"Comisión absorbida":"Sumada al precio"}</span>
+      </button>
+      <button type="button" class="com-box" data-ocom="0" aria-pressed="${!esClickie}">
+        <span class="tag">Sin comisión <span class="dot"></span></span>
+        <span class="val">${ars(O.conMat?res.sinCom.conMat:res.sinCom.sinMat)}</span>
+        <span class="sub">Particular / WhatsApp</span>
+      </button>
+    </div>
+
+    <div class="duo">
+      <div class="box"><span class="l">Solo mano de obra</span><span class="v">${ars(res.sinMat)}</span><span class="p">Te quedan ${ars(res.bolsilloSin)}</span></div>
+      <div class="box"><span class="l">Con materiales</span><span class="v">${ars(res.conMat)}</span><span class="p">Te quedan ${ars(res.bolsilloCon)}</span></div>
+    </div>
+    <span class="small" style="opacity:.82">Incluye ${ars(res.viaje)} de viaje.${esClickie?` Clickie (${cfg.comision}%): ${ars(O.conMat?res.comCon:res.comSin)}.`:" Sin comisión."}${res.minAplicado?` Se aplicó mínimo de ${ars(cfg.minimo)}.`:""}</span>
+  </section>
+
+  <section class="card">
+    <h2>Ajustes</h2>
+    ${esClickie?`<div class="opts"><button type="button" class="opt" data-oopt="absorberCom" aria-pressed="${O.absorberCom}">${svg(O.absorberCom?"check":"plus",'class="ico"')}Absorber la comisión de Clickie (no sumarla al cliente)</button></div>`:""}
+    <div class="row"><label class="name" for="oviajein">Viaje</label><input id="oviajein" class="pricein num" data-oviaje inputmode="numeric" value="${fmtN(res.viaje)}"></div>
+  </section>
+
+  <section class="card">
+    <h2>Materiales estimados</h2>
+    ${res.mats.length?`<ul class="rows">${res.mats.map(m=>`<li class="row">
+      <span class="name">${fmtQ(m.qty)} × ${esc(m.name)}</span>
+      <span class="amt">${ars(m.cost)}</span>
+      <span class="sub">${esc(m.unit)} · $ <input id="op_${m.key}" class="pricein ${m.example?"example":""} num" data-price="${m.key}" inputmode="numeric" value="${fmtN(m.price)}" aria-label="Precio de ${esc(m.name)}">
+        ${mlLink(m.q||m.name, m.name)}
+      </span>
+    </li>`).join("")}</ul>
+    <div class="sum"><span>Materiales (costo)</span><span class="num">${ars(res.matCost)}</span></div>
+    <button type="button" class="btn ghost sm" data-act="olista">${svg("cart")} Copiar lista para el corralón</button>`
+    :`<p class="muted" style="margin:0">Estos trabajos no suman materiales.</p>`}
+  </section>
+
+  <section class="card" id="mensaje">
+    <h2>Mensaje para el cliente</h2>
+    <div class="opts" role="group" aria-label="Incluir materiales en el mensaje"><button type="button" class="opt" data-omat="1" aria-pressed="${O.conMat}">Con materiales</button><button type="button" class="opt" data-omat="0" aria-pressed="${!O.conMat}">Solo mano de obra</button></div>
+    <div class="msg">${esc(obraMessage(res,cfg,O.conMat))}</div>
+    <div class="actions">
+      ${esClickie
+        ? `<button type="button" class="btn primary" data-act="ocopiar">${svg("copy")} Copiar para pegar en Clickie</button>
+           <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(obraMessage(res,cfg,O.conMat))}">${svg("wa")} Mandar por WhatsApp</a>`
+        : `<a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(obraMessage(res,cfg,O.conMat))}">${svg("wa")} Mandar por WhatsApp</a>
+           <button type="button" class="btn primary" data-act="ocopiar">${svg("copy")} Copiar mensaje</button>`}
+    </div>
+  </section>`:`<div class="banner good">${svg("sparkle")}<div>Tocá <b>+</b> en los trabajos que lleva la obra y abajo aparece el precio con y sin comisión y con/sin materiales.</div></div>`}
+
+  <div class="srcs"><b>Fuentes de referencia</b>
+    ${usados.map(k=>`<a href="${SRC[k].url}" target="_blank" rel="noopener">${esc(SRC[k].n)} (${esc(SRC[k].f)})</a>`).join("")}
+  </div>`;
+  bar.classList.add("hidden");
+}
+
+/* ---------- MIS DATOS / AJUSTES ---------- */
+const BASIC_CFG = ["valor_hora","viaje","minimo"];
+function renderPrecios(){
+  bar.classList.add("hidden");
+  renderNav();
+  const advKeys = Object.keys(CONFIG_HINTS).filter(k=>!BASIC_CFG.includes(k));
+  const val=k=>MONEY_KEYS.includes(k)?fmtN(cfg[k]):String(cfg[k]).replace(".",",");
+  const backupStr = "PRESU:"+btoa(unescape(encodeURIComponent(JSON.stringify({cfg,prices,customMats,favs,hist}))));
+  const rowCfg=k=>`<div class="setrow"><label for="c_${k}">${CONFIG_HINTS[k][0]}<span class="hint">${CONFIG_HINTS[k][1]}</span></label>
+    <input id="c_${k}" data-cfg="${k}" inputmode="decimal" class="num" value="${val(k)}"></div>`;
+
+  app.innerHTML=`
+  <h1>Mis datos y tarifas</h1>
+  <p class="muted small" style="margin:0">Con estos 4 números ya alcanza para presupuestar. Todo queda guardado en este celular.</p>
+
+  <section class="card">
+    <h2>Lo esencial</h2>
+    <div class="field">
+      <span class="flabel">Comisión habitual de Clickie</span>
+      <div class="opts g3" role="group" aria-label="Comisión habitual de Clickie">
+        <button type="button" class="opt" data-setcom="12" aria-pressed="${cfg.comision===12}">12% Pro</button>
+        <button type="button" class="opt" data-setcom="15" aria-pressed="${cfg.comision===15}">15% Común</button>
+        <button type="button" class="opt" data-setcom="20" aria-pressed="${cfg.comision===20}">20% Extra</button>
+      </div>
+    </div>
+    <div>${BASIC_CFG.map(rowCfg).join("")}</div>
+  </section>
+
+  <section class="card"><h2>Tu perfil y pantalla</h2>
+    <div>
+      <div class="setrow full"><label for="c_nombre">Tu nombre (sale en el mensaje)</label><input id="c_nombre" data-cfgtxt="nombre" value="${esc(cfg.nombre)}" placeholder="Ej: Carlos"></div>
+      <div class="setrow full"><label for="c_alias">Tu alias para cobrar señas (solo sale en Particular)</label><input id="c_alias" data-cfgtxt="alias" value="${esc(cfg.alias)}" placeholder="Ej: carlos.herreria.mp"></div>
+      <div class="setrow full"><label for="c_garantia">Garantía que das</label><input id="c_garantia" data-cfgtxt="garantia" value="${esc(cfg.garantia)}"></div>
+      <div class="setrow full">
+        <span>Colores de pantalla</span>
+        <div class="opts g3" role="group" aria-label="Tema de pantalla">
+          <button type="button" class="opt sm" data-theme="auto" aria-pressed="${cfg.theme==="auto"}">Auto</button>
+          <button type="button" class="opt sm" data-theme="light" aria-pressed="${cfg.theme==="light"}">Claro</button>
+          <button type="button" class="opt sm" data-theme="dark" aria-pressed="${cfg.theme==="dark"}">Oscuro</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <details class="card">
+    <summary><h2>Ajustes avanzados</h2><span class="sumv">Recargos, IVA y más</span>${svg("chev",'class="chev"')}</summary>
+    <div class="inner">
+      <div>${advKeys.map(rowCfg).join("")}
+        <div class="setrow"><span>¿Facturás con IVA?<span class="hint">Resp. inscripto suma 21%. Monotributo: no.</span></span>
+          <div class="opts" role="group" aria-label="Facturación con IVA"><button type="button" class="opt sm" data-iva="1" aria-pressed="${cfg.iva}">Sí</button><button type="button" class="opt sm" data-iva="0" aria-pressed="${!cfg.iva}">No</button></div>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <section class="card"><h2>Usar como app en el celular</h2>
+    <p class="small muted" style="margin:0">Para tenerla siempre a mano sin buscar el archivo: tocá el menú del navegador (<b>⋮</b> en Chrome o <b>Compartir</b> en iPhone) y elegí <b>"Agregar a la pantalla principal"</b>.</p>
+  </section>
+
+  <section class="card"><h2>Copia de seguridad</h2>
+    <p class="small muted" style="margin:0">Si cambiás de celular, mandá esta copia a tu propio chat de WhatsApp para no perder tus precios.</p>
+    <div class="actions">
+      <a class="btn wa sm" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(backupStr)}">${svg("wa")} Guardar copia en mi WhatsApp</a>
+      <button type="button" class="btn ghost sm" data-act="backup">${svg("copy")} Copiar texto de seguridad</button>
+    </div>
+    <label class="flabel small" for="restoretxt">Recuperar desde una copia</label>
+    <textarea id="restoretxt" placeholder="Pegá acá el texto que empieza con PRESU:" aria-invalid="${!!S.errs.restore}" ${S.errs.restore?'aria-describedby="restore_err"':""}></textarea>
+    ${S.errs.restore?`<p id="restore_err" class="field-err" role="alert">${esc(S.errs.restore)}</p>`:""}
+    <button type="button" class="btn ghost sm" data-act="restore">Recuperar mis datos</button>
+  </section>`;
+}
+
+function rerenderObra(){
+  const id=document.activeElement&&document.activeElement.id;
+  const pos=window.scrollY;
+  renderObra();
+  window.scrollTo(0,pos);
+  if(id){const el=document.getElementById(id); if(el&&el.tagName==="INPUT") el.focus();}
+}
+function obraLine(id){ return O.lines[id]||(O.lines[id]={qty:0,lvl:"medio"}); }
+
+function histStats(){
+  const m=hist.filter(x=>x.estado); if(m.length<3) return "";
+  const si=m.filter(x=>x.estado==="si").length;
+  return `<p class="small muted" style="margin:0">Te aceptaron ${si} de ${m.length} (${Math.round(si/m.length*100)}%).${si/m.length<0.3?" Si te rechazan mucho, probá revisar tus precios.":""}</p>`;
+}
+
+function saveHist(){
+  const r=S.res;
+  const e={
+    id:S.histId||Date.now(), date:Date.now(), jobId:S.job.id,
+    inputs:JSON.parse(JSON.stringify(S.inputs)),
+    hoursOv:{...S.hoursOv}, qtyOv:{...S.qtyOv},
+    extraMats:JSON.parse(JSON.stringify(S.extraMats)),
+    cliente:S.cliente,
+    opts:{...S.opts,opcion1:null},
+    usarComision:r.usarComision,
+    total:r.total, desc:r.desc, estado:null
+  };
+  const k=hist.findIndex(x=>x.id===e.id);
+  if(k>=0){e.estado=hist[k].estado; hist.splice(k,1);}
+  hist.unshift(e); hist=hist.slice(0,30); S.histId=e.id;
+  LS.set("presu_hist",hist);
+  try{localStorage.removeItem("presu_draft");}catch(x){}
+}
+
+function reopen(x){
+  openJob(x.jobId,x.inputs,x.extraMats||[],3);
+  S.hoursOv={...(x.hoursOv||{})};
+  S.qtyOv={...(x.qtyOv||{})};
+  S.cliente=x.cliente||"";
+  S.opts={clienteCompra:false,urgente:false,viaje:null,rango:false,opcion1:null,sinMinimo:false,usarComision:true,...(x.opts||{})};
+  render();
+}
+
+function render(){
+  if(S.screen==="home") renderHome();
+  else if(S.screen==="repuestos") renderRepuestos();
+  else if(S.screen==="job") renderJob();
+  else if(S.screen==="obra") renderObra();
+  else renderPrecios();
+}
+
+function rerenderJobKeepFocus(){
+  const id=document.activeElement&&document.activeElement.id;
+  const pos=window.scrollY;
+  renderJob();
+  window.scrollTo(0,pos);
+  if(id){
+    const el=document.getElementById(id);
+    if(el&&el.tagName==="INPUT"){
+      el.focus();
+      try{const L=el.value.length;el.setSelectionRange(L,L);}catch(e){}
+    }
+  }
+}
+
+const num=s=>{const v=parseFloat(String(s).replace(/\./g,"").replace(",","."));return isNaN(v)?null:v;};
+const numDec=s=>{const v=parseFloat(String(s).replace(",","."));return isNaN(v)?null:v;};
+
+function markCopied(btn){
+  if(!btn || btn.classList.contains("iconbtn")) return;
+  const prev=btn.innerHTML;
+  btn.classList.add("copied");
+  btn.innerHTML=`${svg("check")} ¡Copiado!`;
+  clearTimeout(btn._ct);
+  btn._ct=setTimeout(()=>{ btn.classList.remove("copied"); btn.innerHTML=prev; },2200);
+}
+
+async function copy(text,ok,btn){
+  try{ await navigator.clipboard.writeText(text); toast(ok); markCopied(btn); }
+  catch(e){
+    const ta=document.createElement("textarea"); ta.value=text; ta.style.position="fixed"; ta.style.opacity="0";
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand("copy"); toast(ok); markCopied(btn); }catch(e2){ toast("Mantené apretado el texto para copiarlo"); }
+    document.body.removeChild(ta);
+  }
+}
+
+/* ---------- EVENTOS ---------- */
+nav.addEventListener("click",e=>{
+  const b=e.target.closest("[data-go]"); if(!b) return;
+  go(b.dataset.go);
+});
+
+if(cartbar){
+  cartbar.addEventListener("click",e=>{
+    const b=e.target.closest("[data-act]"); if(!b) return;
+    const a=b.dataset.act;
+    if(a==="cartclear"){ S.repCart={}; toast("Selección borrada"); return renderRepuestos(); }
+    if(a==="cartquote"){
+      const list=Object.entries(S.repCart).filter(([,q])=>q>0).map(([key,qty])=>({key,qty}));
+      if(!list.length) return;
+      const all=getAllCatalog(customMats);
+      const title=list.length===1 ? all[list[0].key]?.n : `Trabajo con ${list.length} repuestos`;
+      S.repCart={};
+      S.note=`Cargaste ${list.length} repuesto${list.length>1?"s":""}. Ajustá las horas y pasá al paso 3 para enviar.`;
+      return openJob("otro",{texto:title||"Trabajo a medida",horas:2,mat:0},list,1);
+    }
+  });
+}
+
+app.addEventListener("click",e=>{
+  const b=e.target.closest("button,[data-act],[data-go]"); if(!b) return;
+  const d=b.dataset;
+
+  if(d.go) return go(d.go);
+  if(d.job){ S.note=null; return openJob(d.job); }
+  if(d.fav!==undefined){ S.note=null; const f=favs[+d.fav]; reopen(f); S.histId=null; return; }
+  if(d.delfav!==undefined){
+    const idx=+d.delfav, fname=favs[idx]?.name||"este frecuente";
+    return askConfirm("¿Borrar frecuente?",`Se va a quitar "${fname}" de tus trabajos frecuentes.`,"Borrar",b,()=>{
+      favs.splice(idx,1); LS.set("presu_favs",favs); toast("Eliminado de frecuentes"); renderHome();
+    });
+  }
+  if(d.hist!==undefined){ S.note="Precios recalculados con tus valores de hoy."; const x=hist[+d.hist]; reopen(x); S.histId=null; return; }
+  if(d.mk!==undefined){ const x=hist[+d.mk]; x.estado=x.estado===d.v?null:d.v; LS.set("presu_hist",hist); return renderHome(); }
+
+  /* Repuestos */
+  if(d.repcat){ S.repCat=d.repcat; return renderRepuestos(); }
+  if(d.act==="clrrep"){ S.repQuery=""; renderRepuestos(); const s=document.getElementById("repsearch"); if(s) s.focus(); return; }
+  if(d.act==="togglenewrep"){
+    S.newRepOpen=!S.newRepOpen; S.errs.nr=""; if(!S.newRepOpen) S.newRepDraft="";
+    renderRepuestos();
+    if(S.newRepOpen){ const el=document.getElementById("nr_n"); if(el) el.focus(); }
+    return;
+  }
+  if(d.act==="newfromsearch"){
+    S.newRepOpen=true; S.newRepDraft=S.repQuery.trim(); S.errs.nr="";
+    renderRepuestos();
+    const el=document.getElementById("nr_p"); if(el) el.focus();
+    return;
+  }
+  if(d.act==="savenewrep"){
+    const n=(document.getElementById("nr_n").value||"").trim();
+    const u=(document.getElementById("nr_u").value||"u").trim()||"u";
+    const p=num(document.getElementById("nr_p").value)||0;
+    const cat=document.getElementById("nr_c").value||"propios";
+    if(!n){ S.errs.nr="Escribí el nombre del repuesto antes de guardar."; S.newRepDraft=""; renderRepuestos(); const el=document.getElementById("nr_n"); if(el) el.focus(); return; }
+    const k="u_"+Date.now().toString(36);
+    customMats[k]={n,u,p,cat,q:n};
+    prices[k]=p;
+    LS.set("presu_custom_mats",customMats); LS.set("presu_prices",prices);
+    S.newRepOpen=false; S.newRepDraft=""; S.errs.nr=""; toast("Repuesto guardado"); return renderRepuestos();
+  }
+  if(d.delcustom){
+    const k=d.delcustom, name=customMats[k]?.n||"este repuesto";
+    return askConfirm("¿Eliminar repuesto?",`Se va a borrar "${name}" de tu lista de repuestos propios.`,"Eliminar",b,()=>{
+      delete customMats[k]; delete prices[k];
+      LS.set("presu_custom_mats",customMats); LS.set("presu_prices",prices);
+      toast("Repuesto eliminado"); renderRepuestos();
+    });
+  }
+  if(d.cartq){
+    const k=d.cartq, nv=Math.max(0,(S.repCart[k]||0)+(+d.d));
+    if(nv===0) delete S.repCart[k]; else S.repCart[k]=nv;
+    return renderRepuestos();
+  }
+  if(d.stepgo){ S.step=+d.stepgo; renderJob(); window.scrollTo(0,0); return; }
+
+  /* Job actions */
+  if(d.preset!==undefined){
+    const pr=S.job.presets[+d.preset];
+    Object.assign(S.inputs,pr.vals);
+    toast("Medidas cargadas: "+pr.label);
+    return rerenderJobKeepFocus();
+  }
+  if(d.com!==undefined){ S.opts.usarComision=d.com==="1"; return rerenderJobKeepFocus(); }
+  if(d.ocom!==undefined){ O.usarComision=d.ocom==="1"; return rerenderObra(); }
+
+  if(d.act==="openpicker"){
+    S.pickerOpen=true; S.open.materiales=true; S.errs.ex="";
+    rerenderJobKeepFocus();
+    const el=document.getElementById("pickq"); if(el) el.focus();
+    return;
+  }
+  if(d.act==="closepicker"){ S.pickerOpen=false; S.pickerQuery=""; S.errs.ex=""; return rerenderJobKeepFocus(); }
+  if(d.pickmat){
+    const ex=S.extraMats.find(x=>x.key===d.pickmat);
+    if(ex) ex.qty+=1; else S.extraMats.push({key:d.pickmat,qty:1});
+    toast("Repuesto sumado");
+    return rerenderJobKeepFocus();
+  }
+  if(d.act==="addcustomex"){
+    const n=(document.getElementById("ex_n").value||"").trim();
+    const p=num(document.getElementById("ex_p").value)||0;
+    if(!n){ S.errs.ex="Escribí el nombre del repuesto."; rerenderJobKeepFocus(); const el=document.getElementById("ex_n"); if(el) el.focus(); return; }
+    S.extraMats.push({name:n,unit:"u",qty:1,price:p});
+    S.pickerOpen=false; S.errs.ex=""; toast("Repuesto sumado");
+    return rerenderJobKeepFocus();
+  }
+  if(d.mq){
+    const m=S.res.mats.find(x=>x.key===d.mq&&x.extraIdx===undefined);
+    if(m){
+      const nv=Math.max(0, Math.round((m.qty+(+d.d))*10)/10);
+      if(nv===m.autoQty) delete S.qtyOv[d.mq]; else S.qtyOv[d.mq]=nv;
+    }
+    return rerenderJobKeepFocus();
+  }
+  if(d.exq!==undefined){
+    const em=S.extraMats[+d.exq];
+    if(em){ em.qty=Math.max(0, Math.round((em.qty+(+d.d))*10)/10); if(em.qty===0) S.extraMats.splice(+d.exq,1); }
+    return rerenderJobKeepFocus();
+  }
+  if(d.exdel!==undefined){ S.extraMats.splice(+d.exdel,1); return rerenderJobKeepFocus(); }
+
+  if(d.act==="pedircopiar") return copy(pedirMessage(S.job,cfg),"Mensaje copiado para pedir medidas",b);
+  if(d.act==="wa"){ saveHist(); toast("Guardado en Últimos presupuestos"); return; }
+  if(d.act==="draft"){ const x=LS.get("presu_draft",null); if(x){ S.note=null; reopen(x); } return; }
+  if(d.act==="nodraft"){ try{localStorage.removeItem("presu_draft");}catch(x){} return renderHome(); }
+  if(d.hreset!==undefined){ delete S.hoursOv[d.hreset]; return rerenderJobKeepFocus(); }
+  if(d.act==="opcion1"){ S.opts.opcion1={desc:S.res.desc,total:S.res.total,incluye:[...S.res.incluye]}; S.opts.rango=false; toast("Opción 1 guardada. Cambiá lo que quieras para la 2"); return rerenderJobKeepFocus(); }
+  if(d.act==="quitaro1"){ S.opts.opcion1=null; return rerenderJobKeepFocus(); }
+  if(d.act==="fav"){
+    const inp=document.getElementById("favname");
+    if(inp.classList.contains("hidden")){ inp.classList.remove("hidden"); inp.value=S.res.desc; inp.focus(); b.lastChild.textContent=" Listo, guardar"; return; }
+    favs.unshift({name:inp.value.trim()||S.res.desc,jobId:S.job.id,inputs:JSON.parse(JSON.stringify(S.inputs)),hoursOv:{...S.hoursOv},qtyOv:{...S.qtyOv},extraMats:JSON.parse(JSON.stringify(S.extraMats)),opts:{...S.opts,opcion1:null,rango:false}});
+    favs=favs.slice(0,12); LS.set("presu_favs",favs); toast("Guardado en frecuentes"); return rerenderJobKeepFocus();
+  }
+
+  /* Inflación (con diálogo de confirmación) */
+  if(d.subir){
+    const pct=+d.subir, ks=Object.keys(prices);
+    if(!ks.length){ toast("Primero guardá tus precios propios"); return; }
+    return askConfirm(`¿Subir tus precios un ${pct}%?`,`Se van a actualizar ${ks.length} precio${ks.length>1?"s":""} guardado${ks.length>1?"s":""} en este celular.`,"Subir "+pct+"%",b,()=>{
+      const f=1+pct/100;
+      ks.forEach(k=>prices[k]=Math.round(prices[k]*f/100)*100);
+      Object.keys(customMats).forEach(k=>{ customMats[k].p=prices[k]??Math.round(customMats[k].p*f/100)*100; });
+      LS.set("presu_prices",prices); LS.set("presu_custom_mats",customMats);
+      toast(`Subí ${ks.length} precios un ${pct}%`);
+      renderRepuestos();
+    });
+  }
+
+  /* Backup (con diálogo y error inline) */
+  if(d.act==="backup"){ const s=btoa(unescape(encodeURIComponent(JSON.stringify({cfg,prices,customMats,favs,hist})))); return copy("PRESU:"+s,"Copia de seguridad copiada",b); }
+  if(d.act==="restore"){
+    const raw=(document.getElementById("restoretxt").value||"").trim();
+    if(!raw){ S.errs.restore="Pegá primero el texto de tu copia de seguridad."; renderPrecios(); const el=document.getElementById("restoretxt"); if(el) el.focus(); return; }
+    let parsed=null;
+    try{
+      parsed=JSON.parse(decodeURIComponent(escape(atob(raw.replace(/^PRESU:/,"")))));
+    }catch(err){
+      S.errs.restore="Ese texto no es una copia válida. Copiala entera desde PRESU: y probá de nuevo.";
+      renderPrecios();
+      const el=document.getElementById("restoretxt"); if(el){ el.value=raw; el.focus(); }
+      return;
+    }
+    return askConfirm("¿Reemplazar los datos de este celular?","Esta acción reemplaza tus tarifas, repuestos e historial actuales por los de la copia.","Recuperar",b,()=>{
+      cfg={...DEFAULT_CONFIG,...parsed.cfg}; prices=parsed.prices||{}; customMats=parsed.customMats||{}; favs=parsed.favs||[]; hist=parsed.hist||[];
+      LS.set("presu_cfg",cfg); LS.set("presu_prices",prices); LS.set("presu_custom_mats",customMats); LS.set("presu_favs",favs); LS.set("presu_hist",hist);
+      S.errs.restore=""; applyTheme(); toast("¡Datos recuperados!"); go("home");
+    });
+  }
+
+  if(d.act==="home") return go("home");
+  if(d.rubro){ O.rubro=d.rubro; return rerenderObra(); }
+  if(d.oq){ const L=obraLine(d.oq); L.qty=Math.max(0,Math.round((L.qty+(+d.d))*100)/100); return rerenderObra(); }
+  if(d.lvl){ obraLine(d.lvl).lvl=d.v; return rerenderObra(); }
+  if(d.oopt){ O[d.oopt]=!O[d.oopt]; return rerenderObra(); }
+  if(d.omat){ O.conMat=d.omat==="1"; return rerenderObra(); }
+  if(d.act==="ocopiar") return copy(obraMessage(S.obraRes,cfg,O.conMat),"Mensaje copiado",b);
+  if(d.act==="olista") return copy(shoppingList(S.obraRes),"Lista copiada",b);
+
+  if(d.act==="copiar"){ saveHist(); return copy(clientMessage(S.res,cfg,S.opts), S.res.usarComision?"Copiado para Clickie y guardado":"Presupuesto copiado y guardado",b); }
+  if(d.act==="copiarnum"){ saveHist(); return copy(String(Math.round(S.res.total)),`Monto copiado: ${ars(S.res.total)}`,b); }
+  if(d.act==="lista") return copy(shoppingList(S.res),"Lista de ferretería copiada",b);
+
+  if(d.step){
+    const f=S.job.fields.find(x=>x.id===d.step);
+    let v=Math.round((S.inputs[f.id]+f.step*(+d.d))*100)/100;
+    if(v>f.max||v<f.min) toast(v>f.max?`Máximo ${fmtQ(f.max)} ${f.unit}`:`Mínimo ${fmtQ(f.min)} ${f.unit}`);
+    S.inputs[f.id]=Math.min(f.max,Math.max(f.min,v));
+    return rerenderJobKeepFocus();
+  }
+  if(d.choice){ S.inputs[d.choice]=d.v; return rerenderJobKeepFocus(); }
+  if(d.multi){ const a=S.inputs[d.multi]; const k=a.indexOf(d.v); k<0?a.push(d.v):a.splice(k,1); return rerenderJobKeepFocus(); }
+  if(d.yes){ S.inputs[d.yes]=d.v==="1"; return rerenderJobKeepFocus(); }
+  if(d.h!==undefined){ const t=S.res.tasks[+d.h]; const v=Math.max(0.25,t.hours+(+d.d)); if(v===t.auto) delete S.hoursOv[t.name]; else S.hoursOv[t.name]=v; return rerenderJobKeepFocus(); }
+  if(d.opt){ S.opts[d.opt]=!S.opts[d.opt]; return rerenderJobKeepFocus(); }
+  if(d.iva){ cfg.iva=d.iva==="1"; LS.set("presu_cfg",cfg); return renderPrecios(); }
+  if(d.setcom){ cfg.comision=+d.setcom; LS.set("presu_cfg",cfg); toast(`Comisión Clickie: ${cfg.comision}%`); return renderPrecios(); }
+  if(d.theme){ cfg.theme=d.theme; LS.set("presu_cfg",cfg); applyTheme(); return renderPrecios(); }
+});
+
+bar.addEventListener("click",e=>{
+  const b=e.target.closest("[data-act],[data-stepgo]"); if(!b) return;
+  const d=b.dataset, a=d.act;
+  if(d.stepgo){ S.step=+d.stepgo; renderJob(); window.scrollTo(0,0); return; }
+  if(a==="flipcom"){
+    S.opts.usarComision=!S.opts.usarComision;
+    toast(S.opts.usarComision?`Modo Clickie (+${cfg.comision}%)`:"Modo Directo (sin comisión)");
+    return rerenderJobKeepFocus();
+  }
+  if(a==="wa"){ saveHist(); toast("Guardado en Últimos presupuestos"); }
+  if(a==="copiar"){ saveHist(); copy(clientMessage(S.res,cfg,S.opts), S.res.usarComision?"Copiado para Clickie":"Presupuesto copiado",b); }
+});
+
+app.addEventListener("toggle",e=>{
+  const s=e.target.dataset&&e.target.dataset.sec;
+  if(s) S.open[s]=e.target.open;
+},true);
+
+app.addEventListener("input",e=>{
+  const el=e.target;
+  if(el.id==="repsearch"){
+    S.repQuery=el.value;
+    const pos=el.selectionStart;
+    renderRepuestos();
+    const nEl=document.getElementById("repsearch");
+    if(nEl){ nEl.focus(); try{nEl.setSelectionRange(pos,pos);}catch(err){} }
+  }
+  if(el.id==="pickq"){
+    S.pickerQuery=el.value;
+    const pos=el.selectionStart;
+    rerenderJobKeepFocus();
+    const nEl=document.getElementById("pickq");
+    if(nEl){ nEl.focus(); try{nEl.setSelectionRange(pos,pos);}catch(err){} }
+  }
+});
+
+app.addEventListener("change",e=>{
+  const el=e.target, d=el.dataset;
+  if(d.num){
+    const f=S.job.fields.find(x=>x.id===d.num);
+    const v=f.unit==="$"?num(el.value):numDec(el.value);
+    if(v!==null){
+      if(v>f.max||v<f.min) toast(v>f.max?`Máximo ${fmtQ(f.max)} ${f.unit}`:`Mínimo ${fmtQ(f.min)} ${f.unit}`);
+      S.inputs[f.id]=Math.min(f.max,Math.max(f.min,v));
+    }
+    return rerenderJobKeepFocus();
+  }
+  if(d.text){ S.inputs[d.text]=el.value; return rerenderJobKeepFocus(); }
+  if(d.cliente!==undefined){ S.cliente=el.value; return rerenderJobKeepFocus(); }
+  if(d.oqin){ const v=numDec(el.value); if(v!==null) obraLine(d.oqin).qty=Math.max(0,v); return rerenderObra(); }
+  if(d.oviaje!==undefined){ const v=num(el.value); if(v!==null) O.viaje=v; return rerenderObra(); }
+  if(d.price){
+    const v=num(el.value);
+    if(v!==null){
+      prices[d.price]=v;
+      if(customMats[d.price]){ customMats[d.price].p=v; LS.set("presu_custom_mats",customMats); }
+      LS.set("presu_prices",prices);
+      toast("Precio guardado");
+    }
+    if(S.screen==="job") return rerenderJobKeepFocus();
+    if(S.screen==="obra") return rerenderObra();
+    if(S.screen==="repuestos") return renderRepuestos();
+    return;
+  }
+  if(d.exprice!==undefined){
+    const v=num(el.value);
+    if(v!==null&&S.extraMats[+d.exprice]){ S.extraMats[+d.exprice].price=v; }
+    return rerenderJobKeepFocus();
+  }
+  if(d.viaje!==undefined){ const v=num(el.value); if(v!==null) S.opts.viaje=v; return rerenderJobKeepFocus(); }
+  if(d.cfg){
+    const money=MONEY_KEYS.includes(d.cfg), v=money?num(el.value):numDec(el.value);
+    if(v!==null){
+      cfg[d.cfg]=d.cfg==="comision"?Math.min(60,Math.max(0,v)):v;
+      LS.set("presu_cfg",cfg);
+      el.value=money?fmtN(cfg[d.cfg]):String(cfg[d.cfg]).replace(".",",");
+      toast("Guardado");
+      if(d.cfg==="comision") renderPrecios();
+    } else {
+      toast("Escribí solo números");
+      el.value=money?fmtN(cfg[d.cfg]):cfg[d.cfg];
+    }
+    return;
+  }
+  if(d.cfgtxt){ cfg[d.cfgtxt]=el.value; LS.set("presu_cfg",cfg); toast("Guardado"); return; }
+});
+
+app.addEventListener("keydown",e=>{ if(e.key==="Enter"&&e.target.tagName==="INPUT") e.target.blur(); });
+
+app.addEventListener("focusin",e=>{
+  const el=e.target;
+  if(el.tagName==="INPUT"&&(el.inputMode==="numeric"||el.inputMode==="decimal"||el.classList.contains("num"))){
+    setTimeout(()=>{ try{el.select();}catch(err){} },0);
+  }
+});
+
+render();
+</script>
+</body>
+</html>
