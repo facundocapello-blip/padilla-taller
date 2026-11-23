@@ -6,10 +6,13 @@
 <meta name="theme-color" content="#111E2A">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Presupuestador">
-<meta name="description" content="Presupuestador rápido desde el celular para herrería, pintura y arreglos del hogar, con catálogo de repuestos y cálculo automático con y sin comisión de Clickie.">
-<title>Presupuestador de Changas</title>
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23111E2A'/%3E%3Cpath d='M41 11a11 11 0 0 0-10 15L13 44a4.5 4.5 0 0 0 6.5 6.5L38 32a11 11 0 0 0 15-10l-6.5 6.5-6.5-1.5-1.5-6.5z' fill='none' stroke='%23FF7A2E' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Padilla">
+<meta name="description" content="Padilla · Taller y Presupuestos: app de herrería, pintura y trabajos del hogar con planos 2D, planilla de cortes y presupuestos con y sin comisión de Clickie.">
+<title>Padilla · Taller y Presupuestos</title>
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icon-192.png">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111E2A'/%3E%3Crect x='7' y='7' width='50' height='50' fill='none' stroke='%23223547' stroke-width='3'/%3E%3Cpath d='M19 15h17a11.5 11.5 0 0 1 0 23H28v11h-9V15zm9 8v7h8a3.5 3.5 0 0 0 0-7h-8z' fill='%23F8FAFC'/%3E%3Crect x='31' y='43' width='16' height='6' fill='%23FF7A2E'/%3E%3C/svg%3E">
 <style>
 /* Diseño Opción 1 · Taller Táctil: gris chapa, tinta azul acero, acento naranja seguridad, relieve táctil y steppers agrupados al pulgar derecho. */
 :root{
@@ -1143,7 +1146,7 @@ const JOBS = [
       incluye:["Picado de la parte floja","Revoque grueso y fino",...(i.retoque?["Retoque de pintura"]:[])],
       excluye:["Pintura de toda la pared","Arreglo de caños si aparecen rotos"]};
    }},
- { id:"otro", name:"Otro / Changa rápida", hint:"horas + repuestos a elección", icon:"llave",
+ { id:"otro", name:"Otro trabajo", hint:"horas + repuestos a elección", icon:"llave",
    fields:[
     {id:"texto",label:"¿Qué trabajo es?",type:"text",def:"Trabajo a medida"},
     {id:"horas",label:"Horas de trabajo",type:"num",unit:"h",min:0.5,max:80,step:0.5,def:2},
@@ -1746,7 +1749,7 @@ function parseClickieOrder(rawText){
     }
     inputs.retoque = !/\b(sin pintar|sin pintura|no pintar)\b/.test(norm);
   } else {
-    /* Otro / changa general */
+    /* Otro trabajo general */
     const firstLine = raw.split(/\r?\n/).map(s=>s.trim()).find(Boolean) || "Trabajo a medida";
     inputs.texto = firstLine.length > 56 ? firstLine.slice(0, 53) + "..." : firstLine;
     const mh = norm.match(/(\d+(?:[.,]\d+)?)\s*(?:hs?|horas?)\b/);
@@ -1978,11 +1981,13 @@ function renderHome(){
   app.innerHTML=`
   <div class="top">
     <div>
-      <h1>Presupuestar trabajo</h1>
+      <h1>Padilla · Presupuestos</h1>
       <p class="top-sub" style="margin:2px 0 0">1. Elegí el trabajo → 2. Materiales y horas → 3. Precio y envío</p>
     </div>
     <button type="button" class="chipbtn" data-go="precios" aria-label="Cambiar mi valor hora en Ajustes">${svg("gear")} ${ars(cfg.valor_hora)}/h</button>
   </div>
+
+  ${S.installPrompt?`<button type="button" class="btn primary sm" data-act="installapp" style="width:100%">${svg("box")} Instalar app Padilla en este celular</button>`:""}
 
   <div class="steps g2" role="group" aria-label="Filtrar trabajos por rubro">
     <button type="button" class="stepbtn" data-soloherr="0" aria-selected="${!cfg.solo_herreria}">Todos los rubros (10)</button>
@@ -2885,6 +2890,7 @@ app.addEventListener("click",e=>{
   const d=b.dataset;
 
   if(d.go) return go(d.go);
+  if(d.act==="installapp"&&S.installPrompt){ const ev=S.installPrompt; S.installPrompt=null; ev.prompt(); ev.userChoice.finally(()=>{ if(S.screen==="home") renderHome(); }); return; }
   if(d.act==="clickietoggle"){ S.clickieOpen=!S.clickieOpen; renderHome(); if(S.clickieOpen){ const ta=document.getElementById("clickietxt"); if(ta) ta.focus(); } return; }
   if(d.act==="clickieload") return loadFromClickie();
   if(d.act==="clickieclear"){ S.clickieText=""; S.errs.clickie=""; S.clickieOpen=false; return renderHome(); }
@@ -4228,6 +4234,19 @@ app.addEventListener("change",e=>{
 });
 
 render();
+window.addEventListener("beforeinstallprompt",e=>{
+  e.preventDefault();
+  S.installPrompt=e;
+  if(S.screen==="home") renderHome();
+});
+window.addEventListener("appinstalled",()=>{
+  S.installPrompt=null;
+  toast("App Padilla instalada en tu celular");
+  if(S.screen==="home") renderHome();
+});
+if("serviceWorker" in navigator){
+  window.addEventListener("load",()=>{ navigator.serviceWorker.register("./sw.js").catch(()=>{}); });
+}
 </script>
 </body>
 </html>

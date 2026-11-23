@@ -1,2 +1,2 @@
-# presupuestador-changas
-Presupuestador de Changas para celular (herrería, pintura y arreglos del hogar, con y sin comisión de Clickie)
+# Padilla · Taller y Presupuestos
+App web instalable (PWA) para herrería, pintura y trabajos del hogar: presupuestos con y sin comisión de Clickie, catálogo de repuestos y módulo de Taller con planos 2D y optimizador de cortes de barras.
