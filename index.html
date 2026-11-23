@@ -493,6 +493,22 @@ dialog.dlg p{margin:0 0 14px;font-size:13.5px;color:var(--muted)}
 .tmod-svg .tm-dim-t{fill:var(--accent);font:800 12.5px var(--mono)}
 .tmod-svg .tm-sub-t{fill:var(--muted);font:700 10.5px var(--mono)}
 .tmod-svg .tm-lbl{fill:var(--ink);font:800 10px var(--mono);text-transform:uppercase;letter-spacing:.04em}
+.tmod-svg .tm-tag-bg{fill:var(--card);stroke:var(--ink);stroke-width:1.3}
+.tmod-svg .tm-tag-bg.r-int{stroke:var(--muted)}
+.tmod-svg .tm-tag-bg.r-extra{stroke:#2563EB}
+.tmod-svg .tm-tag-t{fill:var(--ink);font:800 9.8px var(--mono)}
+.tmod-svg .tm-hit.hl .tm-tag-bg{fill:var(--accent);stroke:var(--accent-dark)}
+.tmod-svg .tm-hit.hl .tm-tag-t{fill:var(--accent-ink)}
+.tmod-svg .tm-hit.done .tm-tag-bg{fill:var(--good-bg);stroke:var(--good)}
+.tmod-svg .tm-hit.done .tm-tag-t{fill:var(--good)}
+.tord-svg{width:100%;height:auto;display:block}
+.tord-svg .to-seg{cursor:pointer;transition:opacity .12s}
+.tord-svg .to-seg.dim{opacity:.3}
+.tord-svg .to-seg.hl .to-bar{fill:var(--accent);stroke:var(--ink);stroke-width:1.5}
+.tord-svg .to-bar{fill:var(--ink)} .tord-svg .to-bar.alt{fill:var(--muted)}
+.tord-svg .to-lbl{fill:var(--ink);font:800 10.5px var(--mono)}
+.tord-svg .to-meta{fill:var(--muted);font:700 10px var(--mono)}
+.tord-svg .to-in{fill:var(--card);font:800 10px var(--mono)}
 .tmod-sel{display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--accent-soft);border:1.5px solid var(--accent);border-radius:9px;padding:7px 10px;font-size:12.5px;color:var(--ink)}
 .tmod-sel b{font-family:var(--mono);color:var(--accent)}
 .tmod-sel .tmod-clr{border:none;background:none;color:var(--muted);font-weight:800;font-size:12px;padding:2px 6px;flex:none}
@@ -523,6 +539,7 @@ dialog.dlg p{margin:0 0 14px;font-size:13.5px;color:var(--muted)}
   #printsheet .tm-marco{stroke:#000;fill:none} #printsheet .tm-int{stroke:#555;fill:none} #printsheet .tm-extra{stroke:#333;stroke-dasharray:4 2;fill:none}
   #printsheet .tm-miter{stroke:#fff;stroke-width:1.4} #printsheet .tm-dim{stroke:#666;stroke-width:1}
   #printsheet .tm-dim-t{fill:#000;font:700 12px Arial} #printsheet .tm-sub-t,#printsheet .tm-lbl{fill:#333;font:700 10px Arial}
+  #printsheet .tm-tag-bg{fill:#fff;stroke:#000;stroke-width:1.2} #printsheet .tm-tag-t{fill:#000;font:700 9.5px Arial}
   #printsheet table{width:100%;border-collapse:collapse;font-size:11pt}
   #printsheet th,#printsheet td{border:1px solid #888;padding:2mm;text-align:left;vertical-align:top}
   #printsheet tr{page-break-inside:avoid}
@@ -3122,32 +3139,40 @@ app.addEventListener("click",e=>{
     const totU=allList.reduce((a,x)=>a+(x.cant||1),0);
     const cuts=rejaCutsAll(allList);
     const load=()=>{
-      const ref=S.inputs;
-      const mat=ref.material||"cano_2020", esHoja=mat==="chapa_18"||mat==="metal_desp";
-      const ventana=ref.uso==="ventana", porton=ref.uso==="porton";
+      const toModel=(ref,idx)=>{
+        const mat=ref.material||"cano_2020", esHoja=mat==="chapa_18"||mat==="metal_desp";
+        const ventana=ref.uso==="ventana", porton=ref.uso==="porton";
+        const pfx=({ventana:"V",puerta:"PTA",porton:"POR"})[ref.uso]||"R";
+        const cant=Math.max(1,ref.cant||1);
+        return {
+          ...T_MODEL_DEF,
+          type: ventana ? "reja" : "porton",
+          label: `${pfx}${idx+1} ${ref.ancho}×${ref.alto}${cant>1?` (×${cant})`:""}`,
+          cant,
+          ancho: Math.round((ref.ancho||120)*10),
+          alto: Math.round((ref.alto||100)*10),
+          sep: Math.round((ref.sep||12)*10),
+          travesanos: ventana ? 2 : 3,
+          hojas: porton && ref.apertura==="doble" ? 2 : 1,
+          corredizo: porton && ref.apertura==="corredizo",
+          ang: ventana && !esHoja ? "90" : "45",
+          pMarco: ventana ? (esHoja ? "cano_3030" : "cano_2020") : "cano_4040",
+          pInt: esHoja ? "cano_2020" : mat,
+          pExtra: "planchuela"
+        };
+      };
       T.workId=tId();
       T.cuts=cuts.map(c=>({...c,id:tId()}));
       T.obra=(S.cliente?S.cliente+" — ":"")+S.res.desc;
       T.done={};
-      T.model={
-        ...T_MODEL_DEF,
-        type: ventana ? "reja" : "porton",
-        ancho: Math.round((ref.ancho||120)*10),
-        alto: Math.round((ref.alto||100)*10),
-        sep: Math.round((ref.sep||12)*10),
-        travesanos: ventana ? 2 : 3,
-        hojas: porton && ref.apertura==="doble" ? 2 : 1,
-        corredizo: porton && ref.apertura==="corredizo",
-        ang: ventana && !esHoja ? "90" : "45",
-        pMarco: ventana ? (esHoja ? "cano_3030" : "cano_2020") : "cano_4040",
-        pInt: esHoja ? "cano_2020" : mat,
-        pExtra: "planchuela"
-      };
+      T.models=allList.map(toModel);
+      T.modelIdx=0;
+      T.model={...T.models[0]};
       T.modelActive=true;
       S.tSel=null;
       T.step=2;
       saveT();
-      toast(allList.length>1?`Cortes de ${totU} aberturas listos en Taller`:"Cortes y plano listos en Taller");
+      toast(allList.length>1?`Cortes y planos de ${totU} aberturas listos en Taller`:"Cortes y plano listos en Taller");
       go("taller");
     };
     return T.cuts.length ? askConfirm(allList.length>1?`¿Cargar estas ${totU} aberturas en Taller?`:"¿Cargar esta reja en Taller?","Si ya tenés cortes cargados en Taller, se van a reemplazar (podés guardar tu obra actual antes desde Taller).","Cargar en Taller",b,load) : load();
@@ -3275,11 +3300,12 @@ app.addEventListener("focusin",e=>{
 
 /* ---------- TALLER: cortes de barras + modelo visual 2D (3 pasos: 1. Cargar cortes -> 2. Plan y compra -> 3. Retazos) ---------- */
 const tId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-const T_MODEL_DEF={type:"reja",ancho:1200,alto:1000,prof:600,sep:120,travesanos:2,hojas:1,corredizo:false,ang:"45",pMarco:"cano_4040",pInt:"cano_2020",pExtra:"planchuela"};
-const T_DEF={workId:"",obra:"",step:1,barra:6000,disco:3,minSob:300,cuts:[],done:{},retazos:[],obras:[],usarRetazos:true,modelActive:false,model:{...T_MODEL_DEF},form:{perfil:"cano_4040",parte:"",ang:"90",u:"mm",txt:""}};
+const T_MODEL_DEF={type:"reja",label:"",cant:1,ancho:1200,alto:1000,prof:600,sep:120,travesanos:2,hojas:1,corredizo:false,ang:"45",pMarco:"cano_4040",pInt:"cano_2020",pExtra:"planchuela"};
+const T_DEF={workId:"",obra:"",step:1,barra:6000,disco:3,minSob:300,cuts:[],done:{},retazos:[],obras:[],usarRetazos:true,modelActive:false,model:{...T_MODEL_DEF},models:[],modelIdx:0,form:{perfil:"cano_4040",parte:"",ang:"90",u:"mm",txt:""}};
 let T={...T_DEF,...LS.get("presu_taller",{})};
 T.form={...T_DEF.form,...(T.form||{})};
 T.model={...T_MODEL_DEF,...(T.model||{})};
+if(!Array.isArray(T.models)) T.models=[];
 if(!T.workId) T.workId=tId();
 if(![1,2,3].includes(T.step)) T.step=1;
 if(!Array.isArray(T.cuts)) T.cuts=[];
@@ -3432,40 +3458,40 @@ const tClamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,Math.round(v)));
 
 function tModelPieces(m){
   const A=tClamp(m.ancho||1200,200,6000), B=tClamp(m.alto||1000,200,4500), P=tClamp(m.prof||600,150,2500);
-  const sep=tClamp(m.sep||120,50,400), tv=tClamp(m.travesanos??2,0,8);
+  const sep=tClamp(m.sep||120,50,400), tv=tClamp(m.travesanos??2,0,8), n=Math.max(1,m.cant||1);
   const ang=m.ang==="45"?"45":"90";
   const pM=m.pMarco||"cano_4040", pI=m.pInt||"cano_2020", pE=m.pExtra||"planchuela";
   const out=[];
   if(m.type==="reja"){
     const nBar=Math.max(0,Math.ceil(A/sep)-1), lBar=Math.max(100,B-40);
-    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:A,qty:2,ang,role:"marco"});
-    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:2,ang,role:"marco"});
-    if(nBar>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:lBar,qty:nBar,ang:"90",role:"int"});
-    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:A,qty:tv,ang:"90",role:"extra"});
+    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:A,qty:2*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:2*n,ang,role:"marco"});
+    if(nBar>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:lBar,qty:nBar*n,ang:"90",role:"int"});
+    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:A,qty:tv*n,ang:"90",role:"extra"});
   } else if(m.type==="porton"){
     const doble=(m.hojas||1)===2, hA=doble?Math.round(A/2):A;
     const nBar=Math.max(0,Math.ceil(A/sep)-1), lBar=Math.max(100,B-80);
-    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:hA,qty:doble?4:2,ang,role:"marco"});
-    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:doble?4:2,ang,role:"marco"});
-    if(nBar>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:lBar,qty:nBar,ang:"90",role:"int"});
-    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:A,qty:tv,ang:"90",role:"extra"});
-    if(m.corredizo) out.push({key:"riel",label:"Riel",parte:"RIEL",perfil:"riel_porton",len:Math.min(6000,A*2),qty:1,ang:"90",role:"extra"});
+    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:hA,qty:(doble?4:2)*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:(doble?4:2)*n,ang,role:"marco"});
+    if(nBar>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:lBar,qty:nBar*n,ang:"90",role:"int"});
+    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:A,qty:tv*n,ang:"90",role:"extra"});
+    if(m.corredizo) out.push({key:"riel",label:"Riel",parte:"RIEL",perfil:"riel_porton",len:Math.min(6000,A*2),qty:n,ang:"90",role:"extra"});
   } else if(m.type==="marco"){
     const cols=tClamp(m.hojas||2,1,5), rows=tClamp(m.travesanos||2,1,5);
-    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:A,qty:2,ang,role:"marco"});
-    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:2,ang,role:"marco"});
-    if(cols>1) out.push({key:"par",label:"Parantes",parte:"PAR",perfil:pI,len:Math.max(100,B-80),qty:cols-1,ang:"90",role:"int"});
-    if(rows>1) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pI,len:Math.max(100,A-80),qty:rows-1,ang:"90",role:"int"});
+    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:A,qty:2*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:2*n,ang,role:"marco"});
+    if(cols>1) out.push({key:"par",label:"Parantes",parte:"PAR",perfil:pI,len:Math.max(100,B-80),qty:(cols-1)*n,ang:"90",role:"int"});
+    if(rows>1) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pI,len:Math.max(100,A-80),qty:(rows-1)*n,ang:"90",role:"int"});
   } else if(m.type==="mesa"){
-    out.push({key:"pata",label:"Patas",parte:"PATA",perfil:pM,len:B,qty:4,ang:"90",role:"marco"});
-    out.push({key:"larg",label:"Largueros",parte:"LARG",perfil:pI,len:Math.max(100,A-80),qty:2,ang:"90",role:"int"});
-    out.push({key:"cab",label:"Cabeceras",parte:"CAB",perfil:pI,len:Math.max(100,P-80),qty:2,ang:"90",role:"int"});
-    if(tv>0) out.push({key:"ref",label:"Refuerzo",parte:"REF",perfil:pE,len:Math.max(100,A-80),qty:tv,ang:"90",role:"extra"});
+    out.push({key:"pata",label:"Patas",parte:"PATA",perfil:pM,len:B,qty:4*n,ang:"90",role:"marco"});
+    out.push({key:"larg",label:"Largueros",parte:"LARG",perfil:pI,len:Math.max(100,A-80),qty:2*n,ang:"90",role:"int"});
+    out.push({key:"cab",label:"Cabeceras",parte:"CAB",perfil:pI,len:Math.max(100,P-80),qty:2*n,ang:"90",role:"int"});
+    if(tv>0) out.push({key:"ref",label:"Refuerzo",parte:"REF",perfil:pE,len:Math.max(100,A-80),qty:tv*n,ang:"90",role:"extra"});
   } else if(m.type==="rack"){
     const est=tClamp(m.travesanos||4,2,7);
-    out.push({key:"pata",label:"Parantes",parte:"PAR",perfil:pM,len:B,qty:4,ang:"90",role:"marco"});
-    out.push({key:"larg",label:"Frente est.",parte:"EST L",perfil:pI,len:Math.max(100,A-40),qty:est*2,ang:"90",role:"int"});
-    out.push({key:"cab",label:"Lateral est.",parte:"EST P",perfil:pE,len:Math.max(100,P-40),qty:est*2,ang:"90",role:"extra"});
+    out.push({key:"pata",label:"Parantes",parte:"PAR",perfil:pM,len:B,qty:4*n,ang:"90",role:"marco"});
+    out.push({key:"larg",label:"Frente est.",parte:"EST L",perfil:pI,len:Math.max(100,A-40),qty:est*2*n,ang:"90",role:"int"});
+    out.push({key:"cab",label:"Lateral est.",parte:"EST P",perfil:pE,len:Math.max(100,P-40),qty:est*2*n,ang:"90",role:"extra"});
   }
   return out;
 }
@@ -3491,19 +3517,45 @@ function tFindBarsForSel(plan,sel){
   return hits;
 }
 
+function tIsPieceDone(piece,plan){
+  if(!plan||!plan.length) return false;
+  let found=0, doneCnt=0;
+  plan.forEach(g=>{
+    if(g.perfil!==piece.perfil) return;
+    tGroupBars(g.bars).forEach((x,gi)=>{
+      if(x.bar.pieces.some(p=>p.len===piece.len)){
+        found++;
+        const dk=g.perfil+"|"+gi+"|"+x.sig;
+        if(T.done[dk]) doneCnt++;
+      }
+    });
+  });
+  return found>0&&found===doneCnt;
+}
+
 function tModelSVG(m,pmap,sel,opts){
-  const print=!!(opts&&opts.forPrint);
-  const W=380, H=224, pieces=tModelPieces(m);
+  const print=!!(opts&&opts.forPrint), plan=opts&&opts.plan;
+  const W=380, H=240, pieces=tModelPieces(m);
   const byKey=Object.fromEntries(pieces.map(p=>[p.key,p]));
   const hasSel=!print&&!!sel;
-  const grp=(key,inner,hitPath)=>{
+  const tag=(cx,cy,p,isDone)=>{
+    const txt=`${isDone?"✓ ":""}${p.qty}×${p.len}${p.ang==="45"?" 45°":""}`;
+    const tw=Math.max(46,txt.length*6.1+10), th=16;
+    const x0=Math.max(4,Math.min(W-tw-4,cx-tw/2));
+    const y0=Math.max(4,Math.min(H-th-18,cy-th/2));
+    const rCls=p.role==="int"?" r-int":(p.role==="extra"?" r-extra":"");
+    return `<rect x="${x0.toFixed(1)}" y="${y0.toFixed(1)}" width="${tw.toFixed(1)}" height="${th}" rx="4" class="tm-tag-bg${rCls}"/><text x="${(x0+tw/2).toFixed(1)}" y="${(y0+th/2+3.3).toFixed(1)}" text-anchor="middle" class="tm-tag-t">${esc(txt)}</text>`;
+  };
+  const grp=(key,inner,hitPath,tagPos)=>{
     const p=byKey[key];
     if(!p) return "";
     const hl=hasSel&&tMatchSel(p,p.perfil,sel);
-    const cls=`tm-hit${hl?" hl":(hasSel?" dim":"")}`;
+    const isDone=!print&&tIsPieceDone(p,plan);
+    const cls=`tm-hit${hl?" hl":(hasSel?" dim":"")}${isDone?" done":""}`;
     const payload=esc(JSON.stringify({key:p.key,label:p.label,parte:p.parte,perfil:p.perfil,len:p.len,qty:p.qty,ang:p.ang}));
-    const attrs=print?"":` class="${cls}" data-tsel="${payload}" role="button" tabindex="0" aria-label="${esc(p.label)} ${p.len} mm"`;
-    return `<g${attrs}>${inner}${!print&&hitPath?`<path d="${hitPath}" fill="none" stroke="transparent" stroke-width="14"/>`:""}</g>`;
+    const attrs=print?"":` class="${cls}" data-tsel="${payload}" role="button" tabindex="0" aria-label="${esc(p.label)} ${p.qty} cortes de ${p.len} mm"`;
+    const callout=tagPos?tag(tagPos[0],tagPos[1],p,isDone):"";
+    return `<g${attrs}>${inner}${!print&&hitPath?`<path d="${hitPath}" fill="none" stroke="transparent" stroke-width="14"/>`:""}${callout}</g>`;
   };
   const dimH=(x1,x2,y,txt)=>`<g class="tm-dim"><line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}"/><line x1="${x1}" y1="${y-4}" x2="${x1}" y2="${y+4}"/><line x1="${x2}" y1="${y-4}" x2="${x2}" y2="${y+4}"/></g><text x="${(x1+x2)/2}" y="${y-6}" text-anchor="middle" class="tm-dim-t">${txt}</text>`;
   const dimV=(x,y1,y2,txt)=>`<g class="tm-dim"><line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}"/><line x1="${x-4}" y1="${y1}" x2="${x+4}" y2="${y1}"/><line x1="${x-4}" y1="${y2}" x2="${x+4}" y2="${y2}"/></g><text x="${x-7}" y="${(y1+y2)/2}" text-anchor="end" dominant-baseline="middle" class="tm-dim-t">${txt}</text>`;
@@ -3512,8 +3564,8 @@ function tModelSVG(m,pmap,sel,opts){
   let body="";
 
   if(m.type==="mesa"||m.type==="rack"){
-    /* Doble vista técnica sincronizada: FRENTE + LATERAL */
-    const padL=54, padR=18, padT=34, padB=32, gap=30;
+    /* Doble vista técnica sincronizada: FRENTE + LATERAL con etiquetas de cortes */
+    const padL=54, padR=20, padT=34, padB=32, gap=32;
     const availW=W-padL-padR-gap, availH=H-padT-padB;
     const sc=Math.min(availW/(A+P), availH/B);
     const w1=A*sc, w2=P*sc, h=B*sc;
@@ -3523,92 +3575,82 @@ function tModelSVG(m,pmap,sel,opts){
     body+=`<text x="${x2+w2/2}" y="${H-8}" text-anchor="middle" class="tm-lbl">Lateral</text>`;
 
     if(m.type==="mesa"){
-      const yTop=y+6, yRef=y+h-Math.max(18,h*0.24);
-      /* Patas (frente + lateral) */
+      const yTop=y+6, yRef=y+h-Math.max(20,h*0.24);
       const pD=`M${x1+3} ${y}V${y+h}M${x1+w1-3} ${y}V${y+h}M${x2+3} ${y}V${y+h}M${x2+w2-3} ${y}V${y+h}`;
-      body+=grp("pata",`<path d="${pD}" class="tm-marco" stroke-width="5"/>`,pD);
-      /* Largueros frente */
+      body+=grp("pata",`<path d="${pD}" class="tm-marco" stroke-width="5"/>`,pD,[x1+w1,y+h*0.52]);
       const lD=`M${x1+5} ${yTop}H${x1+w1-5}`;
-      body+=grp("larg",`<path d="${lD}" class="tm-int" stroke-width="4.5"/>`,lD);
-      /* Cabeceras lateral */
+      body+=grp("larg",`<path d="${lD}" class="tm-int" stroke-width="4.5"/>`,lD,[x1+w1/2,yTop+14]);
       const cD=`M${x2+5} ${yTop}H${x2+w2-5}`;
-      body+=grp("cab",`<path d="${cD}" class="tm-int" stroke-width="4.5"/>`,cD);
-      /* Refuerzo inferior */
+      body+=grp("cab",`<path d="${cD}" class="tm-int" stroke-width="4.5"/>`,cD,[x2+w2/2,yTop+14]);
       if(byKey.ref){
         const rD=`M${x1+5} ${yRef}H${x1+w1-5}`;
-        body+=grp("ref",`<path d="${rD}" class="tm-extra" stroke-width="3"/>`,rD);
+        body+=grp("ref",`<path d="${rD}" class="tm-extra" stroke-width="3"/>`,rD,[x1+w1/2,yRef]);
       }
-      /* Tapa sugerida (línea fina punteada) */
       body+=`<line x1="${x1-4}" y1="${y-2}" x2="${x1+w1+4}" y2="${y-2}" stroke="var(--line-strong)" stroke-width="2" stroke-dasharray="4 3"/>`;
       body+=`<line x1="${x2-4}" y1="${y-2}" x2="${x2+w2+4}" y2="${y-2}" stroke="var(--line-strong)" stroke-width="2" stroke-dasharray="4 3"/>`;
     } else {
       const est=tClamp(m.travesanos||4,2,7);
-      /* Parantes */
       const pD=`M${x1+3} ${y}V${y+h}M${x1+w1-3} ${y}V${y+h}M${x2+3} ${y}V${y+h}M${x2+w2-3} ${y}V${y+h}`;
-      body+=grp("pata",`<path d="${pD}" class="tm-marco" stroke-width="4.5"/>`,pD);
-      /* Estantes frente y lateral */
+      body+=grp("pata",`<path d="${pD}" class="tm-marco" stroke-width="4.5"/>`,pD,[x1+w1,y+h*0.55]);
       let lD="", cD="";
       for(let k=0;k<est;k++){
         const yy=est===1?y+h/2:y+4+(h-10)*k/(est-1);
         lD+=`M${x1+5} ${yy}H${x1+w1-5}`;
         cD+=`M${x2+5} ${yy}H${x2+w2-5}`;
       }
-      body+=grp("larg",`<path d="${lD}" class="tm-int" stroke-width="3.5"/>`,lD);
-      body+=grp("cab",`<path d="${cD}" class="tm-extra" stroke-width="3.5"/>`,cD);
+      body+=grp("larg",`<path d="${lD}" class="tm-int" stroke-width="3.5"/>`,lD,[x1+w1/2,y+h*0.28]);
+      body+=grp("cab",`<path d="${cD}" class="tm-extra" stroke-width="3.5"/>`,cD,[x2+w2/2,y+h*0.42]);
     }
     body+=dimH(x1,x1+w1,y-12,`${A}`);
     body+=dimH(x2,x2+w2,y-12,`${P}`);
     body+=dimV(x1-12,y,y+h,`${B}`);
   } else {
-    /* Vista frontal 2D: Reja, Portón, Marco con paños */
-    const padL=62, padR=24, padT=34, padB=32;
+    /* Vista frontal 2D: Reja, Portón, Marco con cortes anotados sobre cada zona */
+    const padL=62, padR=46, padT=34, padB=m.type==="porton"&&m.corredizo?44:34;
     const sc=Math.min((W-padL-padR)/A,(H-padT-padB)/B);
     const w=A*sc, h=B*sc, x=padL+(W-padL-padR-w)/2, y=padT+(H-padT-padB-h)/2;
 
-    /* Fondo interior suave */
     body+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="var(--card)" opacity="${print?"0":"0.7"}"/>`;
 
     if(m.type==="marco"){
       const cols=tClamp(m.hojas||2,1,5), rows=tClamp(m.travesanos||2,1,5);
       if(cols>1){
         let d=""; for(let k=1;k<cols;k++){ const xx=x+w*k/cols; d+=`M${xx} ${y+3}V${y+h-3}`; }
-        body+=grp("par",`<path d="${d}" class="tm-int" stroke-width="3.2"/>`,d);
+        body+=grp("par",`<path d="${d}" class="tm-int" stroke-width="3.2"/>`,d,[x+w*0.36,y+h*0.30]);
       }
       if(rows>1){
         let d=""; for(let k=1;k<rows;k++){ const yy=y+h*k/rows; d+=`M${x+3} ${yy}H${x+w-3}`; }
-        body+=grp("trav",`<path d="${d}" class="tm-int" stroke-width="3.2"/>`,d);
+        body+=grp("trav",`<path d="${d}" class="tm-int" stroke-width="3.2"/>`,d,[x+w*0.62,y+h*0.66]);
       }
-      body+=`<text x="${x+w/2}" y="${H-8}" text-anchor="middle" class="tm-sub-t">${cols}×${rows} paños · esquinas ${m.ang}°</text>`;
+      body+=`<text x="${x+w/2}" y="${H-6}" text-anchor="middle" class="tm-sub-t">${cols}×${rows} paños · cortes en mm${(m.cant||1)>1?` · ×${m.cant} u.`:""}</text>`;
     } else {
       const sep=tClamp(m.sep||120,50,400), nBar=Math.max(0,Math.ceil(A/sep)-1);
       const tv=tClamp(m.travesanos??2,0,8);
       if(nBar>0){
         let d=""; for(let k=1;k<=nBar;k++){ const xx=x+w*k/(nBar+1); d+=`M${xx} ${y+3}V${y+h-3}`; }
-        body+=grp("barrote",`<path d="${d}" class="tm-int" stroke-width="2.2"/>`,d);
+        body+=grp("barrote",`<path d="${d}" class="tm-int" stroke-width="2.2"/>`,d,[x+w*0.34,y+h*0.30]);
       }
       if(tv>0){
         let d=""; for(let k=1;k<=tv;k++){ const yy=y+h*k/(tv+1); d+=`M${x+3} ${yy}H${x+w-3}`; }
-        body+=grp("trav",`<path d="${d}" class="tm-extra" stroke-width="2.8"/>`,d);
+        const ty=y+h*tv/(tv+1);
+        body+=grp("trav",`<path d="${d}" class="tm-extra" stroke-width="2.8"/>`,d,[x+w*0.66,ty]);
       }
       if(m.type==="porton"&&m.corredizo){
-        const rD=`M${x-14} ${y+h+9}H${x+w+14}`;
-        body+=grp("riel",`<path d="${rD}" class="tm-extra" stroke-width="3.5"/><circle cx="${x+16}" cy="${y+h+5}" r="3.5" fill="var(--accent)"/><circle cx="${x+w-16}" cy="${y+h+5}" r="3.5" fill="var(--accent)"/>`,rD);
+        const rD=`M${x-14} ${y+h+10}H${x+w+14}`;
+        body+=grp("riel",`<path d="${rD}" class="tm-extra" stroke-width="3.5"/><circle cx="${x+16}" cy="${y+h+6}" r="3.5" fill="var(--accent)"/><circle cx="${x+w-16}" cy="${y+h+6}" r="3.5" fill="var(--accent)"/>`,rD,[x+w/2,y+h+24]);
       }
       const luz=nBar>0?Math.round(A/(nBar+1)):A;
-      body+=`<text x="${x+w/2}" y="${H-6}" text-anchor="middle" class="tm-sub-t">${nBar} barrotes (c/ ${luz} mm)${m.type==="porton"&&m.hojas===2?" · 2 hojas":""}${m.type==="porton"&&m.corredizo?" · corredizo":""} · ${m.ang}°</text>`;
+      body+=`<text x="${x+w/2}" y="${H-5}" text-anchor="middle" class="tm-sub-t">${nBar} barrotes c/ ${luz} mm${m.type==="porton"&&m.hojas===2?" · 2 hojas":""}${(m.cant||1)>1?` · ×${m.cant} u.`:""}</text>`;
     }
 
-    /* Marco H (arriba + abajo) y Marco V (izquierda + derecha + centro si 2 hojas) */
     const mhD=`M${x} ${y}H${x+w}M${x} ${y+h}H${x+w}`;
     const mvD=`M${x} ${y}V${y+h}M${x+w} ${y}V${y+h}${m.type==="porton"&&m.hojas===2?`M${x+w/2} ${y}V${y+h}`:""}`;
-    body+=grp("marco_h",`<path d="${mhD}" class="tm-marco" stroke-width="5.2"/>`,mhD);
-    body+=grp("marco_v",`<path d="${mvD}" class="tm-marco" stroke-width="5.2"/>`,mvD);
+    body+=grp("marco_h",`<path d="${mhD}" class="tm-marco" stroke-width="5.2"/>`,mhD,[x+w/2,y+h]);
+    body+=grp("marco_v",`<path d="${mvD}" class="tm-marco" stroke-width="5.2"/>`,mvD,[x+w,m.type==="porton"?y+h*0.28:y+h/2]);
 
-    /* Líneas de inglete 45° visibles en las 4 esquinas */
     if(m.ang==="45"){
       body+=`<path d="M${x-3} ${y-3}L${x+3} ${y+3}M${x+w+3} ${y-3}L${x+w-3} ${y+3}M${x-3} ${y+h+3}L${x+3} ${y+h-3}M${x+w+3} ${y+h+3}L${x+w-3} ${y+h-3}" class="tm-miter"/>`;
     }
-    /* Indicador de cerradura en portón */
     if(m.type==="porton"){
       const cx=m.hojas===2?(x+w/2-9):(x+w-9);
       body+=`<circle cx="${cx}" cy="${y+h/2}" r="4.2" fill="var(--accent)"/>`;
@@ -3617,7 +3659,34 @@ function tModelSVG(m,pmap,sel,opts){
     body+=dimV(x-12,y,y+h,`${B} mm`);
   }
 
-  return `<svg class="tmod-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Plano técnico ${esc(m.type)} de ${A} por ${B} mm">${body}</svg>`;
+  return `<svg class="tmod-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Plano técnico ${esc(m.type)} de ${A} por ${B} mm con cortes anotados">${body}</svg>`;
+}
+
+/* Gráfico visual de despiece para pedidos cargados manualmente (sin plantilla 2D fija) */
+function tOrderCutsSVG(cuts,pmap,sel){
+  if(!cuts||!cuts.length) return "";
+  const W=380, rowH=24, padX=10, barX=74, maxBarW=W-barX-78;
+  const maxLen=Math.max(...cuts.map(c=>c.len),1000);
+  const H=cuts.length*rowH+14;
+  const hasSel=!!sel;
+  let rows="";
+  cuts.forEach((c,i)=>{
+    const y=8+i*rowH, bw=Math.max(18,(c.len/maxLen)*maxBarW);
+    const hl=hasSel&&tMatchSel(c,c.perfil,sel);
+    const cls=`to-seg${hl?" hl":(hasSel?" dim":"")}`;
+    const payload=esc(JSON.stringify({perfil:c.perfil,len:c.len,parte:c.parte||"",qty:c.qty,ang:c.ang}));
+    const lbl=(c.parte||(pmap[c.perfil]?.n||c.perfil)).slice(0,10);
+    const shape=c.ang==="45"&&bw>16
+      ?`<polygon points="${(barX+4).toFixed(1)},${y+2} ${(barX+bw-4).toFixed(1)},${y+2} ${(barX+bw).toFixed(1)},${y+16} ${barX},${y+16}" class="to-bar${i%2?" alt":""}"/>`
+      :`<rect x="${barX}" y="${y+2}" width="${bw.toFixed(1)}" height="14" rx="3" class="to-bar${i%2?" alt":""}"/>`;
+    const inTxt=bw>42?`<text x="${(barX+bw/2).toFixed(1)}" y="${y+12.5}" text-anchor="middle" class="to-in">${c.len}</text>`:"";
+    rows+=`<g class="${cls}" data-tsel="${payload}" role="button" tabindex="0" aria-label="${esc(lbl)} ${c.qty} cortes de ${c.len} mm">
+      <text x="${padX}" y="${y+13}" class="to-lbl">${esc(lbl)}</text>
+      ${shape}${inTxt}
+      <text x="${(barX+bw+6).toFixed(1)}" y="${y+13}" class="to-meta">×${c.qty}${c.ang==="45"?" 45°":""}${bw<=42?" "+c.len:""}</text>
+    </g>`;
+  });
+  return `<svg class="tord-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Gráfico de cortes del pedido">${rows}</svg>`;
 }
 
 function tModelCardHTML(m,perf,pmap,plan,compact){
@@ -3630,10 +3699,14 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
   const isProf=m.type==="mesa"||m.type==="rack";
   const isReja=m.type==="reja"||m.type==="porton";
 
+  const multiTabs=T.models.length>1?`<div class="presets" role="group" aria-label="Aberturas del pedido">
+    ${T.models.map((mo,idx)=>`<button type="button" class="preset" data-tmidx="${idx}" aria-pressed="${idx===T.modelIdx}">${esc(mo.label||`Pieza ${idx+1}`)}</button>`).join("")}
+  </div>`:"";
+
   const selBar=sel?`<div class="tmod-sel">
     <div><b>${esc(selLabel)}</b>${barHits.length?`<div class="small" style="margin-top:2px">Sale en: <b>${esc(barHits.join(" · "))}</b></div>`:(T.cuts.length?`<div class="small muted" style="margin-top:2px">No coincide con cortes cargados todavía</div>`:"")}</div>
     <button type="button" class="tmod-clr" data-tselclr aria-label="Quitar selección">✕</button>
-  </div>`:`<div class="small muted" style="padding:0 2px">Tocá una pieza del plano${compact?" o un corte de las barras":""} para ver dónde va y de qué barra sale.</div>`;
+  </div>`:`<div class="small muted" style="padding:0 2px">Cada etiqueta sobre el plano muestra <b>cant. × largo (mm)</b>. Tocá una pieza${compact?" o una barra":""} para cruzarlas.</div>`;
 
   const chips=`<div class="tmod-chips">${pieces.map(p=>{
     const hl=sel&&tMatchSel(p,p.perfil,sel);
@@ -3649,9 +3722,10 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
 
   if(compact){
     return `<details class="card" data-sec="tmodel2" ${S.open.tmodel2!==false?"open":""}>
-      <summary><h2>Plano del modelo</h2><span class="sumv mono">${m.ancho}×${m.alto}${isProf?`×${m.prof}`:""} mm</span>${svg("chev",'class="chev"')}</summary>
+      <summary><h2>Plano y cortes del pedido</h2><span class="sumv mono">${m.ancho}×${m.alto}${isProf?`×${m.prof}`:""} mm</span>${svg("chev",'class="chev"')}</summary>
       <div class="inner">
-        <div class="tmod-stage">${tModelSVG(m,pmap,sel)}${legend}</div>
+        ${multiTabs}
+        <div class="tmod-stage">${tModelSVG(m,pmap,sel,{plan})}${legend}</div>
         ${chips}
         ${selBar}
       </div>
@@ -3663,10 +3737,11 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
       <h2 id="t_modh">Modelo visual 2D</h2>
       <span class="small muted mono">${m.ancho}×${m.alto}${isProf?`×${m.prof}`:""} mm</span>
     </div>
+    ${multiTabs}
     <div class="presets" role="group" aria-label="Elegir plantilla de modelo">
       ${T_MODELS.map(x=>`<button type="button" class="preset" data-tmtype="${x.id}" aria-pressed="${m.type===x.id}">${x.label}</button>`).join("")}
     </div>
-    <div class="tmod-stage">${tModelSVG(m,pmap,sel)}${legend}</div>
+    <div class="tmod-stage">${tModelSVG(m,pmap,sel,{plan})}${legend}</div>
     ${chips}
     ${selBar}
     <div class="tmod-fields ${isProf||isReja?"g3":""}">
@@ -3752,7 +3827,8 @@ function tPrintHTML(plan,pmap){
   const fecha=new Date().toLocaleDateString("es-AR",{day:"numeric",month:"long",year:"numeric"});
   const piezas={};
   T.cuts.forEach(c=>{ const k=[c.parte||"",c.perfil,c.len,c.ang].join("|"); piezas[k]=(piezas[k]||0)+c.qty; });
-  const modBlock=T.modelActive?`<div class="pmodel">${tModelSVG(T.model,pmap,null,{forPrint:true})}</div>`:"";
+  const printList=T.modelActive?(T.models.length>1?T.models:[T.model]):[];
+  const modBlock=printList.map(mo=>`<div class="pmodel">${mo.label?`<div style="font-weight:700;font-size:11pt;margin-bottom:2mm">${esc(mo.label)}</div>`:""}${tModelSVG(mo,pmap,null,{forPrint:true})}</div>`).join("");
   return `<h1>Planilla de corte${T.obra?" — "+esc(T.obra):""}</h1>
   <div class="meta">${esc(fecha)} · Barras de ${fmtQ(T.barra/1000)} m · disco ${fmtQ(T.disco)} mm · medidas en mm · cortar primero los largos</div>
   ${modBlock}
@@ -3936,7 +4012,13 @@ function renderTaller(){
       ${perf.some(p=>p.example&&perfUsados.includes(p.key))?`<span class="small" style="opacity:.78">Los precios en amarillo son de referencia.</span>`:""}
     </section>
 
-    ${T.modelActive?tModelCardHTML(T.model,perf,pmap,plan,true):""}
+    ${T.modelActive?tModelCardHTML(T.model,perf,pmap,plan,true):`<details class="card" data-sec="tmodel2" ${S.open.tmodel2!==false?"open":""}>
+      <summary><h2>Gráfico de cortes del pedido</h2><span class="sumv mono">${nPzas} pieza${nPzas>1?"s":""}</span>${svg("chev",'class="chev"')}</summary>
+      <div class="inner">
+        <div class="tmod-stage">${tOrderCutsSVG(T.cuts,pmap,S.tSel)}</div>
+        <div class="small muted" style="padding:0 2px">Tocá un corte del gráfico o de las barras para ver de qué barra sale.</div>
+      </div>
+    </details>`}
 
     <section class="card" aria-labelledby="t_planh">
       <div class="tgh"><h2 id="t_planh">Plan de corte</h2><span class="small muted">Barras ${fmtQ(T.barra/1000)} m</span></div>
@@ -4073,14 +4155,19 @@ function tAddCuts(){
 
 app.addEventListener("click",e=>{
   if(S.screen!=="taller") return;
-  const b=e.target.closest("[data-tstep],[data-tact],[data-tang],[data-tu],[data-tq],[data-tdel],[data-tpc],[data-tflip],[data-tapply],[data-tdone],[data-tsaveret],[data-tdelret],[data-tload],[data-tdelobra],[data-tmtype],[data-tmang],[data-tmhojas],[data-tsel],[data-tbarcut],[data-tselclr]"); if(!b) return;
+  const b=e.target.closest("[data-tstep],[data-tact],[data-tang],[data-tu],[data-tq],[data-tdel],[data-tpc],[data-tflip],[data-tapply],[data-tdone],[data-tsaveret],[data-tdelret],[data-tload],[data-tdelobra],[data-tmtype],[data-tmang],[data-tmhojas],[data-tmidx],[data-tsel],[data-tbarcut],[data-tselclr]"); if(!b) return;
   const d=b.dataset;
   if(d.tsel){ return tToggleSel(d.tsel); }
   if(d.tbarcut){ return tToggleSel(d.tbarcut); }
   if(d.tselclr!==undefined){ S.tSel=null; return rerenderTaller(); }
+  if(d.tmidx!==undefined){
+    const idx=+d.tmidx;
+    if(T.models[idx]){ T.modelIdx=idx; T.model={...T_MODEL_DEF,...T.models[idx]}; S.tSel=null; saveT(); }
+    return rerenderTaller();
+  }
   if(d.tmtype){
     const tpl=T_MODELS.find(x=>x.id===d.tmtype);
-    if(tpl){ T.model={...T_MODEL_DEF,...tpl.def,type:tpl.id}; S.tSel=null; saveT(); }
+    if(tpl){ T.model={...T_MODEL_DEF,...tpl.def,type:tpl.id}; T.models=[]; T.modelIdx=0; S.tSel=null; saveT(); }
     return rerenderTaller();
   }
   if(d.tmang){ T.model.ang=d.tmang; saveT(); return rerenderTaller(); }
