@@ -1,0 +1,290 @@
+<title>Padilla: tres caminos</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=Atkinson+Hyperlegible:wght@400;700&family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&display=swap">
+<style>
+/* Hoja de comparación: tres teléfonos lado a lado, cada uno con su mundo cerrado (clases .pa / .pb / .pc). */
+:root{
+  --page:#EEF0F2; --page-ink:#15191D; --page-mute:#545C64; --page-line:#D3D8DD; --page-card:#FFFFFF;
+  --f-ui:"Barlow",system-ui,sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--page:#14181B;--page-ink:#E9ECEF;--page-mute:#A3ACB4;--page-line:#2B3238;--page-card:#1C2125;color-scheme:dark}}
+:root[data-theme="dark"]{--page:#14181B;--page-ink:#E9ECEF;--page-mute:#A3ACB4;--page-line:#2B3238;--page-card:#1C2125;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--page);color:var(--page-ink);font-family:var(--f-ui);font-size:15px;line-height:1.45}
+.wrap{max-width:1240px;margin:0 auto;padding-block:28px 56px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:28px}
+.intro h1{font-family:"Barlow Condensed",var(--f-ui);font-weight:800;font-size:2.1rem;line-height:1.05;margin:0 0 6px;text-wrap:balance}
+.intro p{margin:0;color:var(--page-mute);max-width:62ch}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:28px;align-items:start}
+.col{display:flex;flex-direction:column;gap:14px;min-width:0}
+.cap{display:flex;flex-direction:column;gap:6px}
+.cap h2{margin:0;font-family:"Barlow Condensed",var(--f-ui);font-weight:800;font-size:1.55rem;line-height:1.1}
+.cap .tag{font-size:12px;font-weight:600;color:var(--page-mute)}
+.cap p{margin:0;font-size:14px;max-width:46ch}
+.cap dl{display:grid;grid-template-columns:auto 1fr;gap:4px 10px;margin:4px 0 0;font-size:13.5px}
+.cap dt{font-weight:700}
+.cap dd{margin:0;color:var(--page-mute)}
+.chips{display:flex;gap:4px}
+.chips i{width:22px;height:22px;border-radius:5px;border:1px solid var(--page-line);display:block}
+.phone{width:360px;max-width:100%;border-radius:30px;overflow:hidden;border:8px solid #22282D;box-shadow:0 18px 40px -18px rgba(10,15,20,.45);align-self:center;font-variant-numeric:tabular-nums}
+.note{font-size:13px;color:var(--page-mute);max-width:70ch}
+svg.ic{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+
+/* ============ A · PUNTA PINTADA ============ */
+.pa{--verde:#1E4A39;--verde2:#2D634E;--cal:#ECEEE9;--blanco:#FFFFFF;--tinta:#141B17;--mute:#55605A;--linea:#D5DAD4;--amarillo:#F2B705;--acero:#A5ADA9;--acero2:#8B9490;
+  --p8040:#2E7D4F;--p4020:#E0A100;--pplan:#C8361F;
+  background:var(--cal);color:var(--tinta);font-family:"Barlow",system-ui,sans-serif;font-size:14px}
+.pa .hd{background:var(--verde);color:#F1F4EF;padding:14px 16px 0}
+.pa .hd .t{display:flex;justify-content:space-between;align-items:baseline}
+.pa .hd h3{margin:0;font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:28px;letter-spacing:.04em;text-transform:uppercase}
+.pa .hd .ob{font-size:13px;opacity:.85}
+.pa .tabs{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:12px}
+.pa .tabs span{text-align:center;padding:9px 0 10px;font-weight:700;font-size:13.5px;border-radius:9px 9px 0 0;color:#CFE0D7}
+.pa .tabs .on{background:var(--cal);color:var(--tinta)}
+.pa .bd{padding:14px 12px 16px;display:flex;flex-direction:column;gap:12px}
+.pa .pn{background:var(--blanco);border-radius:12px;padding:14px;box-shadow:0 1px 2px rgba(20,27,23,.08);display:flex;flex-direction:column;gap:10px}
+.pa .buy{display:flex;justify-content:space-between;align-items:flex-end}
+.pa .buy .k{font-size:12.5px;font-weight:600;color:var(--mute)}
+.pa .buy .n{font-family:"Barlow Condensed",sans-serif;font-weight:800;font-size:44px;line-height:.95}
+.pa .buy .m{font-family:"Barlow Condensed",sans-serif;font-weight:700;font-size:24px;text-align:right}
+.pa .row{display:grid;grid-template-columns:30px 1fr auto;gap:10px;align-items:center;padding-top:9px;border-top:1px solid var(--linea)}
+.pa .row b{font-family:"Barlow Condensed",sans-serif;font-size:24px;font-weight:800}
+.pa .row .nm{font-weight:600;line-height:1.2}
+.pa .row .nm small{display:block;font-weight:500;color:var(--mute);font-size:12px}
+.pa .row .pr{font-weight:700}
+.pa .stub{width:30px;height:12px;border-radius:2px;background:linear-gradient(90deg,var(--acero) 0 70%,var(--c) 70% 100%)}
+.pa .ph{display:flex;align-items:center;gap:8px;font-family:"Barlow Condensed",sans-serif;font-size:19px;font-weight:700;text-transform:uppercase;letter-spacing:.03em}
+.pa .ph small{margin-left:auto;font-family:"Barlow",sans-serif;text-transform:none;letter-spacing:0;font-size:12.5px;color:var(--mute);font-weight:600}
+.pa .bar{display:flex;flex-direction:column;gap:5px;padding-top:9px;border-top:1px dashed var(--linea)}
+.pa .bar .l{display:flex;justify-content:space-between;font-size:12.5px;font-weight:700}
+.pa .strip{display:flex;height:22px;border-radius:3px;overflow:hidden;background:var(--cal)}
+.pa .strip .c{background:var(--acero);color:#10160F;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;border-right:2px solid var(--cal)}
+.pa .strip .s{background:repeating-linear-gradient(135deg,#E3E6E1 0 4px,#F2F3F0 4px 8px);font-size:10.5px;color:var(--mute);display:flex;align-items:center;justify-content:center;font-weight:600}
+.pa .strip .s.g{background:#F7EBC1;color:#6A5000}
+.pa .strip .end{width:9px;background:var(--p8040)}
+.pa .keep{align-self:flex-start;background:#F7EBC1;color:#5D4600;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700}
+.pa .more{display:flex;align-items:center;gap:8px;font-weight:600;padding:12px 14px;background:var(--blanco);border-radius:12px}
+.pa .more span:last-child{margin-left:auto;color:var(--mute);font-weight:500}
+.pa .cta{background:var(--amarillo);color:#1E1700;border:0;border-radius:12px;padding:15px;font:700 17px "Barlow",sans-serif;width:100%;box-shadow:0 2px 0 #B98C00}
+.pa .nav{display:grid;grid-template-columns:repeat(4,1fr);background:var(--blanco);border-top:1px solid var(--linea);padding:8px 4px 10px}
+.pa .nav span{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;font-weight:600;color:var(--mute)}
+.pa .nav .on{color:var(--verde)}
+.pa .nav .on svg{stroke:var(--verde)}
+
+/* ============ B · CUADERNO ============ */
+.pb{--hoja:#FBFCFE;--grilla:#DCE6F3;--birome:#1D3B9A;--birome2:#3553B5;--margen:#B8322A;--tinta:#1B2330;--mute:#5B6472;--linea:#E2E7EE;--suave:#EEF2F9;
+  background:var(--hoja);color:var(--tinta);font-family:"Atkinson Hyperlegible",system-ui,sans-serif;font-size:14px}
+.pb .ab{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 6px}
+.pb .ab .w{font-weight:700;font-size:20px;color:var(--birome);letter-spacing:-.01em}
+.pb .ab .o{font-size:12.5px;color:var(--mute);text-align:right;line-height:1.25}
+.pb .top{display:flex;gap:2px;padding:0 12px;border-bottom:1px solid var(--linea)}
+.pb .top span{padding:10px 10px 9px;font-weight:700;font-size:13.5px;color:var(--mute);border-bottom:3px solid transparent}
+.pb .top .on{color:var(--birome);border-bottom-color:var(--birome)}
+.pb .seg{display:grid;grid-template-columns:repeat(3,1fr);margin:12px 12px 0;background:var(--suave);border-radius:10px;padding:3px}
+.pb .seg span{text-align:center;padding:8px 0;font-size:13px;font-weight:700;color:var(--mute);border-radius:8px}
+.pb .seg .on{background:#fff;color:var(--birome);box-shadow:0 1px 3px rgba(29,59,154,.18)}
+.pb .bd{padding:14px 12px 18px;display:flex;flex-direction:column;gap:14px}
+.pb .cuenta{position:relative;padding:12px 14px 14px 52px;background-color:#fff;background-image:linear-gradient(var(--grilla) 1px,transparent 1px),linear-gradient(90deg,var(--grilla) 1px,transparent 1px);background-size:12px 12px;border:1px solid var(--linea);border-radius:10px}
+.pb .cuenta::before{content:"";position:absolute;left:40px;top:0;bottom:0;width:1px;background:var(--margen)}
+.pb .cuenta h4{margin:0 0 6px;font-size:13px;color:var(--mute)}
+.pb .ln{display:grid;grid-template-columns:62px 1fr auto;gap:8px;align-items:baseline;color:var(--birome);font-size:15px;padding:3px 0}
+.pb .ln .p{font-weight:700;color:var(--tinta);font-size:13.5px}
+.pb .ln .mm{text-align:right;white-space:nowrap}
+.pb .ln .b{font-weight:700;text-align:right;white-space:nowrap}
+.pb .rule{border-top:2px solid var(--birome);margin:6px 0 2px;box-shadow:0 3px 0 -1px var(--hoja),0 4px 0 0 var(--birome)}
+.pb .tot{display:flex;justify-content:space-between;align-items:center;margin-top:10px}
+.pb .box{border:2px solid var(--birome);border-radius:4px;padding:4px 10px;color:var(--birome);font-weight:700;font-size:22px;background:#fff}
+.pb .tot .pesos{font-weight:700;font-size:20px;color:var(--tinta)}
+.pb .h{font-weight:700;font-size:16px;margin:0;display:flex;justify-content:space-between;align-items:baseline}
+.pb .h small{font-weight:400;color:var(--mute);font-size:12.5px}
+.pb .bar{display:flex;flex-direction:column;gap:4px;padding:8px 0;border-top:1px solid var(--linea)}
+.pb .bar .l{display:flex;justify-content:space-between;font-size:12.5px;color:var(--mute)}
+.pb .bar .l b{color:var(--tinta)}
+.pb .strip{display:flex;height:20px;border:1.5px solid var(--birome);border-radius:2px;overflow:hidden}
+.pb .strip .c{border-right:1.5px solid var(--birome);color:var(--birome);font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;background:#fff}
+.pb .strip .s{background:repeating-linear-gradient(135deg,transparent 0 5px,rgba(184,50,42,.14) 5px 6px);display:flex;align-items:center;justify-content:center;font-size:10.5px;color:var(--margen);font-weight:700}
+.pb .red{color:var(--margen);font-weight:700;font-size:12.5px}
+.pb .cta{background:var(--birome);color:#fff;border:0;border-radius:10px;padding:14px;font:700 16px "Atkinson Hyperlegible",sans-serif;width:100%}
+.pb .fold{display:flex;justify-content:space-between;padding:12px 2px;border-top:1px solid var(--linea);font-weight:700}
+.pb .fold span:last-child{color:var(--mute);font-weight:400}
+
+/* ============ C · ANTIÓXIDO ============ */
+.pc{--oxido:#8A2E21;--oxido2:#A63A2A;--gris:#E2E5E6;--conv:#4D5458;--negro:#17191A;--blanco:#FFFFFF;--mute:#5A6165;--linea:#CBD0D2;
+  background:var(--gris);color:var(--negro);font-family:"Archivo",system-ui,sans-serif;font-size:14px;font-stretch:100%}
+.pc .hd{background:var(--oxido);color:#FFF4F0;padding:12px 14px 14px}
+.pc .hd .t{display:flex;align-items:center;gap:10px}
+.pc .hd .mn{width:36px;height:36px;border-radius:8px;display:grid;place-items:center;background:rgba(255,255,255,.12)}
+.pc .hd h3{margin:0;font-weight:900;font-size:24px;font-stretch:118%;text-transform:uppercase;letter-spacing:.01em}
+.pc .hd .sp{font-size:12px;opacity:.86;margin-top:2px;font-stretch:90%}
+.pc .steps{display:flex;gap:6px;margin-top:12px}
+.pc .steps span{flex:1;display:flex;align-items:center;gap:6px;padding:7px 8px;border-radius:8px;background:rgba(255,255,255,.1);font-size:12.5px;font-weight:700;font-stretch:90%}
+.pc .steps i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:rgba(255,255,255,.2);font-size:11px}
+.pc .steps .on{background:#FFF4F0;color:var(--oxido)}
+.pc .steps .on i{background:var(--oxido);color:#fff}
+.pc .bd{padding:12px 10px 14px;display:flex;flex-direction:column;gap:10px}
+.pc .lab{background:var(--blanco);border-radius:6px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.pc .lab .nm{display:flex;justify-content:space-between;align-items:baseline;padding:10px 12px 8px;border-top:4px solid var(--negro)}
+.pc .lab .nm b{font-weight:900;font-size:21px;font-stretch:80%;text-transform:uppercase;letter-spacing:.01em}
+.pc .lab .nm span{font-size:12px;color:var(--mute);font-stretch:90%}
+.pc .spec{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--linea)}
+.pc .spec div{padding:7px 10px 8px;border-right:1px solid var(--linea);display:flex;flex-direction:column}
+.pc .spec div:last-child{border-right:0}
+.pc .spec small{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--mute);text-transform:uppercase}
+.pc .spec b{font-size:18px;font-weight:800;font-stretch:85%}
+.pc .spec .hot b{color:var(--oxido)}
+.pc .bars{padding:4px 12px 10px;display:flex;flex-direction:column}
+.pc .bars .r{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:7px 0;border-top:1px solid #EEF0F1;font-size:13px}
+.pc .bars .r .i{font-weight:800;font-stretch:80%;color:var(--mute)}
+.pc .bars .r .cuts{font-stretch:88%}
+.pc .bars .r .so{font-weight:700;font-size:12.5px;font-stretch:88%}
+.pc .bars .r .so.g{color:#fff;background:var(--conv);padding:2px 7px;border-radius:4px}
+.pc .mini{height:6px;grid-column:2/4;display:flex;gap:2px;margin-top:-3px}
+.pc .mini i{display:block;background:var(--conv);border-radius:1px}
+.pc .mini i.s{background:repeating-linear-gradient(90deg,#C9CED0 0 3px,transparent 3px 5px)}
+.pc .lab.sm .nm{border-top-width:4px}
+.pc .bot{background:var(--negro);color:#fff;padding:10px 12px 12px;display:flex;align-items:center;gap:10px}
+.pc .bot .tt small{display:block;font-size:11px;color:#B9C0C3;font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+.pc .bot .tt b{font-size:22px;font-weight:900;font-stretch:85%}
+.pc .bot button{margin-left:auto;background:var(--oxido2);color:#fff;border:0;border-radius:8px;padding:12px 14px;font:800 15px "Archivo",sans-serif;font-stretch:95%}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <h1>Padilla: tres caminos de diseño</h1>
+    <p>La misma pantalla en las tres propuestas: Taller, paso 2 "Plan y compra", con el frente del cuaderno (PF1, PF2, PTA1) cargado. Lo que cambia es el aire de la app: letras, colores, cuánto entra en pantalla y un detalle propio de cada mundo. Lo que hace la app no cambia. Los nombres de obra y cortes son de ejemplo.</p>
+  </header>
+
+  <div class="grid">
+
+    <!-- ================= A ================= -->
+    <section class="col" aria-labelledby="ha">
+      <div class="cap">
+        <h2 id="ha">A · Punta pintada</h2>
+        <span class="tag">Del cartel pintado del taller y las barras marcadas del corralón</span>
+        <p>Verde de esmalte arriba, pared encalada de fondo, amarillo para lo que hay que tocar. Cada perfil tiene su color, como la punta pintada de las barras en el corralón, y ese color lo sigue a todos lados.</p>
+        <div class="chips" aria-label="Colores"><i style="background:#1E4A39"></i><i style="background:#ECEEE9"></i><i style="background:#F2B705"></i><i style="background:#2E7D4F"></i><i style="background:#E0A100"></i><i style="background:#C8361F"></i></div>
+        <dl>
+          <dt>Letra</dt><dd>Condensada de cartel para números y títulos, simple para el resto.</dd>
+          <dt>Detalle</dt><dd>La punta de color de cada perfil, en la lista de compra, en las barras y en los retazos.</dd>
+          <dt>Riesgo</dt><dd>Con más de 5 o 6 perfiles los colores empiezan a parecerse.</dd>
+        </dl>
+      </div>
+      <div class="phone pa" role="img" aria-label="Propuesta A en celular">
+        <div class="hd">
+          <div class="t"><h3>Taller</h3><span class="ob">Frente PF1 · PF2 · PTA1</span></div>
+          <div class="tabs"><span>1. Cortes</span><span class="on">2. Plan y compra</span><span>3. Retazos</span></div>
+        </div>
+        <div class="bd">
+          <div class="pn">
+            <div class="buy"><div><div class="k">Hay que comprar</div><div class="n">8 barras</div></div><div><div class="k" style="text-align:right">Material</div><div class="m">$ 332.800</div></div></div>
+            <div class="row"><span class="stub" style="--c:#2E7D4F"></span><span class="nm">Caño 80×40<small>$ 59.000 c/u</small></span><b>4</b></div>
+            <div class="row"><span class="stub" style="--c:#E0A100"></span><span class="nm">Caño 40×20<small>$ 29.000 c/u</small></span><b>3</b></div>
+            <div class="row"><span class="stub" style="--c:#C8361F"></span><span class="nm">Planchuela 1¼ × ⅛<small>$ 9.800 c/u</small></span><b>1</b></div>
+          </div>
+          <div class="pn">
+            <div class="ph"><span class="stub" style="--c:#2E7D4F"></span>Caño 80×40<small>4 barras de 6 m</small></div>
+            <div class="bar"><div class="l"><span>Barra 1</span><span>sobra 714</span></div><div class="strip"><span class="c" style="flex:2640">2640 45°</span><span class="c" style="flex:2640">2640 45°</span><span class="s" style="flex:714"></span><span class="end"></span></div></div>
+            <div class="bar"><div class="l"><span>Barra 2</span><span>sobra 31</span></div><div class="strip"><span class="c" style="flex:2400">2400</span><span class="c" style="flex:2400">2400</span><span class="c" style="flex:1160">1160</span><span class="end"></span></div></div>
+            <div class="bar"><div class="l"><span>Barra 3</span><span>sobra 98</span></div><div class="strip"><span class="c" style="flex:1530">1530</span><span class="c" style="flex:1530">1530</span><span class="c" style="flex:1530">1530</span><span class="c" style="flex:1300">1300</span><span class="end"></span></div></div>
+            <div class="bar"><div class="l"><span>Barra 4</span><span>sobra 2001</span></div><div class="strip"><span class="c" style="flex:1530">1530</span><span class="c" style="flex:1300">1300</span><span class="c" style="flex:1160">1160</span><span class="s g" style="flex:2001">guardar</span><span class="end"></span></div><span class="keep">Retazo de 2001 mm para guardar</span></div>
+          </div>
+          <div class="more"><span class="stub" style="--c:#E0A100"></span><span>Caño 40×20</span><span>3 barras</span></div>
+          <div class="more"><span class="stub" style="--c:#C8361F"></span><span>Planchuela 1¼ × ⅛</span><span>1 barra</span></div>
+          <button class="cta" type="button">Terminé de cortar</button>
+        </div>
+        <div class="nav">
+          <span><svg class="ic" viewBox="0 0 24 24"><path d="M6 3h9l3 3v15H6z"/><path d="M9 11h6M9 15h6"/></svg>Presupuestar</span>
+          <span class="on"><svg class="ic" viewBox="0 0 24 24"><path d="M3 15h18v4H3z"/><path d="M7 15v-4h10v4M10 11V7h4v4"/></svg>Taller</span>
+          <span><svg class="ic" viewBox="0 0 24 24"><path d="M4 12l8-8h8v8l-8 8z"/><circle cx="16" cy="8" r="1.5"/></svg>Precios</span>
+          <span><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M5.6 18.4l2.1-2.1M16.3 7.7l2.1-2.1"/></svg>Ajustes</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= B ================= -->
+    <section class="col" aria-labelledby="hb">
+      <div class="cap">
+        <h2 id="hb">B · Cuaderno</h2>
+        <span class="tag">De su cuaderno cuadriculado y la birome azul</span>
+        <p>Hoja blanca, tinta azul para todo lo que él carga o la app calcula, la línea roja del margen para lo que sobra. Arriba, la cuenta escrita como en el cuaderno: milímetros por perfil, división por 6 metros y el total en un recuadro.</p>
+        <div class="chips" aria-label="Colores"><i style="background:#FBFCFE"></i><i style="background:#DCE6F3"></i><i style="background:#1D3B9A"></i><i style="background:#B8322A"></i><i style="background:#1B2330"></i></div>
+        <dl>
+          <dt>Letra</dt><dd>Atkinson Hyperlegible: hecha para leer fácil, también al sol.</dd>
+          <dt>Detalle</dt><dd>La cuenta del cuaderno, con su raya doble y el resultado en un recuadro.</dd>
+          <dt>Riesgo</dt><dd>Es el camino más previsible y puede quedar demasiado tranquilo.</dd>
+        </dl>
+      </div>
+      <div class="phone pb" role="img" aria-label="Propuesta B en celular">
+        <div class="ab"><span class="w">Padilla</span><span class="o">Frente PF1 · PF2 · PTA1<br>barras de 6 m · disco 3 mm</span></div>
+        <div class="top"><span>Presupuestar</span><span class="on">Taller</span><span>Precios</span><span>Ajustes</span></div>
+        <div class="seg"><span>Cortes</span><span class="on">Plan y compra</span><span>Retazos</span></div>
+        <div class="bd">
+          <div class="cuenta">
+            <h4>La cuenta (mm de corte ÷ barra de 6 m)</h4>
+            <div class="ln"><span class="p">80×40</span><span class="mm">20.080 mm</span><span class="b">÷ 6 m = 4 b.</span></div>
+            <div class="ln"><span class="p">40×20</span><span class="mm">13.330 mm</span><span class="b">÷ 6 m = 3 b.</span></div>
+            <div class="ln"><span class="p">Planch.</span><span class="mm">2.440 mm</span><span class="b">÷ 6 m = 1 b.</span></div>
+            <div class="rule"></div>
+            <div class="tot"><span class="box">8 barras</span><span class="pesos">$ 332.800</span></div>
+          </div>
+          <h4 class="h">Caño 80×40 <small>4 barras · sobran 2.844 mm</small></h4>
+          <div>
+            <div class="bar"><div class="l"><b>Barra 1</b><span>sobra 714</span></div><div class="strip"><span class="c" style="flex:2640">2640 ∠45</span><span class="c" style="flex:2640">2640 ∠45</span><span class="s" style="flex:714"></span></div></div>
+            <div class="bar"><div class="l"><b>Barra 2</b><span>sobra 31</span></div><div class="strip"><span class="c" style="flex:2400">2400</span><span class="c" style="flex:2400">2400</span><span class="c" style="flex:1160;border-right:0">1160</span></div></div>
+            <div class="bar"><div class="l"><b>Barra 3</b><span>sobra 98</span></div><div class="strip"><span class="c" style="flex:1530">1530</span><span class="c" style="flex:1530">1530</span><span class="c" style="flex:1530">1530</span><span class="c" style="flex:1300;border-right:0">1300</span></div></div>
+            <div class="bar"><div class="l"><b>Barra 4</b><span class="red">sobra 2001 → guardar</span></div><div class="strip"><span class="c" style="flex:1530">1530</span><span class="c" style="flex:1300">1300</span><span class="c" style="flex:1160">1160</span><span class="s" style="flex:2001">2001</span></div></div>
+          </div>
+          <div class="fold"><span>Caño 40×20</span><span>3 barras ›</span></div>
+          <div class="fold" style="margin-top:-14px"><span>Planchuela 1¼ × ⅛</span><span>1 barra ›</span></div>
+          <button class="cta" type="button">Terminé de cortar</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= C ================= -->
+    <section class="col" aria-labelledby="hc">
+      <div class="cap">
+        <h2 id="hc">C · Antióxido</h2>
+        <span class="tag">De la lata de convertidor y su etiqueta técnica</span>
+        <p>Rojo óxido fuerte arriba, gris convertidor de fondo, todo en mayúsculas anchas de etiqueta. Cada perfil es una etiqueta con su ficha técnica en columnas (barras, kilos, plata, sobrante). El total y "Terminé" quedan siempre fijos abajo, al alcance del pulgar.</p>
+        <div class="chips" aria-label="Colores"><i style="background:#8A2E21"></i><i style="background:#E2E5E6"></i><i style="background:#4D5458"></i><i style="background:#17191A"></i><i style="background:#FFFFFF"></i></div>
+        <dl>
+          <dt>Letra</dt><dd>Archivo, de ancha para títulos a angosta para tablas, como en las etiquetas.</dd>
+          <dt>Detalle</dt><dd>La ficha técnica de cada perfil en franjas de etiqueta.</dd>
+          <dt>Riesgo</dt><dd>Entra mucha información junta; con poca luz puede cansar.</dd>
+        </dl>
+      </div>
+      <div class="phone pc" role="img" aria-label="Propuesta C en celular">
+        <div class="hd">
+          <div class="t"><span class="mn"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></span><div><h3>Taller</h3><div class="sp">Frente PF1 · PF2 · PTA1 — barras 6 m, disco 3 mm</div></div></div>
+          <div class="steps"><span><i>1</i>Cortes</span><span class="on"><i>2</i>Plan</span><span><i>3</i>Retazos</span></div>
+        </div>
+        <div class="bd">
+          <div class="lab">
+            <div class="nm"><b>Caño 80×40</b><span>1,6 mm · $ 59.000</span></div>
+            <div class="spec"><div><small>Barras</small><b>4</b></div><div><small>Kilos</small><b>58,0</b></div><div><small>Pesos</small><b>236.000</b></div><div class="hot"><small>Sobra</small><b>2,8 m</b></div></div>
+            <div class="bars">
+              <div class="r"><span class="i">B1</span><span class="cuts">2640∠ · 2640∠</span><span class="so">714</span><span class="mini"><i style="flex:2640"></i><i style="flex:2640"></i><i class="s" style="flex:714"></i></span></div>
+              <div class="r"><span class="i">B2</span><span class="cuts">2400 · 2400 · 1160</span><span class="so">31</span><span class="mini"><i style="flex:2400"></i><i style="flex:2400"></i><i style="flex:1160"></i></span></div>
+              <div class="r"><span class="i">B3</span><span class="cuts">1530 ×3 · 1300</span><span class="so">98</span><span class="mini"><i style="flex:4590"></i><i style="flex:1300"></i></span></div>
+              <div class="r"><span class="i">B4</span><span class="cuts">1530 · 1300 · 1160</span><span class="so g">2001 guardar</span><span class="mini"><i style="flex:1530"></i><i style="flex:1300"></i><i style="flex:1160"></i><i class="s" style="flex:2001"></i></span></div>
+            </div>
+          </div>
+          <div class="lab sm">
+            <div class="nm"><b>Caño 40×20</b><span>1,6 mm · $ 29.000</span></div>
+            <div class="spec"><div><small>Barras</small><b>3</b></div><div><small>Kilos</small><b>18,5</b></div><div><small>Pesos</small><b>87.000</b></div><div class="hot"><small>Sobra</small><b>4,8 m</b></div></div>
+          </div>
+          <div class="lab sm">
+            <div class="nm"><b>Planchuela</b><span>1¼ × ⅛ · $ 9.800</span></div>
+            <div class="spec"><div><small>Barras</small><b>1</b></div><div><small>Kilos</small><b>1,9</b></div><div><small>Pesos</small><b>9.800</b></div><div class="hot"><small>Sobra</small><b>3,6 m</b></div></div>
+          </div>
+        </div>
+        <div class="bot"><div class="tt"><small>8 barras</small><b>$ 332.800</b></div><button type="button">Terminé de cortar</button></div>
+      </div>
+    </section>
+
+  </div>
+
+  <p class="note">Cómo elegir: mirá cuál leés más rápido de un vistazo, y cuál se va a ver mejor con sol en el taller. Se puede mezclar: por ejemplo, la cuenta del cuaderno (B) con los colores por perfil (A). Sale una sola dirección; después la aplico a toda la app (Presupuestar, Taller, Precios y Ajustes).</p>
+</div>
