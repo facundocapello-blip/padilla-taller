@@ -4276,9 +4276,6 @@ function renderTaller(){
 
     ${tFinishCardHTML(plan,pmap)}
 
-    <div class="tfix-sp" aria-hidden="true"></div>
-    <div class="tfix"><div class="in"><div><small>${totBuy} barra${totBuy!==1?"s":""}</small><b>${ars(totCost)}</b></div>${tTerminada()?`<span class="done">${svg("check")} Obra terminada</span>`:`<button type="button" class="btn primary" data-tact="finish">${svg("check")} Terminé de cortar</button>`}</div></div>
-
     <section class="card" aria-labelledby="t_planillah">
       <h2 id="t_planillah">Planilla para el que corta</h2>
       <div class="msg">${esc(planilla)}</div>
@@ -4291,6 +4288,8 @@ function renderTaller(){
       </div>
     </section>
     <button type="button" class="btn ghost sm" data-tstep="1">← Volver a 1. Cargar o editar cortes</button>
+    <div class="tfix-sp" aria-hidden="true"></div>
+    <div class="tfix"><div class="in"><div><small>${totBuy} barra${totBuy!==1?"s":""}</small><b>${ars(totCost)}</b></div>${tTerminada()?`<span class="done">${svg("check")} Obra terminada</span>`:`<button type="button" class="btn primary" data-tact="finish">${svg("check")} Terminé de cortar</button>`}</div></div>
     ` : `<section class="card">
       <h2>Todavía no cargaste cortes</h2>
       <p class="small muted" style="margin:0">Primero cargá las medidas en el paso 1 (o probá con el ejemplo del cuaderno) para ver cuántas barras comprar y el plan de corte.</p>
