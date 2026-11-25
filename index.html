@@ -4008,7 +4008,7 @@ const tRango=g=>g.bar.retazo?`Retazo ${g.bar.len} mm${g.n>1?` (×${g.n})`:""}`:(
 function tPlanillaText(plan,pmap){
   const L=[`PLANILLA DE CORTE${T.obra?" — "+T.obra:""}`,`Barras de ${fmtQ(T.barra/1000)} m · disco ${fmtQ(T.disco)} mm · medidas en mm`,""];
   plan.forEach(g=>{
-    const name=(pmap[g.perfil]?.n||g.perfil).toUpperCase();
+    const name=pmap[g.perfil]?.n||g.perfil;
     const extra=g.retUsed.length?` (+ ${g.retUsed.length} retazo${g.retUsed.length>1?"s":""})`:"";
     L.push(`▸ ${name} — ${g.newBars.length} barra${g.newBars.length!==1?"s":""} nueva${g.newBars.length!==1?"s":""}${extra}`);
     tGroupBars(g.bars).forEach(x=>{
@@ -4234,7 +4234,7 @@ function renderTaller(){
         ${totBuy>0?`<button type="button" class="btn ghost sm" style="background:rgba(255,255,255,.1);color:var(--on-slab);border-color:rgba(255,255,255,.22)" data-tact="corralon">${svg("cart")} Corralón</button>`:`<span></span>`}
         <button type="button" class="btn primary sm" data-tact="presu">Presupuestar →</button>
       </div>
-      ${perf.some(p=>p.example&&perfUsados.includes(p.key))?`<span class="small" style="opacity:.78">Los precios en amarillo son de referencia.</span>`:""}
+      ${perf.some(p=>p.example&&perfUsados.includes(p.key))?`<span class="small" style="opacity:.78">Hay precios de referencia: cargá los tuyos en Precios.</span>`:""}
     </section>
 
     ${retUsedBanner}
