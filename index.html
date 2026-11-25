@@ -10,13 +10,12 @@
 <meta name="apple-mobile-web-app-title" content="Padilla">
 <meta name="description" content="Padilla · Taller y Presupuestos: app de herrería, pintura y trabajos del hogar con planos 2D, planilla de cortes y presupuestos con y sin comisión de Clickie.">
 <title>Padilla · Taller y Presupuestos</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
+<link rel="preload" href="./archivo.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111E2A'/%3E%3Crect x='7' y='7' width='50' height='50' fill='none' stroke='%23223547' stroke-width='3'/%3E%3Cpath d='M19 15h17a11.5 11.5 0 0 1 0 23H28v11h-9V15zm9 8v7h8a3.5 3.5 0 0 0 0-7h-8z' fill='%23F8FAFC'/%3E%3Crect x='31' y='43' width='16' height='6' fill='%23FF7A2E'/%3E%3C/svg%3E">
 <style>
+@font-face{font-family:"Archivo";src:url(./archivo.woff2) format("woff2");font-weight:400 900;font-stretch:62% 125%;font-display:swap}
 /* Mundo Antióxido: cada pantalla es la etiqueta técnica de una lata de convertidor. Rojo óxido a sangre arriba, gris convertidor de fondo, paneles blancos con regla negra, Archivo ancha para títulos y angosta para datos. */
 :root{
   --bg:#E2E5E6; --surface:#EEF0F1; --card:#FFFFFF; --ink:#17191A; --muted:#545B60; --line:#CBD0D2; --line-strong:#9AA1A5;
@@ -32,13 +31,13 @@
   --tactile-accent:var(--lift);
   --z-bar:20; --z-toast:30; --z-dialog:40;
   --font:"Archivo", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --mono:ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --mono:"Archivo", system-ui, sans-serif;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
   --bg:#111315; --surface:#1A1D1F; --card:#202426; --ink:#EDEFF0; --muted:#A2AAAF; --line:#33393C; --line-strong:#4A5256;
   --accent:#E0664C; --accent-dark:#A8412E; --accent-soft:rgba(224,102,76,.16); --accent-ink:#1A0906;
-  --band:#7A281C; --on-band:#FFF1EC; --on-band-mute:#E9C2B9; --conv:#8C9498;
+  --band:#7A281C; --on-band:#FFF1EC; --on-band-mute:#E9C2B9; --conv:#5F676B;
   --slab:#0B0C0D; --slab-soft:#24282A; --on-slab:#F3F4F5;
   --good:#6EE7A0; --good-bg:rgba(34,197,94,.15); --warn:#FBBF24; --warn-bg:rgba(245,158,11,.15);
   --err:#FCA5A5; --err-bg:rgba(239,68,68,.16);
@@ -50,7 +49,7 @@
 :root[data-theme="dark"]{
   --bg:#111315; --surface:#1A1D1F; --card:#202426; --ink:#EDEFF0; --muted:#A2AAAF; --line:#33393C; --line-strong:#4A5256;
   --accent:#E0664C; --accent-dark:#A8412E; --accent-soft:rgba(224,102,76,.16); --accent-ink:#1A0906;
-  --band:#7A281C; --on-band:#FFF1EC; --on-band-mute:#E9C2B9; --conv:#8C9498;
+  --band:#7A281C; --on-band:#FFF1EC; --on-band-mute:#E9C2B9; --conv:#5F676B;
   --slab:#0B0C0D; --slab-soft:#24282A; --on-slab:#F3F4F5;
   --good:#6EE7A0; --good-bg:rgba(34,197,94,.15); --warn:#FBBF24; --warn-bg:rgba(245,158,11,.15);
   --err:#FCA5A5; --err-bg:rgba(239,68,68,.16);
@@ -630,6 +629,25 @@ h3{font-size:14px;font-weight:800;font-stretch:88%}
 .barsvg .bt{fill:#fff} .barsvg .bt.alt{fill:var(--card)}
 .barsvg .bseg.hl .bp{fill:var(--accent)}
 .btn.danger{color:var(--card)}
+.clickie-toggle .cbadge{color:var(--card)}
+.tangbtn.on,.barck[aria-pressed="true"]{box-shadow:none}
+.mono,.bargrp .bc,.tparte,.tmod-chip,.tangbtn,.tlen,.tlenw,.mini .qval,.tmod-sel b,.tmod-svg text,.tord-svg text,.barsvg text{font-family:var(--font);font-stretch:80%;font-variant-numeric:tabular-nums}
+.navbtn[aria-current="page"]{background:transparent;font-weight:850}
+.navbtn[aria-current="page"] svg{stroke-width:2.2}
+details.card > summary .sumv{white-space:nowrap}
+.pricein.example{border-color:var(--line-strong);background:var(--surface);color:var(--ink)}
+.tbuy .pricein.example{color:var(--ink)}
+.tag-ex{color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:10px;font-stretch:90%}
+.addqbtn{background:transparent;border-color:var(--line-strong);color:var(--accent)}
+/* Total y acción fijos sobre la navegación en Plan y compra */
+.tfix{position:fixed;left:0;right:0;bottom:calc(56px + env(safe-area-inset-bottom));z-index:var(--z-bar);display:flex;justify-content:center;padding:0 0 0;pointer-events:none}
+.tfix .in{pointer-events:auto;max-width:600px;width:100%;background:var(--slab);color:var(--on-slab);display:flex;align-items:center;gap:10px;padding:9px 12px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));box-shadow:0 -6px 16px -8px rgba(0,0,0,.4)}
+.tfix small{display:block;font-size:10.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:#B9C0C3;font-stretch:90%}
+.tfix b{font-size:21px;font-weight:900;font-stretch:82%;font-variant-numeric:tabular-nums}
+.tfix .btn{margin-left:auto;min-height:42px}
+.tfix .done{margin-left:auto;font-size:13px;font-weight:750;color:#9BE2B5;display:inline-flex;align-items:center;gap:5px}
+.tfix .done svg{width:15px;height:15px}
+.tfix-sp{height:70px}
 </style>
 </head>
 <body>
@@ -3586,10 +3604,12 @@ function tRetUsedText(plan,pmap){
   return `Usás ${items.length} retazo${items.length>1?"s":""} que ya tenés: ${items.join(" · ")}`;
 }
 
-/* Ficha técnica de un perfil del plan: kilos cortados, plata en barras a comprar, mm que sobran de barras nuevas. */
+/* Ficha técnica de un perfil del plan: kilos de las barras a comprar (lo que se carga), plata en barras a comprar, mm que sobran de barras nuevas. */
 function tSpec(g,pmap){
-  const p=pmap[g.perfil]||{}, cut=g.bars.reduce((s,b)=>s+b.pieces.reduce((a,x)=>a+x.len,0),0)+g.largas.reduce((s,x)=>s+x.len,0);
-  return {kg:p.kgm?Math.round(cut/1000*p.kgm*10)/10:0,pesos:g.buyBars*(p.price||0),sobra:g.newBars.reduce((s,b)=>s+b.sobra,0)};
+  const p=pmap[g.perfil]||{}, n=p.n||g.perfil, m=n.match(/^(.*?)\s*\(([^)]*)\)\s*$/);
+  const x=t=>t.replace(/(\d)\s*x\s*(\d)/gi,"$1×$2");
+  const nombre=x(m?m[1]:n), meta=[m?m[2]:"",p.price?"$ "+fmtN(p.price)+" c/u":""].filter(Boolean).join(" · ");
+  return {nombre,meta,kg:p.kgm?Math.round(g.buyBars*T.barra/1000*p.kgm*10)/10:0,pesos:g.buyBars*(p.price||0),sobra:g.newBars.reduce((s,b)=>s+b.sobra,0)};
 }
 
 function tObraEntry(name){
@@ -4045,7 +4065,7 @@ const T_EJEMPLO=[
 /* Tarjeta "Terminé de cortar": botón, lista de sobrantes con tildes, o aviso de obra ya terminada. */
 function tFinishCardHTML(plan,pmap){
   if(tTerminada()) return `<section class="card" aria-label="Obra terminada"><div class="banner good">${svg("check")}<div>Obra terminada: el stock de retazos ya está al día.</div></div></section>`;
-  if(!S.tFin) return `<button type="button" class="btn primary" data-tact="finish">${svg("check")} Terminé de cortar</button>`;
+  if(!S.tFin) return "";
   const left=tLeftovers(plan,T.minSob), nUsed=plan.reduce((s,g)=>s+g.retUsed.length,0);
   const keyOf=k=>k.perfil+"|"+k.len;
   return `<section class="card" aria-labelledby="t_finh">
@@ -4087,9 +4107,8 @@ function renderTaller(){
       const cm=b.pieces.reduce((s,p)=>s+p.len,0);
       totCutMm+=cm;
       if(b.sobra>=T.minSob) totGuardMm+=b.sobra;
-      if(kgm) totKg+=(cm/1000)*kgm;
     });
-    g.largas.forEach(p=>{ if(kgm) totKg+=(p.len/1000)*kgm; });
+    if(kgm) totKg+=g.buyBars*T.barra/1000*kgm;
   });
   const aprovPct=totMatMm?Math.round(totCutMm/totMatMm*100):0;
   const uForm=T.form.u||"mm";
@@ -4231,9 +4250,9 @@ function renderTaller(){
       <div class="tgh"><h2 id="t_planh">Plan de corte</h2><span class="small muted">Barras ${fmtQ(T.barra/1000)} m</span></div>
       ${barSelInfo}
       ${plan.map(g=>{ const sp=tSpec(g,pmap); return `<div>
-        <div class="tlabh"><h3>${esc(pname(g.perfil))}</h3><span>${g.newBars.length} barra${g.newBars.length!==1?"s":""}${g.retUsed.length?` + ${g.retUsed.length} retazo${g.retUsed.length>1?"s":""}`:""}</span></div>
+        <div class="tlabh"><h3>${esc(sp.nombre)}</h3><span>${esc(sp.meta)}</span></div>
         <div class="tspec" role="group" aria-label="Ficha de ${esc(pname(g.perfil))}">
-          <div><small>Barras</small><b>${g.buyBars}</b></div>
+          <div><small>Barras</small><b>${g.buyBars}${g.retUsed.length?`<span class="small muted"> +${g.retUsed.length}R</span>`:""}</b></div>
           <div><small>Kilos</small><b>${sp.kg?fmtQ(sp.kg):"—"}</b></div>
           <div><small>Pesos</small><b>${sp.pesos?fmtN(sp.pesos):"—"}</b></div>
           <div class="hot"><small>Sobra</small><b>${fmtQ(Math.round(sp.sobra/100)/10)} m</b></div>
@@ -4256,6 +4275,9 @@ function renderTaller(){
     </section>
 
     ${tFinishCardHTML(plan,pmap)}
+
+    <div class="tfix-sp" aria-hidden="true"></div>
+    <div class="tfix"><div class="in"><div><small>${totBuy} barra${totBuy!==1?"s":""}</small><b>${ars(totCost)}</b></div>${tTerminada()?`<span class="done">${svg("check")} Obra terminada</span>`:`<button type="button" class="btn primary" data-tact="finish">${svg("check")} Terminé de cortar</button>`}</div></div>
 
     <section class="card" aria-labelledby="t_planillah">
       <h2 id="t_planillah">Planilla para el que corta</h2>
@@ -4310,7 +4332,7 @@ function renderTaller(){
   <div class="top">
     <div>
       <h1>Taller: cortes de barras</h1>
-      <p class="top-sub" style="margin:2px 0 0">1. Modelo y cortes → 2. Plan y compra → 3. Retazos</p>
+      <p class="top-sub" style="margin:2px 0 0">${T.obra?esc(T.obra)+" — ":""}barras ${fmtQ(T.barra/1000)} m · disco ${fmtQ(T.disco)} mm</p>
     </div>
   </div>
 
@@ -4427,7 +4449,7 @@ app.addEventListener("click",e=>{
   if(d.tq){ const c=T.cuts.find(x=>x.id===d.tq); if(c){ c.qty=Math.max(1,Math.min(500,c.qty+(+d.d))); saveT(); } return rerenderTaller(); }
   if(d.tdel){ T.cuts=T.cuts.filter(x=>x.id!==d.tdel); saveT(); toast("Corte borrado"); return rerenderTaller(); }
   const a=d.tact;
-  if(a==="finish"){ S.tFin={off:{}}; return rerenderTaller(); }
+  if(a==="finish"){ S.tFin={off:{}}; rerenderTaller(); const h=document.getElementById("t_finh"); if(h) h.scrollIntoView({block:"center"}); return; }
   if(a==="finishno"){ S.tFin=null; return rerenderTaller(); }
   if(a==="finishok"){
     const plan=S.tPlan||[], off=(S.tFin&&S.tFin.off)||{};
