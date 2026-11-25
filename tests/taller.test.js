@@ -168,6 +168,41 @@ const pcs = (page, m) => page.evaluate(m => tModelPieces(m).map(p => ({ k: p.key
     assert.strictEqual(r[2], "");
   });
 
+  /* ---- Task 3: el trabajo del cuaderno (cuentas a mano de la foto) ---- */
+  const barras = (page, cuts) => page.evaluate(cuts => tPlan(cuts.map(c => ({ ...c, parte: "", ang: "90" })), 6000, 3, []).map(g => [g.perfil, g.buyBars]), cuts);
+  await test("cuaderno: PF1+PF2 en 80x40 (a mano 15250 mm = 3 barras)", async () => {
+    const p = await open();
+    const r = await barras(p, [{ perfil: "cano_8040", len: 2640, qty: 2 }, { perfil: "cano_8040", len: 1530, qty: 3 }, { perfil: "cano_8040", len: 1160, qty: 2 }, { perfil: "cano_8040", len: 1530, qty: 2 }]);
+    console.log("      app:", JSON.stringify(r));
+    assert.ok(r[0][1] <= 3);
+  });
+  await test("cuaderno: PTA a mano 20000 mm = 4 barras", async () => {
+    const p = await open();
+    const r = await barras(p, [{ perfil: "cano_8040", len: 2400, qty: 4 }, { perfil: "cano_8040", len: 1300, qty: 6 }, { perfil: "cano_8040", len: 2600, qty: 1 }]);
+    console.log("      app:", JSON.stringify(r));
+    assert.ok(r[0][1] <= 4);
+  });
+  await test("cuaderno: PF1, PF2 y PTA1 armados con los modelos nuevos", async () => {
+    const p = await open();
+    const r = await p.evaluate(() => {
+      const ms = [{ ...tTypeDef("pano"), label: "PF1", ancho: 2640, alto: 1530, hojas: 2 }, { ...tTypeDef("pano"), label: "PF2", ancho: 1160, alto: 1530 }, { ...tTypeDef("puerta"), label: "PTA1", ancho: 1300, alto: 2400 }];
+      const cuts = ms.flatMap(m => tModelPieces(m).map(x => ({ perfil: x.perfil, len: x.len, qty: x.qty, parte: x.parte, ang: x.ang })));
+      return tPlan(cuts, 6000, 3, []).map(g => [g.perfil, g.buyBars]);
+    });
+    console.log("      app:", JSON.stringify(r));
+    assert.ok(r.length >= 2 && r.every(x => x[1] >= 1));
+  });
+  await test("sin errores de JS al abrir y renderizar el Taller (3 pasos, panel de terminar)", async () => {
+    const p = await open();
+    await p.evaluate(() => { go("taller"); });
+    for (const step of [1, 2, 3]) { await p.evaluate(s => { T.step = s; if (s === 2) { T.cuts = [{ id: "x", perfil: "cano_8040", parte: "", ang: "90", len: 3497, qty: 2 }]; T.retazos = [{ id: "r", perfil: "cano_8040", len: 4000 }]; T.cuts.push({ id: "y", perfil: "cano_8040", parte: "", ang: "90", len: 3900, qty: 1 }); } renderTaller(); }, step); }
+    await p.evaluate(() => { T.step = 2; S.tFin = { off: {} }; renderTaller(); });
+    assert.ok(await p.locator("[data-tfinck]").count() >= 1);
+    await p.click('[data-tact="finishok"]');
+    assert.ok(await p.locator("text=Obra terminada").count() >= 1);
+    assert.deepStrictEqual(p.errs, []);
+  });
+
   await browser.close();
   console.log(`\n${ran - fails}/${ran} ok`);
   process.exit(fails ? 1 : 0);
