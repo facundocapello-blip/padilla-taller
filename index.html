@@ -3,55 +3,60 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111E2A">
+<meta name="theme-color" content="#8A2E21">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Padilla">
 <meta name="description" content="Padilla · Taller y Presupuestos: app de herrería, pintura y trabajos del hogar con planos 2D, planilla de cortes y presupuestos con y sin comisión de Clickie.">
 <title>Padilla · Taller y Presupuestos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&display=swap">
 <link rel="manifest" href="./manifest.webmanifest">
 <link rel="apple-touch-icon" href="./icon-192.png">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111E2A'/%3E%3Crect x='7' y='7' width='50' height='50' fill='none' stroke='%23223547' stroke-width='3'/%3E%3Cpath d='M19 15h17a11.5 11.5 0 0 1 0 23H28v11h-9V15zm9 8v7h8a3.5 3.5 0 0 0 0-7h-8z' fill='%23F8FAFC'/%3E%3Crect x='31' y='43' width='16' height='6' fill='%23FF7A2E'/%3E%3C/svg%3E">
 <style>
-/* Diseño Opción 1 · Taller Táctil: gris chapa, tinta azul acero, acento naranja seguridad, relieve táctil y steppers agrupados al pulgar derecho. */
+/* Mundo Antióxido: cada pantalla es la etiqueta técnica de una lata de convertidor. Rojo óxido a sangre arriba, gris convertidor de fondo, paneles blancos con regla negra, Archivo ancha para títulos y angosta para datos. */
 :root{
-  --bg:#E9EDF1; --surface:#DCE3EA; --card:#FFFFFF; --ink:#13212E; --muted:#526373; --line:#B8C4D0; --line-strong:#8A99A8;
-  --accent:#B93D0A; --accent-dark:#7C2806; --accent-soft:#FFF1E8; --accent-ink:#FFFFFF;
-  --wa:#15803D; --slab:#13212E; --slab-soft:#1E3142; --on-slab:#EEF3F7;
-  --good:#15803D; --good-bg:#DDF3E7; --warn:#8A5A00; --warn-bg:#FFF1C7;
-  --err:#B91C1C; --err-bg:#FEE2E2;
+  --bg:#E2E5E6; --surface:#EEF0F1; --card:#FFFFFF; --ink:#17191A; --muted:#545B60; --line:#CBD0D2; --line-strong:#9AA1A5;
+  --accent:#8A2E21; --accent-dark:#5E1D14; --accent-soft:#F6E4E0; --accent-ink:#FFFFFF;
+  --band:#8A2E21; --on-band:#FFF4F0; --on-band-mute:#F2CFC7; --conv:#4D5458;
+  --wa:#15803D; --slab:#17191A; --slab-soft:#2A2F32; --on-slab:#F4F5F6;
+  --good:#166534; --good-bg:#DCEFE2; --warn:#7A4E00; --warn-bg:#FBEFC9;
+  --err:#B42318; --err-bg:#FDE3E0;
   --ml-dot:#EAB308;
-  --shadow:0 2px 0 rgba(19,33,46,.12);
-  --tactile-ink:0 3px 0 #13212E;
-  --tactile-accent:0 3px 0 #7C2806;
+  --shadow:0 1px 2px rgba(23,25,26,.1);
+  --lift:0 1px 2px rgba(23,25,26,.08),0 4px 10px -6px rgba(23,25,26,.18);
+  --tactile-ink:var(--lift);
+  --tactile-accent:var(--lift);
   --z-bar:20; --z-toast:30; --z-dialog:40;
-  --font:system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font:"Archivo", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   --mono:ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0B1117; --surface:#161F2A; --card:#111923; --ink:#F3F4F6; --muted:#94A3B8; --line:#263547; --line-strong:#3B4F66;
-  --accent:#FF7A2E; --accent-dark:#B94A0B; --accent-soft:rgba(255,122,46,.16); --accent-ink:#140E0A;
-  --slab:#172230; --slab-soft:#223142; --on-slab:#F8FAFC;
-  --good:#4ADE80; --good-bg:rgba(34,197,94,.16); --warn:#FBBF24; --warn-bg:rgba(245,158,11,.15);
+  --bg:#111315; --surface:#1A1D1F; --card:#202426; --ink:#EDEFF0; --muted:#A2AAAF; --line:#33393C; --line-strong:#4A5256;
+  --accent:#E0664C; --accent-dark:#A8412E; --accent-soft:rgba(224,102,76,.16); --accent-ink:#1A0906;
+  --band:#7A281C; --on-band:#FFF1EC; --on-band-mute:#E9C2B9; --conv:#8C9498;
+  --slab:#0B0C0D; --slab-soft:#24282A; --on-slab:#F3F4F5;
+  --good:#6EE7A0; --good-bg:rgba(34,197,94,.15); --warn:#FBBF24; --warn-bg:rgba(245,158,11,.15);
   --err:#FCA5A5; --err-bg:rgba(239,68,68,.16);
   --ml-dot:#FACC15;
-  --shadow:0 2px 0 rgba(0,0,0,.38);
-  --tactile-ink:0 3px 0 #05080C;
-  --tactile-accent:0 3px 0 #9A3B06;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+  --lift:0 1px 2px rgba(0,0,0,.4),0 6px 14px -8px rgba(0,0,0,.6);
   color-scheme: dark;
 } }
 :root[data-theme="dark"]{
-  --bg:#0B1117; --surface:#161F2A; --card:#111923; --ink:#F3F4F6; --muted:#94A3B8; --line:#263547; --line-strong:#3B4F66;
-  --accent:#FF7A2E; --accent-dark:#B94A0B; --accent-soft:rgba(255,122,46,.16); --accent-ink:#140E0A;
-  --slab:#172230; --slab-soft:#223142; --on-slab:#F8FAFC;
-  --good:#4ADE80; --good-bg:rgba(34,197,94,.16); --warn:#FBBF24; --warn-bg:rgba(245,158,11,.15);
+  --bg:#111315; --surface:#1A1D1F; --card:#202426; --ink:#EDEFF0; --muted:#A2AAAF; --line:#33393C; --line-strong:#4A5256;
+  --accent:#E0664C; --accent-dark:#A8412E; --accent-soft:rgba(224,102,76,.16); --accent-ink:#1A0906;
+  --band:#7A281C; --on-band:#FFF1EC; --on-band-mute:#E9C2B9; --conv:#8C9498;
+  --slab:#0B0C0D; --slab-soft:#24282A; --on-slab:#F3F4F5;
+  --good:#6EE7A0; --good-bg:rgba(34,197,94,.15); --warn:#FBBF24; --warn-bg:rgba(245,158,11,.15);
   --err:#FCA5A5; --err-bg:rgba(239,68,68,.16);
   --ml-dot:#FACC15;
-  --shadow:0 2px 0 rgba(0,0,0,.38);
-  --tactile-ink:0 3px 0 #05080C;
-  --tactile-accent:0 3px 0 #9A3B06;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+  --lift:0 1px 2px rgba(0,0,0,.4),0 6px 14px -8px rgba(0,0,0,.6);
   color-scheme: dark;
 }
 
@@ -552,6 +557,79 @@ dialog.dlg p{margin:0 0 14px;font-size:13.5px;color:var(--muted)}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none !important}}
 @media (min-width:540px){ .grid{grid-template-columns:repeat(3,1fr)} }
+
+/* ===== Mundo Antióxido: capa de componentes ===== */
+body{font-stretch:100%;font-weight:500}
+h1{font-size:19px;font-weight:900;font-stretch:110%;text-transform:uppercase;letter-spacing:.01em;line-height:1.05}
+h2{font-size:16.5px;font-weight:850;font-stretch:82%;text-transform:uppercase;letter-spacing:.015em}
+h3{font-size:14px;font-weight:800;font-stretch:88%}
+.sec-lbl,.field > label,.flabel{font-stretch:92%;letter-spacing:.06em;font-weight:750}
+.small,.muted{font-stretch:95%}
+::selection{background:var(--band);color:var(--on-band)}
+
+/* Banda de encabezado a sangre en cada pantalla */
+.top{background:var(--band);color:var(--on-band);margin:-12px -12px 2px;padding:16px 14px 14px;min-height:0;align-items:flex-start}
+.top h1{color:var(--on-band)}
+.top .top-sub{color:var(--on-band-mute);font-stretch:92%;font-size:12.5px;margin-top:4px}
+.top .back{color:var(--on-band)}
+.top .chipbtn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);color:var(--on-band);box-shadow:none}
+.top .chipbtn svg{color:var(--on-band)}
+.top .askpill{background:rgba(255,255,255,.14);color:var(--on-band)}
+
+/* Paneles con regla negra de etiqueta; sin relieve de juguete */
+.card,.clickie-box,.rep-card,.item,.picker{border:0;border-top:4px solid var(--ink);border-radius:6px;box-shadow:var(--lift)}
+.card.tactile,.clickie-box.open{border:0;border-top:4px solid var(--band);box-shadow:var(--lift)}
+.card.flush{border-top-width:4px}
+.item{border-top-width:3px}
+.item.cont,.rep-card.in-cart{border-top-color:var(--accent)}
+.total-card{border-top:4px solid var(--band);border-radius:6px}
+.job{border:0;border-top:4px solid var(--ink);border-radius:6px;box-shadow:var(--lift);font-stretch:88%;text-transform:uppercase;letter-spacing:.01em;font-weight:850}
+.job:active{transform:translateY(1px);box-shadow:var(--shadow);border-top-color:var(--band)}
+.job svg{color:var(--band)}
+.job small{text-transform:none;letter-spacing:0;font-stretch:95%}
+
+/* Botones: rojo óxido plano, sombra corta y suave */
+.btn{border-radius:8px;font-weight:800;font-stretch:95%;letter-spacing:.005em}
+.btn.primary,.btn.primary:active{box-shadow:0 1px 2px rgba(94,29,20,.35)}
+.btn.ghost,.btn.ghost:active{box-shadow:none;border-color:var(--line-strong)}
+.btn.wa,.btn.wa:active{box-shadow:none}
+.btn:active{transform:translateY(1px)}
+.chipbtn,.preset,.tangbtn,.barck,.mini button,.clickie-paste{box-shadow:none}
+.preset[aria-pressed="true"],.opt[aria-pressed="true"],.tmod-chip.hl{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);box-shadow:none}
+.stepper button.st-minus{box-shadow:none}
+.stepper button.st-plus{box-shadow:0 1px 2px rgba(94,29,20,.35)}
+.stepper button:active{box-shadow:none;transform:translateY(1px)}
+.swrow{box-shadow:none}
+.stepper input{font-stretch:85%}
+
+/* Pasos: chips con número, el activo en óxido */
+.steps{background:transparent;border:0;padding:0;gap:6px}
+.stepbtn{display:block;text-align:center;line-height:1.15;padding:7px 4px;background:var(--card);color:var(--muted);border-radius:8px;min-height:38px;font-size:12px;font-stretch:86%;box-shadow:var(--shadow)}
+.stepbtn[aria-selected="true"]{background:var(--band);color:var(--on-band);box-shadow:none}
+.stepbtn[aria-selected="true"] .snum{color:var(--on-band)}
+.stepbtn .snum{margin-right:3px}
+
+/* Totales y barras fijas: negro de etiqueta */
+.total-card .big,.bar .t,.com-box .val,.pocket .v,.duo .box .v{font-stretch:82%;font-weight:900}
+.bar{border-top:0}
+.navbtn{font-stretch:92%}
+.navbtn[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+.nav{border-top:1px solid var(--line)}
+
+/* Ficha técnica por perfil en el Plan de corte */
+.tspec{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:2px 0 4px}
+.tspec > div{padding:6px 8px 7px;border-left:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.tspec > div:first-child{border-left:0;padding-left:0}
+.tspec small{font-size:10.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-stretch:90%}
+.tspec b{font-size:18px;font-weight:850;font-stretch:82%;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tspec .hot b{color:var(--accent)}
+.tlabh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-top:10px;border-top:4px solid var(--ink);margin-top:6px}
+.tlabh h3{font-size:16.5px;min-width:0;font-weight:900;font-stretch:80%;text-transform:uppercase;letter-spacing:.01em}
+.tlabh span{white-space:nowrap;flex:none;font-size:12px;color:var(--muted);font-stretch:90%}
+.barsvg .bp{fill:var(--conv)} .barsvg .bp.alt{fill:var(--ink)}
+.barsvg .bt{fill:#fff} .barsvg .bt.alt{fill:var(--card)}
+.barsvg .bseg.hl .bp{fill:var(--accent)}
+.btn.danger{color:var(--card)}
 </style>
 </head>
 <body>
@@ -3508,6 +3586,12 @@ function tRetUsedText(plan,pmap){
   return `Usás ${items.length} retazo${items.length>1?"s":""} que ya tenés: ${items.join(" · ")}`;
 }
 
+/* Ficha técnica de un perfil del plan: kilos cortados, plata en barras a comprar, mm que sobran de barras nuevas. */
+function tSpec(g,pmap){
+  const p=pmap[g.perfil]||{}, cut=g.bars.reduce((s,b)=>s+b.pieces.reduce((a,x)=>a+x.len,0),0)+g.largas.reduce((s,x)=>s+x.len,0);
+  return {kg:p.kgm?Math.round(cut/1000*p.kgm*10)/10:0,pesos:g.buyBars*(p.price||0),sobra:g.newBars.reduce((s,b)=>s+b.sobra,0)};
+}
+
 function tObraEntry(name){
   return {id:tId(),obra:name,date:Date.now(),barra:T.barra,disco:T.disco,minSob:T.minSob,model:{...T.model},modelActive:!!T.modelActive,cuts:JSON.parse(JSON.stringify(T.cuts))};
 }
@@ -4146,8 +4230,14 @@ function renderTaller(){
     <section class="card" aria-labelledby="t_planh">
       <div class="tgh"><h2 id="t_planh">Plan de corte</h2><span class="small muted">Barras ${fmtQ(T.barra/1000)} m</span></div>
       ${barSelInfo}
-      ${plan.map(g=>`<div>
-        <div class="tgh"><h3>${esc(pname(g.perfil))}</h3><span class="muted small">${g.newBars.length} barra${g.newBars.length!==1?"s":""}${g.retUsed.length?` + ${g.retUsed.length} retazo${g.retUsed.length>1?"s":""}`:""}</span></div>
+      ${plan.map(g=>{ const sp=tSpec(g,pmap); return `<div>
+        <div class="tlabh"><h3>${esc(pname(g.perfil))}</h3><span>${g.newBars.length} barra${g.newBars.length!==1?"s":""}${g.retUsed.length?` + ${g.retUsed.length} retazo${g.retUsed.length>1?"s":""}`:""}</span></div>
+        <div class="tspec" role="group" aria-label="Ficha de ${esc(pname(g.perfil))}">
+          <div><small>Barras</small><b>${g.buyBars}</b></div>
+          <div><small>Kilos</small><b>${sp.kg?fmtQ(sp.kg):"—"}</b></div>
+          <div><small>Pesos</small><b>${sp.pesos?fmtN(sp.pesos):"—"}</b></div>
+          <div class="hot"><small>Sobra</small><b>${fmtQ(Math.round(sp.sobra/100)/10)} m</b></div>
+        </div>
         ${g.tips.map(t=>`<div class="banner good" style="margin-top:6px">${svg("sparkle")}<div>Si cortás las de <b>${t.L}</b> a <b>${t.L2} mm</b> entra una más por barra y ${t.ahorro?`te ahorrás <b>${t.ahorro} barra${t.ahorro>1?"s":""}</b>`:`te queda un sobrante entero de <b>${fmtQ(t.sobra)} mm</b>`}. <button type="button" class="ov" style="color:inherit;text-decoration:underline;margin-left:4px" data-tapply="${esc(g.perfil)}" data-from="${t.L}" data-to="${t.L2}">Cambiar a ${t.L2} mm</button></div></div>`).join("")}
         ${g.largas.length?`<div class="banner warn" style="margin-top:6px">${svg("alert")}<div>${g.largas.length} corte${g.largas.length>1?"s":""} más largo${g.largas.length>1?"s":""} que la barra (${[...new Set(g.largas.map(p=>p.len))].join(", ")} mm): hay que empalmar.</div></div>`:""}
         ${tGroupBars(g.bars).map((x,gi)=>{
@@ -4162,7 +4252,7 @@ function renderTaller(){
             <div class="bc"><span>${x.bar.pieces.map(p=>esc(tCutTxt(p))).join(" · ")} → sobra ${fmtQ(x.bar.sobra)} mm</span>${x.bar.sobra>=T.minSob?`<button type="button" class="tsavbtn" data-tsaveret="${esc(g.perfil)}" data-rlen="${Math.round(x.bar.sobra)}">+ Retazo</button>`:""}</div>
           </div>`;
         }).join("")}
-      </div>`).join("")}
+      </div>`; }).join("")}
     </section>
 
     ${tFinishCardHTML(plan,pmap)}
