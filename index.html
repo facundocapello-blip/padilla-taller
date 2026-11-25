@@ -3069,11 +3069,7 @@ app.addEventListener("click",e=>{
     return askConfirm("¿Reemplazar los datos de este celular?","Esta acción reemplaza tus tarifas, repuestos e historial actuales por los de la copia.","Recuperar",b,()=>{
       cfg={...DEFAULT_CONFIG,...parsed.cfg}; prices=parsed.prices||{}; customMats=parsed.customMats||{}; favs=parsed.favs||[]; hist=parsed.hist||[];
       if(parsed.taller){
-        T={...T_DEF,...parsed.taller,form:{...T_DEF.form,...(parsed.taller.form||{})},model:{...T_MODEL_DEF,...(parsed.taller.model||{})}};
-        if(!Array.isArray(T.cuts)) T.cuts=[];
-        if(!Array.isArray(T.retazos)) T.retazos=[];
-        if(!Array.isArray(T.obras)) T.obras=[];
-        if(!T.done||typeof T.done!=="object") T.done={};
+        T=tNormalizeT(parsed.taller);
         saveT();
       }
       LS.set("presu_cfg",cfg); LS.set("presu_prices",prices); LS.set("presu_custom_mats",customMats); LS.set("presu_favs",favs); LS.set("presu_hist",hist);
@@ -3301,17 +3297,24 @@ app.addEventListener("focusin",e=>{
 /* ---------- TALLER: cortes de barras + modelo visual 2D (3 pasos: 1. Cargar cortes -> 2. Plan y compra -> 3. Retazos) ---------- */
 const tId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
 const T_MODEL_DEF={type:"reja",label:"",cant:1,ancho:1200,alto:1000,prof:600,sep:120,travesanos:2,hojas:1,corredizo:false,ang:"45",pMarco:"cano_4040",pInt:"cano_2020",pExtra:"planchuela"};
-const T_DEF={workId:"",obra:"",step:1,barra:6000,disco:3,minSob:300,cuts:[],done:{},retazos:[],obras:[],usarRetazos:true,modelActive:false,model:{...T_MODEL_DEF},models:[],modelIdx:0,form:{perfil:"cano_4040",parte:"",ang:"90",u:"mm",txt:""}};
-let T={...T_DEF,...LS.get("presu_taller",{})};
-T.form={...T_DEF.form,...(T.form||{})};
-T.model={...T_MODEL_DEF,...(T.model||{})};
-if(!Array.isArray(T.models)) T.models=[];
-if(!T.workId) T.workId=tId();
-if(![1,2,3].includes(T.step)) T.step=1;
-if(!Array.isArray(T.cuts)) T.cuts=[];
-if(!Array.isArray(T.retazos)) T.retazos=[];
-if(!Array.isArray(T.obras)) T.obras=[];
-if(!T.done||typeof T.done!=="object") T.done={};
+const T_DEF={workId:"",obra:"",step:1,barra:6000,disco:3,minSob:300,cuts:[],done:{},retazos:[],obras:[],recetas:{},lastFinish:null,usarRetazos:true,modelActive:false,model:{...T_MODEL_DEF},models:[],modelIdx:0,form:{perfil:"cano_4040",parte:"",ang:"90",u:"mm",txt:""}};
+/* Arma un T válido desde datos guardados o de un backup (completa lo que falte, arregla lo roto). */
+function tNormalizeT(raw){
+  const t={...T_DEF,...((raw&&typeof raw==="object"&&!Array.isArray(raw))?raw:{})};
+  t.form={...T_DEF.form,...(t.form||{})};
+  t.model={...T_MODEL_DEF,...(t.model||{})};
+  if(!Array.isArray(t.models)) t.models=[];
+  if(!t.workId) t.workId=tId();
+  if(![1,2,3].includes(t.step)) t.step=1;
+  if(!Array.isArray(t.cuts)) t.cuts=[];
+  if(!Array.isArray(t.retazos)) t.retazos=[];
+  if(!Array.isArray(t.obras)) t.obras=[];
+  if(!t.done||typeof t.done!=="object") t.done={};
+  t.recetas=(t.recetas&&typeof t.recetas==="object"&&!Array.isArray(t.recetas))?{...t.recetas}:{};
+  if(!t.lastFinish||typeof t.lastFinish!=="object"||!Array.isArray(t.lastFinish.usedRets)) t.lastFinish=null;
+  return t;
+}
+let T=tNormalizeT(LS.get("presu_taller",{}));
 const saveT=()=>LS.set("presu_taller",T);
 
 /* Convierte un número escrito a mm según unidad ('mm' o 'cm'). En 'mm', <20 se toma como metros (2,64 → 2640). */
@@ -3448,13 +3451,35 @@ function tGroupBars(bars){
 
 /* ---------- Modelo visual paramétrico 2D para Taller ---------- */
 const T_MODELS=[
-  {id:"reja",label:"Reja",def:{ancho:1200,alto:1000,sep:120,travesanos:2,ang:"90",pMarco:"cano_2020",pInt:"hierro_12",pExtra:"planchuela"}},
+  {id:"reja",label:"Reja",def:{ancho:1200,alto:1000,sep:120,travesanos:2,ang:"90",pMarco:"planchuela",pInt:"redondo_916",pExtra:"planchuela"}},
   {id:"porton",label:"Portón",def:{ancho:2400,alto:2000,sep:120,travesanos:3,hojas:2,corredizo:false,ang:"45",pMarco:"cano_4040",pInt:"cano_2020",pExtra:"planchuela"}},
   {id:"marco",label:"Marco",def:{ancho:1800,alto:2100,hojas:2,travesanos:3,ang:"45",pMarco:"cano_8040",pInt:"cano_4020",pExtra:"cano_4020"}},
+  {id:"pano",label:"Paño fijo",def:{ancho:1200,alto:1500,hojas:1,travesanos:1,ang:"45",pMarco:"cano_8040",pInt:"cano_4020",pExtra:"planchuela"}},
+  {id:"puerta",label:"Puerta",def:{ancho:900,alto:2000,sep:300,travesanos:2,ang:"45",pMarco:"cano_8040",pInt:"cano_4020",pExtra:"planchuela"}},
+  {id:"puertareja",label:"Puerta reja",def:{ancho:900,alto:2000,sep:120,travesanos:2,ang:"45",pMarco:"cano_4040",pInt:"redondo_916",pExtra:"planchuela"}},
   {id:"mesa",label:"Mesa",def:{ancho:1600,alto:750,prof:800,travesanos:1,ang:"90",pMarco:"cano_4040",pInt:"cano_4020",pExtra:"cano_2020"}},
   {id:"rack",label:"Rack",def:{ancho:1200,alto:1800,prof:400,travesanos:4,ang:"90",pMarco:"cano_3030",pInt:"cano_2020",pExtra:"cano_2020"}}
 ];
 const tClamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,Math.round(v)));
+const T_ROLES=["pMarco","pInt","pExtra"];
+const tIsPuerta=t=>t==="puerta"||t==="puertareja";
+
+/* Valores de arranque de un tipo: los del tipo, pisados por "mi receta" si existe y sus perfiles todavía están en el catálogo. */
+function tTypeDef(id){
+  const tpl=T_MODELS.find(x=>x.id===id)||T_MODELS[0];
+  const def={...T_MODEL_DEF,...tpl.def,type:tpl.id};
+  const rec=T.recetas&&T.recetas[tpl.id];
+  if(rec&&typeof rec==="object"){
+    const ok=new Set(tPerfiles().map(p=>p.key));
+    T_ROLES.forEach(k=>{ if(typeof rec[k]==="string"&&ok.has(rec[k])) def[k]=rec[k]; });
+  }
+  return def;
+}
+/* ¿Los perfiles del modelo son distintos a los de arranque de su tipo? (para ofrecer guardar receta) */
+function tRecetaDiffiere(m){
+  const base=tTypeDef(m.type);
+  return T_ROLES.some(k=>m[k]!==base[k]);
+}
 
 function tModelPieces(m){
   const A=tClamp(m.ancho||1200,200,6000), B=tClamp(m.alto||1000,200,4500), P=tClamp(m.prof||600,150,2500);
@@ -3482,6 +3507,18 @@ function tModelPieces(m){
     out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:2*n,ang,role:"marco"});
     if(cols>1) out.push({key:"par",label:"Parantes",parte:"PAR",perfil:pI,len:Math.max(100,B-80),qty:(cols-1)*n,ang:"90",role:"int"});
     if(rows>1) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pI,len:Math.max(100,A-80),qty:(rows-1)*n,ang:"90",role:"int"});
+  } else if(m.type==="pano"){
+    const cols=tClamp(m.hojas||1,1,5), rows=tClamp(m.travesanos||1,1,5);
+    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:A,qty:2*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:2*n,ang,role:"marco"});
+    if(cols>1) out.push({key:"par",label:"Parantes",parte:"PAR",perfil:pI,len:Math.max(100,B-80),qty:(cols-1)*n,ang:"90",role:"int"});
+    if(rows>1) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pI,len:Math.max(100,A-80),qty:(rows-1)*n,ang:"90",role:"int"});
+  } else if(tIsPuerta(m.type)){
+    const nBar=Math.max(0,Math.ceil(A/sep)-1), lBar=Math.max(100,B-80);
+    out.push({key:"marco_h",label:"Bastidor H",parte:"BAS H",perfil:pM,len:A,qty:2*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Bastidor V",parte:"BAS V",perfil:pM,len:B,qty:2*n,ang,role:"marco"});
+    if(nBar>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:lBar,qty:nBar*n,ang:"90",role:"int"});
+    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:Math.max(100,A-80),qty:tv*n,ang:"90",role:"extra"});
   } else if(m.type==="mesa"){
     out.push({key:"pata",label:"Patas",parte:"PATA",perfil:pM,len:B,qty:4*n,ang:"90",role:"marco"});
     out.push({key:"larg",label:"Largueros",parte:"LARG",perfil:pI,len:Math.max(100,A-80),qty:2*n,ang:"90",role:"int"});
@@ -3612,8 +3649,8 @@ function tModelSVG(m,pmap,sel,opts){
 
     body+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="var(--card)" opacity="${print?"0":"0.7"}"/>`;
 
-    if(m.type==="marco"){
-      const cols=tClamp(m.hojas||2,1,5), rows=tClamp(m.travesanos||2,1,5);
+    if(m.type==="marco"||m.type==="pano"){
+      const cols=tClamp(m.hojas||(m.type==="pano"?1:2),1,5), rows=tClamp(m.travesanos||(m.type==="pano"?1:2),1,5);
       if(cols>1){
         let d=""; for(let k=1;k<cols;k++){ const xx=x+w*k/cols; d+=`M${xx} ${y+3}V${y+h-3}`; }
         body+=grp("par",`<path d="${d}" class="tm-int" stroke-width="3.2"/>`,d,[x+w*0.36,y+h*0.30]);
@@ -3697,7 +3734,9 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
   const hasInt=pieces.some(p=>p.role==="int"), hasExtra=pieces.some(p=>p.role==="extra");
   const pname=k=>pmap[k]?.n||k;
   const isProf=m.type==="mesa"||m.type==="rack";
-  const isReja=m.type==="reja"||m.type==="porton";
+  const isReja=m.type==="reja"||m.type==="porton"||tIsPuerta(m.type);
+  const isGrid=m.type==="marco"||m.type==="pano";
+  const tipoLbl=T_MODELS.find(x=>x.id===m.type)?.label||"modelo";
 
   const multiTabs=T.models.length>1?`<div class="presets" role="group" aria-label="Aberturas del pedido">
     ${T.models.map((mo,idx)=>`<button type="button" class="preset" data-tmidx="${idx}" aria-pressed="${idx===T.modelIdx}">${esc(mo.label||`Pieza ${idx+1}`)}</button>`).join("")}
@@ -3749,8 +3788,8 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
       <div class="field"><label for="tm_b">Alto (mm)</label><input id="tm_b" class="txt mono" inputmode="numeric" data-tmf="alto" value="${m.alto}"></div>
       ${isProf?`<div class="field"><label for="tm_p">Prof. (mm)</label><input id="tm_p" class="txt mono" inputmode="numeric" data-tmf="prof" value="${m.prof}"></div>`:""}
       ${isReja?`<div class="field"><label for="tm_sep">Barrotes c/ (mm)</label><input id="tm_sep" class="txt mono" inputmode="numeric" data-tmf="sep" value="${m.sep}"></div>`:""}
-      ${m.type==="marco"?`<div class="field"><label for="tm_h">Paños ancho</label><input id="tm_h" class="txt mono" inputmode="numeric" data-tmf="hojas" value="${m.hojas}"></div>`:""}
-      <div class="field"><label for="tm_tv">${m.type==="rack"?"Estantes":m.type==="marco"?"Paños alto":m.type==="mesa"?"Refuerzos":"Travesaños"}</label><input id="tm_tv" class="txt mono" inputmode="numeric" data-tmf="travesanos" value="${m.travesanos}"></div>
+      ${isGrid?`<div class="field"><label for="tm_h">Paños ancho</label><input id="tm_h" class="txt mono" inputmode="numeric" data-tmf="hojas" value="${m.hojas}"></div>`:""}
+      <div class="field"><label for="tm_tv">${m.type==="rack"?"Estantes":isGrid?"Paños alto":m.type==="mesa"?"Refuerzos":"Travesaños"}</label><input id="tm_tv" class="txt mono" inputmode="numeric" data-tmf="travesanos" value="${m.travesanos}"></div>
       ${m.type==="porton"?`<div class="field"><span class="flabel">Hojas</span><div class="opts g2"><button type="button" class="opt sm" data-tmhojas="1" aria-pressed="${m.hojas!==2}">1</button><button type="button" class="opt sm" data-tmhojas="2" aria-pressed="${m.hojas===2}">2</button></div></div>`:""}
       ${!isProf?`<div class="field"><span class="flabel">Esquinas</span><div class="opts g2"><button type="button" class="opt sm" data-tmang="90" aria-pressed="${m.ang==="90"}">90°</button><button type="button" class="opt sm" data-tmang="45" aria-pressed="${m.ang==="45"}">45°</button></div></div>`:""}
     </div>
@@ -3761,6 +3800,7 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
         <div class="field"><label for="tm_pi">${isProf?"Largueros":"Interior / barrotes"}</label><select id="tm_pi" class="txt" data-tmf="pInt">${perf.map(p=>`<option value="${esc(p.key)}" ${p.key===m.pInt?"selected":""}>${esc(p.n)}</option>`).join("")}</select></div>
         ${hasExtra?`<div class="field"><label for="tm_pe">${m.type==="rack"?"Lateral est.":"Travesaños / ref."}</label><select id="tm_pe" class="txt" data-tmf="pExtra">${perf.map(p=>`<option value="${esc(p.key)}" ${p.key===m.pExtra?"selected":""}>${esc(p.n)}</option>`).join("")}</select></div>`:""}
       </div>
+      ${tRecetaDiffiere(m)?`<button type="button" class="btn ghost sm" style="margin-top:8px;width:100%" data-tact="saverec">Guardar como mi receta para ${esc(tipoLbl)}</button>`:(T.recetas&&T.recetas[m.type]?`<p class="small muted" style="margin:8px 0 0">Estos son los perfiles de tu receta de ${esc(tipoLbl)}.</p>`:"")}
     </details>
     <div class="two">
       <button type="button" class="btn primary sm" data-tact="tmgen">Cargar cortes (${pieces.reduce((s,p)=>s+p.qty,0)} pzas)</button>
@@ -4167,7 +4207,7 @@ app.addEventListener("click",e=>{
   }
   if(d.tmtype){
     const tpl=T_MODELS.find(x=>x.id===d.tmtype);
-    if(tpl){ T.model={...T_MODEL_DEF,...tpl.def,type:tpl.id}; T.models=[]; T.modelIdx=0; S.tSel=null; saveT(); }
+    if(tpl){ T.model=tTypeDef(tpl.id); T.models=[]; T.modelIdx=0; S.tSel=null; saveT(); }
     return rerenderTaller();
   }
   if(d.tmang){ T.model.ang=d.tmang; saveT(); return rerenderTaller(); }
@@ -4212,6 +4252,11 @@ app.addEventListener("click",e=>{
   if(d.tq){ const c=T.cuts.find(x=>x.id===d.tq); if(c){ c.qty=Math.max(1,Math.min(500,c.qty+(+d.d))); saveT(); } return rerenderTaller(); }
   if(d.tdel){ T.cuts=T.cuts.filter(x=>x.id!==d.tdel); saveT(); toast("Corte borrado"); return rerenderTaller(); }
   const a=d.tact;
+  if(a==="saverec"){
+    const ty=T.model.type, lbl=T_MODELS.find(x=>x.id===ty)?.label||ty;
+    T.recetas[ty]={pMarco:T.model.pMarco,pInt:T.model.pInt,pExtra:T.model.pExtra};
+    saveT(); toast(`Receta guardada: los próximos ${lbl} arrancan así`); return rerenderTaller();
+  }
   if(a==="tmcorr"){ T.model.corredizo=!T.model.corredizo; saveT(); return rerenderTaller(); }
   if(a==="tmgen"||a==="tmadd"){
     const pcs=tModelPieces(T.model);
