@@ -3386,12 +3386,12 @@ function tPack(pcs,barra,disco,retazos){
   let rem=pcs.filter(p=>p.len<=barra).sort((a,b)=>b.len-a.len);
   const bars=[];
   /* Primero intentar ubicar cortes en retazos guardados del taller (de menor a mayor para cuidar los largos) */
-  const rets=[...(retazos||[])].filter(r=>r>0&&r<=barra).sort((a,b)=>a-b);
-  for(const rLen of rets){
+  const rets=(retazos||[]).map(r=>typeof r==="number"?{len:r}:r).filter(r=>r.len>0&&r.len<=barra).sort((a,b)=>a.len-b.len);
+  for(const ret of rets){
     if(!rem.length) break;
-    const fit=tPackOne(rem,rLen,disco);
+    const rLen=ret.len, fit=tPackOne(rem,rLen,disco);
     if(fit){
-      bars.push({pieces:fit.pieces,sobra:fit.sobra,len:rLen,retazo:true});
+      bars.push({pieces:fit.pieces,sobra:fit.sobra,len:rLen,retazo:true,retId:ret.id});
       rem=fit.nextRem;
     }
   }
@@ -3406,7 +3406,7 @@ function tPack(pcs,barra,disco,retazos){
 
 function tPlan(cuts,barra,disco,retazosList){
   const by={}, retBy={};
-  (retazosList||[]).forEach(r=>{ (retBy[r.perfil]=retBy[r.perfil]||[]).push(r.len); });
+  (retazosList||[]).forEach(r=>{ (retBy[r.perfil]=retBy[r.perfil]||[]).push({id:r.id,len:r.len}); });
   cuts.forEach(c=>{ const a=(by[c.perfil]=by[c.perfil]||[]); for(let i=0;i<c.qty;i++) a.push({len:c.len,parte:c.parte,ang:c.ang}); });
   return Object.entries(by).map(([perfil,pcs])=>{
     const rets=retBy[perfil]||[];
@@ -3447,6 +3447,69 @@ function tGroupBars(bars){
     if(last&&last.sig===sig) last.n++; else out.push({sig,bar:b,n:1,from:b.retazo?0:barIdx});
   });
   return out;
+}
+
+/* ---------- Stock de retazos que se actualiza solo ---------- */
+/* Retazos que el plan puede usar: los del taller (menos los que salieron de esta misma obra) + los que esta obra ya gastó al terminar. */
+function tActiveRets(){
+  if(!T.usarRetazos) return [];
+  const own=T.retazos.filter(r=>!r.fromWork||r.fromWork!==T.workId);
+  const lf=T.lastFinish&&T.lastFinish.workId===T.workId?T.lastFinish.usedRets:[];
+  return [...own,...lf];
+}
+const tTerminada=()=>!!(T.lastFinish&&T.lastFinish.workId===T.workId);
+
+/* Sobrantes de barras nuevas que valen la pena guardar, agrupados por perfil y largo. */
+function tLeftovers(plan,minSob){
+  const map=new Map();
+  plan.forEach(g=>g.newBars.forEach(b=>{
+    const len=Math.floor(b.sobra);
+    if(b.sobra<minSob||len<=0) return;
+    const k=g.perfil+"|"+len, it=map.get(k);
+    if(it) it.n++; else map.set(k,{perfil:g.perfil,len,n:1});
+  }));
+  return [...map.values()].sort((a,b)=>b.len-a.len);
+}
+
+/* "Terminé de cortar": descuenta del stock los retazos usados, guarda los sobrantes elegidos y la obra. Una sola vez por obra. */
+function tFinishCutting(plan,keep){
+  if(tTerminada()) return {usados:0,guardados:0};
+  const usedRets=[];
+  plan.forEach(g=>g.retUsed.forEach(b=>{
+    const r=b.retId&&T.retazos.find(x=>x.id===b.retId);
+    if(r) usedRets.push({id:r.id,perfil:r.perfil,len:r.len});
+  }));
+  const ids=new Set(usedRets.map(r=>r.id));
+  T.retazos=T.retazos.filter(r=>!ids.has(r.id));
+  let guardados=0;
+  (keep||[]).forEach(k=>{
+    const len=Math.floor(+k.len), n=Math.floor(+k.n);
+    if(!(len>0)||!(n>0)||typeof k.perfil!=="string") return;
+    for(let i=0;i<n;i++){ T.retazos.push({id:tId(),perfil:k.perfil,len,fromWork:T.workId}); guardados++; }
+  });
+  plan.forEach(g=>tGroupBars(g.bars).forEach((x,gi)=>{ T.done[g.perfil+"|"+gi+"|"+x.sig]=true; }));
+  if(T.cuts.length){
+    const name=(T.obra||"").trim()||("Obra "+new Date().toLocaleDateString("es-AR",{day:"numeric",month:"short"}));
+    if(!T.obras.some(x=>String(x.obra||"").toLowerCase()===name.toLowerCase())){
+      T.obras.unshift(tObraEntry(name)); T.obras=T.obras.slice(0,15);
+    }
+    T.obra=name;
+  }
+  T.lastFinish={workId:T.workId,usedRets};
+  saveT();
+  return {usados:usedRets.length,guardados};
+}
+
+/* Texto del aviso "Usás N retazos que ya tenés: …" ('' si el plan no usa ninguno). */
+function tRetUsedText(plan,pmap){
+  const items=[];
+  plan.forEach(g=>g.retUsed.forEach(b=>items.push(`${pmap[g.perfil]?.n||g.perfil} de ${Math.round(b.len)} mm`)));
+  if(!items.length) return "";
+  return `Usás ${items.length} retazo${items.length>1?"s":""} que ya tenés: ${items.join(" · ")}`;
+}
+
+function tObraEntry(name){
+  return {id:tId(),obra:name,date:Date.now(),barra:T.barra,disco:T.disco,minSob:T.minSob,model:{...T.model},modelActive:!!T.modelActive,cuts:JSON.parse(JSON.stringify(T.cuts))};
 }
 
 /* ---------- Modelo visual paramétrico 2D para Taller ---------- */
@@ -3895,13 +3958,29 @@ const T_EJEMPLO=[
   {perfil:"cano_4020",parte:"PTA2",ang:"90",len:850,qty:4}
 ];
 
+/* Tarjeta "Terminé de cortar": botón, lista de sobrantes con tildes, o aviso de obra ya terminada. */
+function tFinishCardHTML(plan,pmap){
+  if(tTerminada()) return `<section class="card" aria-label="Obra terminada"><div class="banner good">${svg("check")}<div>Obra terminada: el stock de retazos ya está al día.</div></div></section>`;
+  if(!S.tFin) return `<button type="button" class="btn primary" data-tact="finish">${svg("check")} Terminé de cortar</button>`;
+  const left=tLeftovers(plan,T.minSob), nUsed=plan.reduce((s,g)=>s+g.retUsed.length,0);
+  const keyOf=k=>k.perfil+"|"+k.len;
+  return `<section class="card" aria-labelledby="t_finh">
+    <h2 id="t_finh">Terminé de cortar</h2>
+    <p class="small muted" style="margin:0">${nUsed?`Saco del stock ${nUsed} retazo${nUsed>1?"s":""} que usaste. `:""}${left.length?"Tildá los sobrantes que querés guardar para próximas obras:":"No sobró nada que valga la pena guardar."}</p>
+    ${left.length?`<ul class="rows">${left.map(k=>`<li class="row"><label style="display:flex;gap:8px;align-items:center;flex:1"><input type="checkbox" data-tfinck="${esc(keyOf(k))}" ${S.tFin.off&&S.tFin.off[keyOf(k)]?"":"checked"}> <span>${esc(pmap[k.perfil]?.n||k.perfil)} · <b class="num">${k.len} mm</b>${k.n>1?` <b>×${k.n}</b>`:""}</span></label></li>`).join("")}</ul>`:""}
+    <div class="two">
+      <button type="button" class="btn primary sm" data-tact="finishok">Listo, guardar</button>
+      <button type="button" class="btn ghost sm" data-tact="finishno">Cancelar</button>
+    </div>
+  </section>`;
+}
+
 function renderTaller(){
   bar.classList.add("hidden");
   renderNav();
   const perf=tPerfiles(), pmap=Object.fromEntries(perf.map(p=>[p.key,p]));
   if(!pmap[T.form.perfil]) T.form.perfil=(pmap.cano_4040||perf[0]).key;
-  const activeRets=T.usarRetazos?T.retazos.filter(r=>!r.fromWork||r.fromWork!==T.workId):[];
-  const plan=tPlan(T.cuts,T.barra,T.disco,activeRets);
+  const plan=tPlan(T.cuts,T.barra,T.disco,tActiveRets());
   S.tPlan=plan; S.tPmap=pmap;
   const totBuy=plan.reduce((s,g)=>s+g.buyBars,0);
   const totRetUsed=plan.reduce((s,g)=>s+g.retUsed.length,0);
@@ -3912,6 +3991,8 @@ function renderTaller(){
   const perfUsados=[...new Set(T.cuts.map(c=>c.perfil))];
   const planilla=T.cuts.length?tPlanillaText(plan,pmap):"";
   const tst=T.step||1;
+  const retUsedTxt=tRetUsedText(plan,pmap);
+  const retUsedBanner=retUsedTxt?`<div class="banner good">${svg("sparkle")}<div>${esc(retUsedTxt)}</div></div>`:"";
 
   /* Estadísticas de aprovechamiento y peso estimado */
   let totMatMm=0, totCutMm=0, totGuardMm=0, totKg=0;
@@ -4016,6 +4097,7 @@ function renderTaller(){
           </div>
         </li>`; }).join("")}</ul></div>`).join("")}
     </section>
+    ${retUsedBanner}
     <button type="button" class="btn primary" data-tstep="2">2. Ver plan de corte y compra (${totBuy} barra${totBuy!==1?"s":""}) →</button>
     `:`<div class="banner good">${svg("sparkle")}<div>Elegí un modelo arriba y tocá <b>Cargar cortes</b>, o escribí las medidas manuales (<b>2640x2 1530x3</b>) y tocá <b>+</b>.</div></div>`}`;
   } else if(tst===2){
@@ -4052,6 +4134,7 @@ function renderTaller(){
       ${perf.some(p=>p.example&&perfUsados.includes(p.key))?`<span class="small" style="opacity:.78">Los precios en amarillo son de referencia.</span>`:""}
     </section>
 
+    ${retUsedBanner}
     ${T.modelActive?tModelCardHTML(T.model,perf,pmap,plan,true):`<details class="card" data-sec="tmodel2" ${S.open.tmodel2!==false?"open":""}>
       <summary><h2>Gráfico de cortes del pedido</h2><span class="sumv mono">${nPzas} pieza${nPzas>1?"s":""}</span>${svg("chev",'class="chev"')}</summary>
       <div class="inner">
@@ -4081,6 +4164,8 @@ function renderTaller(){
         }).join("")}
       </div>`).join("")}
     </section>
+
+    ${tFinishCardHTML(plan,pmap)}
 
     <section class="card" aria-labelledby="t_planillah">
       <h2 id="t_planillah">Planilla para el que corta</h2>
@@ -4252,6 +4337,15 @@ app.addEventListener("click",e=>{
   if(d.tq){ const c=T.cuts.find(x=>x.id===d.tq); if(c){ c.qty=Math.max(1,Math.min(500,c.qty+(+d.d))); saveT(); } return rerenderTaller(); }
   if(d.tdel){ T.cuts=T.cuts.filter(x=>x.id!==d.tdel); saveT(); toast("Corte borrado"); return rerenderTaller(); }
   const a=d.tact;
+  if(a==="finish"){ S.tFin={off:{}}; return rerenderTaller(); }
+  if(a==="finishno"){ S.tFin=null; return rerenderTaller(); }
+  if(a==="finishok"){
+    const plan=S.tPlan||[], off=(S.tFin&&S.tFin.off)||{};
+    const keep=tLeftovers(plan,T.minSob).filter(k=>!off[k.perfil+"|"+k.len]);
+    const r=tFinishCutting(plan,keep); S.tFin=null;
+    toast(r.usados||r.guardados?`Listo: ${r.usados?`quité ${r.usados} retazo${r.usados>1?"s":""} usado${r.usados>1?"s":""}`:"stock al día"}${r.guardados?` y guardé ${r.guardados} sobrante${r.guardados>1?"s":""}`:""}`:"Obra terminada");
+    return rerenderTaller();
+  }
   if(a==="saverec"){
     const ty=T.model.type, lbl=T_MODELS.find(x=>x.id===ty)?.label||ty;
     T.recetas[ty]={pMarco:T.model.pMarco,pInt:T.model.pInt,pExtra:T.model.pExtra};
@@ -4283,7 +4377,7 @@ app.addEventListener("click",e=>{
   }
   if(a==="saveobra"){
     const name=(T.obra||"").trim()||("Obra "+new Date().toLocaleDateString("es-AR",{day:"numeric",month:"short"}));
-    const entry={id:tId(),obra:name,date:Date.now(),barra:T.barra,disco:T.disco,minSob:T.minSob,model:{...T.model},modelActive:!!T.modelActive,cuts:JSON.parse(JSON.stringify(T.cuts))};
+    const entry=tObraEntry(name);
     const idx=T.obras.findIndex(x=>x.obra.toLowerCase()===name.toLowerCase());
     if(idx>=0) T.obras[idx]=entry; else T.obras.unshift(entry);
     T.obras=T.obras.slice(0,15);
@@ -4342,6 +4436,7 @@ app.addEventListener("change",e=>{
   if(S.screen!=="taller") return;
   const el=e.target, d=el.dataset;
   if(el.id==="t_perfil"){ T.form.perfil=el.value; saveT(); return; }
+  if(d.tfinck!==undefined){ S.tFin=S.tFin||{off:{}}; S.tFin.off[d.tfinck]=!el.checked; return; }
   if(d.tmf){
     const k=d.tmf;
     if(k==="pMarco"||k==="pInt"||k==="pExtra"){ T.model[k]=el.value; S.tSel=null; saveT(); return rerenderTaller(); }

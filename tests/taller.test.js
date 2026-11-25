@@ -78,6 +78,96 @@ const pcs = (page, m) => page.evaluate(m => tModelPieces(m).map(p => ({ k: p.key
     assert.deepStrictEqual(r, [false, true]);
   });
 
+  /* ---- Task 2: stock automático ---- */
+  const setup = (page, o) => page.evaluate(o => {
+    T = tNormalizeT({ ...T_DEF, workId: "w1", obra: "Casa", ...o.T });
+    const perf = tPerfiles(), pmap = Object.fromEntries(perf.map(p => [p.key, p]));
+    S.tPmap = pmap;
+    return true;
+  }, o);
+  const cut = (len, qty = 1, perfil = "cano_8040") => ({ id: "c" + len, perfil, parte: "", ang: "90", len, qty });
+
+  await test("plan marca qué retazo usó (por id) y se quita solo ese", async () => {
+    const p = await open();
+    await setup(p, { T: { cuts: [cut(3900)], retazos: [{ id: "a", perfil: "cano_8040", len: 4000 }, { id: "b", perfil: "cano_8040", len: 4000 }] } });
+    const r = await p.evaluate(() => {
+      const plan = tPlan(T.cuts, T.barra, T.disco, tActiveRets());
+      const used = plan[0].retUsed.map(b => b.retId);
+      const res = tFinishCutting(plan, []);
+      return { used, res, left: T.retazos.map(x => x.id) };
+    });
+    assert.strictEqual(r.used.length, 1);
+    assert.strictEqual(r.res.usados, 1);
+    assert.deepStrictEqual(r.left, r.used[0] === "a" ? ["b"] : ["a"]);
+  });
+  await test("tLeftovers: >= minSob, solo barras nuevas, agrupa", async () => {
+    const p = await open();
+    await setup(p, { T: { minSob: 300, cuts: [cut(3497, 2), cut(5697), cut(5698)] } });
+    const r = await p.evaluate(() => tLeftovers(tPlan(T.cuts, T.barra, T.disco, []), T.minSob));
+    assert.deepStrictEqual(r, [{ perfil: "cano_8040", len: 2500, n: 2 }, { perfil: "cano_8040", len: 300, n: 1 }]);
+  });
+  await test("tLeftovers ignora los retazos usados", async () => {
+    const p = await open();
+    await setup(p, { T: { cuts: [cut(3000)], retazos: [{ id: "a", perfil: "cano_8040", len: 4000 }] } });
+    const r = await p.evaluate(() => tLeftovers(tPlan(T.cuts, T.barra, T.disco, tActiveRets()), 300));
+    assert.deepStrictEqual(r, []);
+  });
+  await test("terminar: guarda sobrantes, marca hecho, guarda obra; segunda vez no hace nada", async () => {
+    const p = await open();
+    await setup(p, { T: { cuts: [cut(3497, 2)] } });
+    const r = await p.evaluate(() => {
+      const plan = tPlan(T.cuts, T.barra, T.disco, tActiveRets());
+      const a = tFinishCutting(plan, tLeftovers(plan, T.minSob));
+      const snap = JSON.stringify(T.retazos);
+      const b = tFinishCutting(plan, tLeftovers(plan, T.minSob));
+      return { a, b, same: snap === JSON.stringify(T.retazos), rets: T.retazos.map(x => [x.perfil, x.len, x.fromWork]), done: Object.keys(T.done).length, obras: T.obras.map(o => o.obra), lf: T.lastFinish.workId };
+    });
+    assert.deepStrictEqual(r.a, { usados: 0, guardados: 2 });
+    assert.deepStrictEqual(r.b, { usados: 0, guardados: 0 });
+    assert.ok(r.same);
+    assert.deepStrictEqual(r.rets, [["cano_8040", 2500, "w1"], ["cano_8040", 2500, "w1"]]);
+    assert.ok(r.done >= 1);
+    assert.deepStrictEqual(r.obras, ["Casa"]);
+    assert.strictEqual(r.lf, "w1");
+  });
+  await test("terminar no duplica la obra si ya estaba guardada", async () => {
+    const p = await open();
+    await setup(p, { T: { cuts: [cut(3000)], obras: [{ id: "o", obra: "casa", date: 1, cuts: [] }] } });
+    const n = await p.evaluate(() => { tFinishCutting(tPlan(T.cuts, T.barra, T.disco, []), []); return T.obras.length; });
+    assert.strictEqual(n, 1);
+  });
+  await test("terminar sin sobrantes ni retazos no rompe", async () => {
+    const p = await open();
+    await setup(p, { T: { cuts: [cut(5990)] } });
+    const r = await p.evaluate(() => { const pl = tPlan(T.cuts, T.barra, T.disco, []); return [tLeftovers(pl, T.minSob), tFinishCutting(pl, [])]; });
+    assert.deepStrictEqual(r, [[], { usados: 0, guardados: 0 }]);
+  });
+  await test("tras terminar el plan no cambia (retazos usados se recuerdan)", async () => {
+    const p = await open();
+    await setup(p, { T: { cuts: [cut(3900)], retazos: [{ id: "a", perfil: "cano_8040", len: 4000 }] } });
+    const r = await p.evaluate(() => {
+      const sum = () => { const pl = tPlan(T.cuts, T.barra, T.disco, tActiveRets()); return [pl[0].newBars.length, pl[0].retUsed.length]; };
+      const before = sum(); tFinishCutting(tPlan(T.cuts, T.barra, T.disco, tActiveRets()), []);
+      return { before, after: sum(), stock: T.retazos.length };
+    });
+    assert.deepStrictEqual(r.before, [0, 1]);
+    assert.deepStrictEqual(r.after, [0, 1]);
+    assert.strictEqual(r.stock, 0);
+  });
+  await test("tRetUsedText", async () => {
+    const p = await open();
+    await setup(p, { T: { cuts: [cut(3900), cut(3800)], retazos: [{ id: "a", perfil: "cano_8040", len: 4000 }, { id: "b", perfil: "cano_8040", len: 4100 }] } });
+    const r = await p.evaluate(() => {
+      const pm = S.tPmap, t2 = tRetUsedText(tPlan(T.cuts, T.barra, T.disco, tActiveRets()), pm);
+      const t1 = tRetUsedText(tPlan([T.cuts[0]], T.barra, T.disco, tActiveRets()), pm);
+      const t0 = tRetUsedText(tPlan(T.cuts, T.barra, T.disco, []), pm);
+      return [t2, t1, t0];
+    });
+    assert.ok(/^Usás 2 retazos que ya tenés: .*4000 mm.*4100 mm/.test(r[0]), r[0]);
+    assert.ok(/^Usás 1 retazo que ya tenés: .*de 4000 mm|^Usás 1 retazo que ya tenés: .*de 4100 mm/.test(r[1]), r[1]);
+    assert.strictEqual(r[2], "");
+  });
+
   await browser.close();
   console.log(`\n${ran - fails}/${ran} ok`);
   process.exit(fails ? 1 : 0);
