@@ -651,6 +651,8 @@ details.card > summary .sumv{white-space:nowrap}
 .tfix .done{margin-left:auto;font-size:13px;font-weight:750;color:#9BE2B5;display:inline-flex;align-items:center;gap:5px}
 .tfix .done svg{width:15px;height:15px}
 .tfix-sp{height:70px}
+.tmarcas{margin:0;font-size:13px;line-height:1.4;padding:8px 10px;background:var(--surface);border-radius:6px;font-variant-numeric:tabular-nums}
+.tmarcas b{color:var(--accent);font-stretch:90%;text-transform:uppercase;letter-spacing:.04em;font-size:11.5px}
 </style>
 </head>
 <body>
@@ -718,9 +720,10 @@ const CATALOG = {
   cano_5050:{cat:"herreria",n:"Caño estructural 50x50 (1,6 mm)",u:"barra 6 m",p:49000,kgm:2.39,q:"cano estructural 50x50 1.6 6 metros"},
   cano_8040:{cat:"herreria",n:"Caño estructural 80x40 (1,6 mm)",u:"barra 6 m",p:59000,kgm:2.89,q:"cano estructural 80x40 1.6 6 metros"},
   perfil_c_100:{cat:"herreria",n:"Perfil C galvanizado 100x50 (1,6 mm)",u:"barra 6 m",p:54000,kgm:2.70,q:"perfil c galvanizado 100x50 1.6 6 metros"},
-  planchuela:{cat:"herreria",n:"Planchuela 1 1/4 x 1/8",u:"barra 6 m",p:9800,kgm:0.79,q:"planchuela hierro 1 1/4 x 1/8 6 metros"},
+  planchuela:{cat:"herreria",n:"Planchuela 1 1/4 x 1/4",u:"barra 6 m",p:19500,kgm:1.58,q:"planchuela hierro 1 1/4 x 1/4 6 metros"},
   hierro_12:{cat:"herreria",n:"Hierro redondo / cuadrado 12 mm",u:"barra 6 m",p:11500,kgm:0.89,q:"hierro redondo liso 12 mm 6 metros"},
   redondo_916:{cat:"herreria",n:"Hierro redondo 9/16\"",u:"barra 6 m",p:16000,kgm:1.26,q:"hierro redondo liso 9/16 6 metros"},
+  cuadrado_12:{cat:"herreria",n:"Hierro cuadrado 12 mm",u:"barra 6 m",p:14500,kgm:1.13,q:"hierro cuadrado macizo 12 mm 6 metros"},
   angulo:{cat:"herreria",n:"Hierro ángulo 1 x 1/8",u:"barra 6 m",p:15000,kgm:0.94,q:"hierro angulo 1 x 1/8 6 metros"},
   riel_porton:{cat:"herreria",n:"Riel / ángulo guía para portón",u:"barra 6 m",p:18500,kgm:1.45,q:"riel porton corredizo hierro 6 metros"},
   chapa_18:{cat:"herreria",n:"Chapa negra BWG 18 (1,25 mm) 1x2 m",u:"hoja 1x2 m",p:42000,kgu:19.6,q:"chapa negra 18 1x2 metros"},
@@ -814,17 +817,39 @@ const C = Math.ceil, R1 = x => Math.round(x*10)/10;
 const it = (mat, qty, nota) => ({mat, qty, nota});
 const task = (name, hours) => ({name, hours: Math.max(0.25, Math.round(hours*4)/4)});
 
+/* Grosor que se ve de frente (mm) de cada perfil usado como barrote, marco o estante. Planchuela va de canto: se ve su espesor. */
+const ESP_VISTO={cano_2020:20,cano_2525:25,cano_3030:30,cano_4040:40,cano_4020:20,cano_6040:40,cano_8040:40,redondo_916:14.3,hierro_12:12,cuadrado_12:12,planchuela:6.35};
+const espVisto=k=>ESP_VISTO[k]||20;
+/* Reparto con luz libre igual en todos los espacios (también contra el marco).
+   W: espacio libre interior (mm); L: luz máxima; t: grosor del barrote. Devuelve cantidad mínima, luz real y marcas
+   (borde cercano de cada barrote medido desde el filo interior del marco, redondeado al mm desde el valor exacto). */
+function repartoLuz(W,L,t){
+  W=+W||0; L=Math.max(1,+L||120); t=Math.max(0,+t||0);
+  if(W<=L) return {n:0,luz:Math.max(0,W),marcas:[]};
+  const n=Math.max(0,Math.ceil((W-L)/(L+t)-1e-9));
+  const luz=(W-n*t)/(n+1);
+  const marcas=[]; for(let k=1;k<=n;k++) marcas.push(Math.round(k*luz+(k-1)*t));
+  return {n,luz,marcas};
+}
+
 const REJA_MATS = [
+  ["redondo_916","Redondo 9/16\""],
+  ["cuadrado_12","Cuadrado 12 mm"],
   ["cano_2020","Caño 20×20"],
   ["hierro_12","Redondo 12 mm"],
-  ["redondo_916","Redondo 9/16\""],
   ["chapa_18","Chapa ciega"],
   ["metal_desp","Metal desplegado"]
 ];
+/* Reparto exacto de una abertura de Presupuestar, con la misma cuenta que el Taller. Medidas en mm. */
+function rejaReparto(i){
+  const ventana=i.uso==="ventana", porton=i.uso==="porton", mat=i.material||"redondo_916", esHoja=mat==="chapa_18"||mat==="metal_desp";
+  const marcoKey=ventana?(esHoja?"cano_3030":"cano_2020"):"cano_4040";
+  return tMarcas({type:ventana?"reja":porton?"porton":"puertareja",ancho:Math.round((i.ancho||120)*10),alto:Math.round((i.alto||100)*10),sep:Math.round((i.sep||12)*10),hojas:porton&&i.apertura==="doble"?2:1,pMarco:marcoKey,pInt:mat,medInt:!!i.medInt});
+}
 function rejaCuts(i, tagPrefix){
-  const n=i.cant||1, A=Math.round(i.ancho*10), B=Math.round(i.alto*10);
+  const g=rejaReparto(i), n=i.cant||1, A=g.Ao, B=g.Bo;
   const ventana=i.uso==="ventana", porton=i.uso==="porton", doble=porton&&i.apertura==="doble", corredizo=porton&&i.apertura==="corredizo";
-  const mat=i.material||"cano_2020", esHoja=mat==="chapa_18"||mat==="metal_desp";
+  const mat=i.material||"redondo_916", esHoja=mat==="chapa_18"||mat==="metal_desp";
   const marcoKey=ventana?(esHoja?"cano_3030":"cano_2020"):"cano_4040";
   const ang=ventana&&!esHoja?"90":"45";
   const cuts=[];
@@ -847,9 +872,8 @@ function rejaCuts(i, tagPrefix){
     cuts.push({perfil:"cano_2020",parte:pRef,ang:"90",len:Math.max(100,A-80),qty:tv*n});
     cuts.push({perfil:"cano_2020",parte:pRef,ang:"90",len:Math.max(100,B-80),qty:(doble?2:1)*n});
   } else {
-    const barrotes=Math.max(0,C(i.ancho/(i.sep||12))-1);
-    const lBar=Math.max(100,B-(ventana?40:80));
-    if(barrotes>0) cuts.push({perfil:mat,parte:pBar,ang:"90",len:lBar,qty:barrotes*n});
+    const barrotes=g.n*g.hojas;
+    if(barrotes>0) cuts.push({perfil:mat,parte:pBar,ang:"90",len:g.lBar,qty:barrotes*n});
     const tv=ventana?2:3;
     cuts.push({perfil:"planchuela",parte:pTrv,ang:"90",len:A,qty:tv*n});
   }
@@ -872,8 +896,8 @@ const JOBS = [
  { id:"reja", name:"Reja o portón", hint:"ventana, puerta, portón", icon:"reja", drawing:"reja",
    multiItem:true, multiWord:"otra abertura", multiSingular:"Abertura", multiPlural:"Aberturas",
    itemLabel(i){
-    const mat=i.material||"cano_2020";
-    const matNom=(REJA_MATS.find(([k])=>k===mat)||[0,"Caño 20×20"])[1];
+    const mat=i.material||"redondo_916";
+    const matNom=(REJA_MATS.find(([k])=>k===mat)||[0,"Redondo 9/16\""])[1];
     const ventana=i.uso==="ventana", porton=i.uso==="porton";
     const corredizo=porton&&i.apertura==="corredizo", doble=porton&&i.apertura==="doble";
     const nom=ventana?"Reja de ventana":i.uso==="puerta"?"Puerta de hierro":corredizo?"Portón corredizo":doble?"Portón de 2 hojas":"Portón";
@@ -896,11 +920,12 @@ const JOBS = [
    fields:[
     {id:"uso",label:"¿Para qué es?",type:"choice",def:"ventana",options:[["ventana","Reja de ventana"],["puerta","Puerta"],["porton","Portón"]]},
     {id:"apertura",label:"Tipo de portón",type:"choice",def:"batiente",show:i=>i.uso==="porton",options:[["batiente","Batiente 1 hoja"],["doble","Batiente 2 hojas"],["corredizo","Corredizo"]]},
-    {id:"material",label:"Barrotes o relleno",type:"choice",def:"cano_2020",options:REJA_MATS},
+    {id:"material",label:"Barrotes o relleno",type:"choice",def:"redondo_916",options:REJA_MATS},
     {id:"ancho",label:"Ancho",type:"num",unit:"cm",min:30,max:600,step:5,def:120},
     {id:"alto",label:"Alto",type:"num",unit:"cm",min:30,max:300,step:5,def:100},
     {id:"cant",label:"¿Cuántas?",type:"num",unit:"",min:1,max:20,step:1,def:1},
-    {id:"sep",label:"Separación entre barrotes",type:"num",unit:"cm",min:8,max:25,step:1,def:12,show:i=>i.material!=="chapa_18"&&i.material!=="metal_desp"},
+    {id:"sep",label:"Luz máxima entre barrotes",type:"num",unit:"cm",min:8,max:25,step:1,def:12,show:i=>i.material!=="chapa_18"&&i.material!=="metal_desp"},
+    {id:"medInt",label:"¿La medida es interior (sin el marco)?",type:"yesno",def:false},
     {id:"pintura",label:"Terminación",type:"choice",def:"pintada",options:[["pintada","Antióxido + esmalte"],["convertidor","Convertidor 3 en 1"],["antioxido","Solo antióxido"]]},
     {id:"cerradura",label:"¿Lleva cerradura?",type:"yesno",def:false,show:i=>i.uso!=="ventana"},
     {id:"colocar",label:"¿La colocás vos?",type:"yesno",def:true}
@@ -921,12 +946,13 @@ const JOBS = [
 
     list.forEach(i=>{
       const n=i.cant||1;
-      const mat=i.material||"cano_2020", esHoja=mat==="chapa_18"||mat==="metal_desp";
+      const mat=i.material||"redondo_916", esHoja=mat==="chapa_18"||mat==="metal_desp";
       const ventana=i.uso==="ventana", porton=i.uso==="porton";
       const corredizo=porton&&i.apertura==="corredizo", doble=porton&&i.apertura==="doble";
       const usaCerr=!ventana&&i.cerradura;
-      const marco=(2*(i.ancho+i.alto)+(doble?2*i.alto:0))/100;
-      const barrotes=esHoja?0:Math.max(0,C(i.ancho/(i.sep||12))-1);
+      const rg=rejaReparto(i), exA=rg.Ao/10, exB=rg.Bo/10;
+      const marco=(2*(exA+exB)+(doble?2*exB:0))/100;
+      const barrotes=esHoja?0:rg.n*rg.hojas;
       const m2=i.ancho*i.alto/10000*n;
       const marcoKey=ventana?(esHoja?"cano_3030":"cano_2020"):"cano_4040";
       totM2+=m2; totUnits+=n;
@@ -938,7 +964,7 @@ const JOBS = [
         addBar("cano_2020",refM,"refuerzos");
         kg+=marco*n*(CATALOG[marcoKey].kgm||1.89)+refM*0.89;
       } else {
-        const bM=barrotes*i.alto/100*n;
+        const bM=barrotes*rg.lBar/1000*n;
         if(mat===marcoKey){
           addBar(mat,bM+marco*n,single?`${barrotes} barrotes + marco`:"barrotes + marco");
           kg+=(bM+marco*n)*(CATALOG[mat].kgm||0.89);
@@ -981,9 +1007,9 @@ const JOBS = [
       if(i.colocar) hCol+=(ventana?1.5:i.uso==="puerta"?2:corredizo?3.75:3)*n;
 
       if(porton&&i.ancho>300&&!corredizo) warnSet.add("Portón grande: fijate si conviene hacerlo corredizo o en 2 hojas para que no caiga.");
-      if(!esHoja&&(i.sep||12)>12) warnSet.add("Más de 12 cm entre barrotes: puede pasar la cabeza de un nene.");
+      if(!esHoja&&(i.sep||12)>12) warnSet.add("Más de 12 cm de luz entre barrotes: puede pasar la cabeza de un nene.");
 
-      const matNom=(REJA_MATS.find(([k])=>k===mat)||[0,"Caño 20×20"])[1];
+      const matNom=(REJA_MATS.find(([k])=>k===mat)||[0,"Redondo 9/16\""])[1];
       const pintTxt=i.pintura==="convertidor"?"Convertidor de óxido 3 en 1 (color a elección)":i.pintura==="pintada"?"Antióxido y esmalte (color a elección)":"Antióxido";
       incSet.add("Fabricación a medida en "+matNom);
       incSet.add(pintTxt);
@@ -1686,9 +1712,10 @@ function parseClickieOrder(rawText){
   if(jobId === "reja"){
     const matGlobal = /\b(metal desplegado|malla)\b/.test(norm) ? "metal_desp"
       : /\b(chapa ciega|chapa 18|chapa)\b/.test(norm) ? "chapa_18"
-      : /\b(9\/16|redondo grueso|14\s*mm)\b/.test(norm) ? "redondo_916"
-      : /\b(redondo 12|hierro 12|macizo|redondo|barrote macizo)\b/.test(norm) ? "hierro_12"
-      : "cano_2020";
+      : /\bcuadrad[oa]s?\b/.test(norm) ? "cuadrado_12"
+      : /\b(redondo 12|hierro 12)\b/.test(norm) ? "hierro_12"
+      : /\b(cano|tubo|tubular|20 ?x ?20)\b/.test(norm) ? "cano_2020"
+      : "redondo_916";
     const pintGlobal = /\b(convertidor|3 en 1|tres en uno)\b/.test(norm) ? "convertidor"
       : /\b(solo antioxido|sin esmalte|sin pintar)\b/.test(norm) ? "antioxido"
       : "pintada";
@@ -2334,7 +2361,7 @@ function drawing(){
     if(i.tipo==="enrollable") inner+=`<rect x="${x-4}" y="${y-12}" width="${w+8}" height="12" rx="3" fill="var(--ink)"/>`;
     summaryTxt+=` · ${i.tipo}`;
   } else {
-    const mat=i.material||"cano_2020";
+    const mat=i.material||"redondo_916";
     const doble=i.uso==="porton"&&i.apertura==="doble", corredizo=i.uso==="porton"&&i.apertura==="corredizo";
     let foot="";
     if(mat==="chapa_18"){
@@ -2351,11 +2378,11 @@ function drawing(){
       inner=`<path d="${p}" stroke="var(--muted)" stroke-width="1" opacity=".65"/>`;
       foot="Metal desplegado";
     } else {
-      const n=Math.max(0,Math.ceil(A/i.sep)-1); let p="";
-      for(let k=1;k<=n;k++){const xx=x+w*k/(n+1);p+=`M${xx} ${y}V${y+h}`;}
+      const g=rejaReparto(i), px=w/g.Ao, n=g.n*g.hojas; let p="";
+      for(let hj=0;hj<g.hojas;hj++) g.marcas.forEach(mk=>{const xx=x+px*(hj*g.hA+g.fr+mk+g.t/2);p+=`M${xx.toFixed(1)} ${y}V${y+h}`;});
       const tv=i.uso==="ventana"?2:3; for(let k=1;k<=tv;k++){const yy=y+h*k/(tv+1);p+=`M${x} ${yy}H${x+w}`;}
       inner=`<path d="${p}" stroke="var(--ink)" stroke-width="${mat==="hierro_12"||mat==="redondo_916"?"1.9":"2.4"}"/>`;
-      foot=`${n} barrotes c/ ${i.sep} cm`;
+      foot=`${n} barrotes · luz ${fmtQ(Math.round(g.luz)/10)} cm`;
     }
     if(doble){
       inner+=`<path d="M${x+w/2} ${y}V${y+h}" stroke="var(--ink)" stroke-width="4"/>`;
@@ -3236,7 +3263,7 @@ app.addEventListener("click",e=>{
     const cuts=rejaCutsAll(allList);
     const load=()=>{
       const toModel=(ref,idx)=>{
-        const mat=ref.material||"cano_2020", esHoja=mat==="chapa_18"||mat==="metal_desp";
+        const mat=ref.material||"redondo_916", esHoja=mat==="chapa_18"||mat==="metal_desp";
         const ventana=ref.uso==="ventana", porton=ref.uso==="porton";
         const pfx=({ventana:"V",puerta:"PTA",porton:"POR"})[ref.uso]||"R";
         const cant=Math.max(1,ref.cant||1);
@@ -3248,6 +3275,7 @@ app.addEventListener("click",e=>{
           ancho: Math.round((ref.ancho||120)*10),
           alto: Math.round((ref.alto||100)*10),
           sep: Math.round((ref.sep||12)*10),
+          medInt: !!ref.medInt,
           travesanos: ventana ? 2 : 3,
           hojas: porton && ref.apertura==="doble" ? 2 : 1,
           corredizo: porton && ref.apertura==="corredizo",
@@ -3652,6 +3680,32 @@ function tRecetaDiffiere(m){
   return T_ROLES.some(k=>m[k]!==base[k]);
 }
 
+/* Geometría del reparto de un modelo: medidas exteriores, espacio libre por hoja y marcas de barrotes (o de estantes en el rack). */
+function tMarcas(m){
+  const A=tClamp(m.ancho||1200,200,6000), B=tClamp(m.alto||1000,200,4500), sep=tClamp(m.sep||120,50,400);
+  const pM=m.pMarco||"cano_4040", pI=m.pInt||"cano_2020";
+  if(m.type==="rack"){
+    const est=tClamp(m.travesanos||4,2,7), t=espVisto(pI), g=(B-est*t)/est, marcas=[];
+    for(let k=1;k<=est;k++) marcas.push(Math.round(k*(g+t)));
+    return {rack:true,n:est,t,luz:g,marcas,A,B};
+  }
+  const fr=espVisto(pM), t=espVisto(pI), int=!!m.medInt;
+  const Ao=int?A+2*fr:A, Bo=int?B+2*fr:B;
+  const doble=m.type==="porton"&&(m.hojas||1)===2, hojas=doble?2:1;
+  const hA=doble?Math.round(Ao/2):Ao, W=Math.round((hA-2*fr)*100)/100;
+  const r=repartoLuz(W,sep,t);
+  return {...r,t,fr,W,Ao:Math.round(Ao),Bo:Math.round(Bo),hA,hojas,lBar:Math.max(100,Math.round(Bo-2*fr)),sep};
+}
+
+/* Texto de marcas para el taller ('' si el modelo no reparte barrotes ni estantes). */
+function tMarcasTxt(m){
+  if(!(m.type==="reja"||m.type==="porton"||tIsPuerta(m.type)||m.type==="rack")) return "";
+  const g=tMarcas(m), luz=fmtQ(Math.round(g.luz*10)/10);
+  if(g.rack) return `${g.n} estantes, ${luz} mm libres entre cada uno. Desde el piso (cara de arriba): ${g.marcas.join(" · ")} mm`;
+  if(!g.n) return `Sin barrotes: el espacio libre (${fmtQ(g.W)} mm) ya es menor que la luz máxima`;
+  return `${g.n*g.hojas} barrotes${g.hojas>1?` (${g.n} por hoja)`:""}, luz ${luz} mm. Desde el filo interior del marco${g.hojas>1?", en cada hoja":""}: ${g.marcas.join(" · ")} mm`;
+}
+
 function tModelPieces(m){
   const A=tClamp(m.ancho||1200,200,6000), B=tClamp(m.alto||1000,200,4500), P=tClamp(m.prof||600,150,2500);
   const sep=tClamp(m.sep||120,50,400), tv=tClamp(m.travesanos??2,0,8), n=Math.max(1,m.cant||1);
@@ -3659,19 +3713,18 @@ function tModelPieces(m){
   const pM=m.pMarco||"cano_4040", pI=m.pInt||"cano_2020", pE=m.pExtra||"planchuela";
   const out=[];
   if(m.type==="reja"){
-    const nBar=Math.max(0,Math.ceil(A/sep)-1), lBar=Math.max(100,B-40);
-    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:A,qty:2*n,ang,role:"marco"});
-    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:2*n,ang,role:"marco"});
-    if(nBar>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:lBar,qty:nBar*n,ang:"90",role:"int"});
-    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:A,qty:tv*n,ang:"90",role:"extra"});
+    const g=tMarcas(m);
+    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:g.Ao,qty:2*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:g.Bo,qty:2*n,ang,role:"marco"});
+    if(g.n>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:g.lBar,qty:g.n*n,ang:"90",role:"int"});
+    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:g.Ao,qty:tv*n,ang:"90",role:"extra"});
   } else if(m.type==="porton"){
-    const doble=(m.hojas||1)===2, hA=doble?Math.round(A/2):A;
-    const nBar=Math.max(0,Math.ceil(A/sep)-1), lBar=Math.max(100,B-80);
-    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:hA,qty:(doble?4:2)*n,ang,role:"marco"});
-    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:(doble?4:2)*n,ang,role:"marco"});
-    if(nBar>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:lBar,qty:nBar*n,ang:"90",role:"int"});
-    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:A,qty:tv*n,ang:"90",role:"extra"});
-    if(m.corredizo) out.push({key:"riel",label:"Riel",parte:"RIEL",perfil:"riel_porton",len:Math.min(6000,A*2),qty:n,ang:"90",role:"extra"});
+    const g=tMarcas(m), doble=g.hojas===2;
+    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:g.hA,qty:(doble?4:2)*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:g.Bo,qty:(doble?4:2)*n,ang,role:"marco"});
+    if(g.n>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:g.lBar,qty:g.n*g.hojas*n,ang:"90",role:"int"});
+    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:g.Ao,qty:tv*n,ang:"90",role:"extra"});
+    if(m.corredizo) out.push({key:"riel",label:"Riel",parte:"RIEL",perfil:"riel_porton",len:Math.min(6000,g.Ao*2),qty:n,ang:"90",role:"extra"});
   } else if(m.type==="marco"){
     const cols=tClamp(m.hojas||2,1,5), rows=tClamp(m.travesanos||2,1,5);
     out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:A,qty:2*n,ang,role:"marco"});
@@ -3685,11 +3738,11 @@ function tModelPieces(m){
     if(cols>1) out.push({key:"par",label:"Parantes",parte:"PAR",perfil:pI,len:Math.max(100,B-80),qty:(cols-1)*n,ang:"90",role:"int"});
     if(rows>1) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pI,len:Math.max(100,A-80),qty:(rows-1)*n,ang:"90",role:"int"});
   } else if(tIsPuerta(m.type)){
-    const nBar=Math.max(0,Math.ceil(A/sep)-1), lBar=Math.max(100,B-80);
-    out.push({key:"marco_h",label:"Bastidor H",parte:"BAS H",perfil:pM,len:A,qty:2*n,ang,role:"marco"});
-    out.push({key:"marco_v",label:"Bastidor V",parte:"BAS V",perfil:pM,len:B,qty:2*n,ang,role:"marco"});
-    if(nBar>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:lBar,qty:nBar*n,ang:"90",role:"int"});
-    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:Math.max(100,A-80),qty:tv*n,ang:"90",role:"extra"});
+    const g=tMarcas(m);
+    out.push({key:"marco_h",label:"Bastidor H",parte:"BAS H",perfil:pM,len:g.Ao,qty:2*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Bastidor V",parte:"BAS V",perfil:pM,len:g.Bo,qty:2*n,ang,role:"marco"});
+    if(g.n>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:g.lBar,qty:g.n*n,ang:"90",role:"int"});
+    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:Math.max(100,Math.round(g.Ao-2*g.fr)),qty:tv*n,ang:"90",role:"extra"});
   } else if(m.type==="mesa"){
     out.push({key:"pata",label:"Patas",parte:"PATA",perfil:pM,len:B,qty:4*n,ang:"90",role:"marco"});
     out.push({key:"larg",label:"Largueros",parte:"LARG",perfil:pI,len:Math.max(100,A-80),qty:2*n,ang:"90",role:"int"});
@@ -3801,8 +3854,9 @@ function tModelSVG(m,pmap,sel,opts){
       const pD=`M${x1+3} ${y}V${y+h}M${x1+w1-3} ${y}V${y+h}M${x2+3} ${y}V${y+h}M${x2+w2-3} ${y}V${y+h}`;
       body+=grp("pata",`<path d="${pD}" class="tm-marco" stroke-width="4.5"/>`,pD,[x1+w1,y+h*0.55]);
       let lD="", cD="";
+      const gm=tMarcas(m);
       for(let k=0;k<est;k++){
-        const yy=est===1?y+h/2:y+4+(h-10)*k/(est-1);
+        const yy=y+h-h*(gm.marcas[k]-gm.t/2)/B;
         lD+=`M${x1+5} ${yy}H${x1+w1-5}`;
         cD+=`M${x2+5} ${yy}H${x2+w2-5}`;
       }
@@ -3832,10 +3886,11 @@ function tModelSVG(m,pmap,sel,opts){
       }
       body+=`<text x="${x+w/2}" y="${H-6}" text-anchor="middle" class="tm-sub-t">${cols}×${rows} paños · cortes en mm${(m.cant||1)>1?` · ×${m.cant} u.`:""}</text>`;
     } else {
-      const sep=tClamp(m.sep||120,50,400), nBar=Math.max(0,Math.ceil(A/sep)-1);
+      const g=tMarcas(m), nBar=g.n;
       const tv=tClamp(m.travesanos??2,0,8);
       if(nBar>0){
-        let d=""; for(let k=1;k<=nBar;k++){ const xx=x+w*k/(nBar+1); d+=`M${xx} ${y+3}V${y+h-3}`; }
+        let d=""; const px=w/g.Ao;
+        for(let hj=0;hj<g.hojas;hj++) g.marcas.forEach(mk=>{ const xx=x+px*(hj*g.hA+g.fr+mk+g.t/2); d+=`M${xx.toFixed(1)} ${y+3}V${y+h-3}`; });
         body+=grp("barrote",`<path d="${d}" class="tm-int" stroke-width="2.2"/>`,d,[x+w*0.34,y+h*0.30]);
       }
       if(tv>0){
@@ -3847,8 +3902,7 @@ function tModelSVG(m,pmap,sel,opts){
         const rD=`M${x-14} ${y+h+10}H${x+w+14}`;
         body+=grp("riel",`<path d="${rD}" class="tm-extra" stroke-width="3.5"/><circle cx="${x+16}" cy="${y+h+6}" r="3.5" fill="var(--accent)"/><circle cx="${x+w-16}" cy="${y+h+6}" r="3.5" fill="var(--accent)"/>`,rD,[x+w/2,y+h+24]);
       }
-      const luz=nBar>0?Math.round(A/(nBar+1)):A;
-      body+=`<text x="${x+w/2}" y="${H-5}" text-anchor="middle" class="tm-sub-t">${nBar} barrotes c/ ${luz} mm${m.type==="porton"&&m.hojas===2?" · 2 hojas":""}${(m.cant||1)>1?` · ×${m.cant} u.`:""}</text>`;
+      body+=`<text x="${x+w/2}" y="${H-5}" text-anchor="middle" class="tm-sub-t">${nBar*g.hojas} barrotes · luz ${fmtQ(Math.round(g.luz*10)/10)} mm${m.type==="porton"&&m.hojas===2?" · 2 hojas":""}${(m.cant||1)>1?` · ×${m.cant} u.`:""}</text>`;
     }
 
     const mhD=`M${x} ${y}H${x+w}M${x} ${y+h}H${x+w}`;
@@ -3937,6 +3991,7 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
         ${multiTabs}
         <div class="tmod-stage">${tModelSVG(m,pmap,sel,{plan})}${legend}</div>
         ${chips}
+        ${tMarcasTxt(m)?`<p class="tmarcas"><b>Marcas:</b> ${esc(tMarcasTxt(m))}</p>`:""}
         ${selBar}
       </div>
     </details>`;
@@ -3953,17 +4008,19 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
     </div>
     <div class="tmod-stage">${tModelSVG(m,pmap,sel,{plan})}${legend}</div>
     ${chips}
+    ${tMarcasTxt(m)?`<p class="tmarcas"><b>Marcas:</b> ${esc(tMarcasTxt(m))}</p>`:""}
     ${selBar}
     <div class="tmod-fields ${isProf||isReja?"g3":""}">
       <div class="field"><label for="tm_a">Ancho (mm)</label><input id="tm_a" class="txt mono" inputmode="numeric" data-tmf="ancho" value="${m.ancho}"></div>
       <div class="field"><label for="tm_b">Alto (mm)</label><input id="tm_b" class="txt mono" inputmode="numeric" data-tmf="alto" value="${m.alto}"></div>
       ${isProf?`<div class="field"><label for="tm_p">Prof. (mm)</label><input id="tm_p" class="txt mono" inputmode="numeric" data-tmf="prof" value="${m.prof}"></div>`:""}
-      ${isReja?`<div class="field"><label for="tm_sep">Barrotes c/ (mm)</label><input id="tm_sep" class="txt mono" inputmode="numeric" data-tmf="sep" value="${m.sep}"></div>`:""}
+      ${isReja?`<div class="field"><label for="tm_sep">Luz máx. (mm)</label><input id="tm_sep" class="txt mono" inputmode="numeric" data-tmf="sep" value="${m.sep}"></div>`:""}
       ${isGrid?`<div class="field"><label for="tm_h">Paños ancho</label><input id="tm_h" class="txt mono" inputmode="numeric" data-tmf="hojas" value="${m.hojas}"></div>`:""}
       <div class="field"><label for="tm_tv">${m.type==="rack"?"Estantes":isGrid?"Paños alto":m.type==="mesa"?"Refuerzos":"Travesaños"}</label><input id="tm_tv" class="txt mono" inputmode="numeric" data-tmf="travesanos" value="${m.travesanos}"></div>
       ${m.type==="porton"?`<div class="field"><span class="flabel">Hojas</span><div class="opts g2"><button type="button" class="opt sm" data-tmhojas="1" aria-pressed="${m.hojas!==2}">1</button><button type="button" class="opt sm" data-tmhojas="2" aria-pressed="${m.hojas===2}">2</button></div></div>`:""}
       ${!isProf?`<div class="field"><span class="flabel">Esquinas</span><div class="opts g2"><button type="button" class="opt sm" data-tmang="90" aria-pressed="${m.ang==="90"}">90°</button><button type="button" class="opt sm" data-tmang="45" aria-pressed="${m.ang==="45"}">45°</button></div></div>`:""}
     </div>
+    ${isReja?`<button type="button" class="swrow inline" data-tact="tmint" aria-pressed="${!!m.medInt}"><span class="swlbl">La medida es interior<span class="swsub">Ancho y alto sin el marco; el marco se corta más largo</span></span><span class="sw" aria-hidden="true"></span></button>`:""}
     ${m.type==="porton"?`<button type="button" class="swrow inline" data-tact="tmcorr" aria-pressed="${!!m.corredizo}"><span class="swlbl">Portón corredizo<span class="swsub">Suma riel inferior en el plano y cortes</span></span><span class="sw" aria-hidden="true"></span></button>`:""}
     <details class="tnew" ${S.open.tmperfs?"open":""} data-sec="tmperfs"><summary>Perfiles del modelo (${esc(pname(m.pMarco))}${hasInt?" / "+esc(pname(m.pInt)):""})</summary>
       <div class="tmod-fields" style="margin-top:8px">
@@ -4011,6 +4068,10 @@ const tRango=g=>g.bar.retazo?`Retazo ${g.bar.len} mm${g.n>1?` (×${g.n})`:""}`:(
 
 function tPlanillaText(plan,pmap){
   const L=[`PLANILLA DE CORTE${T.obra?" — "+T.obra:""}`,`Barras de ${fmtQ(T.barra/1000)} m · disco ${fmtQ(T.disco)} mm · medidas en mm`,""];
+  if(T.modelActive){
+    (T.models.length>1?T.models:[T.model]).forEach((mo,i)=>{ const t=tMarcasTxt(mo); if(t) L.push(`▸ Marcas ${mo.label||(T_MODELS.find(x=>x.id===mo.type)?.label||"")+" "+mo.ancho+"×"+mo.alto}: ${t}`); });
+    if(L.length>3) L.push("");
+  }
   plan.forEach(g=>{
     const name=pmap[g.perfil]?.n||g.perfil;
     const extra=g.retUsed.length?` (+ ${g.retUsed.length} retazo${g.retUsed.length>1?"s":""})`:"";
@@ -4466,6 +4527,7 @@ app.addEventListener("click",e=>{
     T.recetas[ty]={pMarco:T.model.pMarco,pInt:T.model.pInt,pExtra:T.model.pExtra};
     saveT(); toast(`Receta guardada: los próximos ${lbl} arrancan así`); return rerenderTaller();
   }
+  if(a==="tmint"){ T.model.medInt=!T.model.medInt; S.tSel=null; saveT(); return rerenderTaller(); }
   if(a==="tmcorr"){ T.model.corredizo=!T.model.corredizo; saveT(); return rerenderTaller(); }
   if(a==="tmgen"||a==="tmadd"){
     const pcs=tModelPieces(T.model);
