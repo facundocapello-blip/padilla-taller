@@ -2643,7 +2643,8 @@ function renderJob(){
   </div>
 
   ${S.note?`<div class="banner good">${svg("sparkle")}<div>${esc(S.note)}</div></div>`:""}
-  ${bodyHTML}`;
+  ${bodyHTML}
+  ${j.id==="reja"&&st!==2?`<button type="button" class="btn ghost" style="color:var(--accent);border-color:var(--accent)" data-act="rejataller">${svg("regla")} Ver cortes y compra en Taller${S.extraItems.length?` (${[...S.extraItems,S.inputs].reduce((a,x)=>a+(x.cant||1),0)} aberturas)`:""} →</button>`:""}`;
 
   bar.classList.remove("hidden");
   bar.innerHTML=`<div class="in">
