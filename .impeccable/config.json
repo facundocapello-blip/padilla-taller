@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "design-system-font",
+        "value": "*",
+        "files": [
+          "docs/design/2026-11-25-propuestas.html"
+        ],
+        "createdAt": "2026-11-26T00:01:46.024Z",
+        "reason": "Claude: hoja histórica de las 3 propuestas; A y B usan a propósito letras de mundos no elegidos"
+      }
+    ]
+  }
+}
