@@ -1,0 +1,817 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-26T00:00:00Z",
+  "title": "Design System: Padilla",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Gris Convertidor Claro",
+        "canonical": "#E2E5E6",
+        "oklch": "oklch(92.0% 0.004 220)",
+        "tonalRamp": [
+          "#0A0B0C",
+          "#242526",
+          "#404243",
+          "#5F6262",
+          "#808384",
+          "#A3A5A6",
+          "#C7C9CA",
+          "#EDEFEF"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Gris Imprimación",
+        "canonical": "#EEF0F1",
+        "oklch": "oklch(95.4% 0.003 229)",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#242526",
+          "#414243",
+          "#606162",
+          "#818283",
+          "#A4A5A6",
+          "#C8C9CA",
+          "#EEEEEF"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "Blanco Etiqueta",
+        "canonical": "#FFFFFF",
+        "oklch": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Tinta de Etiqueta",
+        "canonical": "#17191A",
+        "oklch": "oklch(21.2% 0.004 229)",
+        "tonalRamp": [
+          "#0A0B0C",
+          "#242526",
+          "#404243",
+          "#5F6263",
+          "#808384",
+          "#A3A5A6",
+          "#C8C9CA",
+          "#EDEFEF"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "Gris Leyenda",
+        "canonical": "#545B60",
+        "oklch": "oklch(46.7% 0.012 239)",
+        "tonalRamp": [
+          "#090C0D",
+          "#222628",
+          "#3E4346",
+          "#5C6267",
+          "#7C8388",
+          "#A0A6AA",
+          "#C5CACE",
+          "#EBEFF2"
+        ]
+      },
+      "conv": {
+        "role": "neutral",
+        "displayName": "Gris Convertidor",
+        "canonical": "#4D5458",
+        "oklch": "oklch(44.1% 0.011 233)",
+        "tonalRamp": [
+          "#090C0D",
+          "#222628",
+          "#3E4346",
+          "#5C6266",
+          "#7D8488",
+          "#A0A6AA",
+          "#C5CACD",
+          "#EBEFF1"
+        ]
+      },
+      "line": {
+        "role": "neutral",
+        "displayName": "Hilo",
+        "canonical": "#CBD0D2",
+        "oklch": "oklch(85.4% 0.006 223)",
+        "tonalRamp": [
+          "#0A0B0C",
+          "#232526",
+          "#3F4344",
+          "#5E6264",
+          "#7F8385",
+          "#A2A6A7",
+          "#C6CACB",
+          "#ECEFF0"
+        ]
+      },
+      "line-strong": {
+        "role": "neutral",
+        "displayName": "Hilo Marcado",
+        "canonical": "#9AA1A5",
+        "oklch": "oklch(70.5% 0.010 232)",
+        "tonalRamp": [
+          "#090C0D",
+          "#222628",
+          "#3E4345",
+          "#5C6266",
+          "#7D8387",
+          "#A0A6A9",
+          "#C5CACD",
+          "#EBEFF1"
+        ]
+      },
+      "band": {
+        "role": "primary",
+        "displayName": "Rojo Óxido (banda)",
+        "canonical": "#8A2E21",
+        "oklch": "oklch(43.6% 0.128 31)",
+        "tonalRamp": [
+          "#1F0000",
+          "#451009",
+          "#6D291F",
+          "#994335",
+          "#BF6555",
+          "#DD8D7F",
+          "#FAB6A9",
+          "#FFE0D5"
+        ]
+      },
+      "on-band": {
+        "role": "primary",
+        "displayName": "Blanco de Banda",
+        "canonical": "#FFF4F0",
+        "oklch": "oklch(97.5% 0.013 41)",
+        "tonalRamp": [
+          "#0E0A09",
+          "#292422",
+          "#47403E",
+          "#685F5C",
+          "#89807D",
+          "#ABA3A0",
+          "#CEC7C5",
+          "#F2EDEB"
+        ]
+      },
+      "on-band-mute": {
+        "role": "primary",
+        "displayName": "Rosa de Banda",
+        "canonical": "#F2CFC7",
+        "oklch": "oklch(88.2% 0.041 33)",
+        "tonalRamp": [
+          "#130806",
+          "#31201D",
+          "#523C37",
+          "#755A53",
+          "#987A74",
+          "#B89E98",
+          "#DAC3BE",
+          "#FCEAE6"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Rojo Óxido (acento)",
+        "canonical": "#8A2E21",
+        "oklch": "oklch(43.6% 0.128 31)",
+        "tonalRamp": [
+          "#1F0000",
+          "#451009",
+          "#6D291F",
+          "#994335",
+          "#BF6555",
+          "#DD8D7F",
+          "#FAB6A9",
+          "#FFE0D5"
+        ]
+      },
+      "accent-dark": {
+        "role": "primary",
+        "displayName": "Óxido Hondo",
+        "canonical": "#5E1D14",
+        "oklch": "oklch(33.2% 0.097 31)",
+        "tonalRamp": [
+          "#1B0302",
+          "#3E1812",
+          "#643129",
+          "#8D4C41",
+          "#B26D61",
+          "#D09488",
+          "#EFBBB1",
+          "#FFE4DC"
+        ]
+      },
+      "accent-soft": {
+        "role": "primary",
+        "displayName": "Óxido Lavado",
+        "canonical": "#F6E4E0",
+        "oklch": "oklch(93.2% 0.021 33)",
+        "tonalRamp": [
+          "#0F0A09",
+          "#2B2321",
+          "#4A3F3D",
+          "#6C5E5A",
+          "#8D7E7B",
+          "#AFA29F",
+          "#D1C6C4",
+          "#F5ECEA"
+        ]
+      },
+      "accent-ink": {
+        "role": "primary",
+        "displayName": "Tinta sobre Óxido",
+        "canonical": "#FFFFFF",
+        "oklch": "oklch(100.0% 0.000 90)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#424242",
+          "#616161",
+          "#828282",
+          "#A5A5A5",
+          "#C9C9C9",
+          "#EEEEEE"
+        ]
+      },
+      "slab": {
+        "role": "neutral",
+        "displayName": "Losa",
+        "canonical": "#17191A",
+        "oklch": "oklch(21.2% 0.004 229)",
+        "tonalRamp": [
+          "#0A0B0C",
+          "#242526",
+          "#404243",
+          "#5F6263",
+          "#808384",
+          "#A3A5A6",
+          "#C8C9CA",
+          "#EDEFEF"
+        ]
+      },
+      "slab-soft": {
+        "role": "neutral",
+        "displayName": "Losa Suave",
+        "canonical": "#2A2F32",
+        "oklch": "oklch(30.1% 0.009 234)",
+        "tonalRamp": [
+          "#090B0D",
+          "#222627",
+          "#3F4345",
+          "#5D6265",
+          "#7E8387",
+          "#A1A6A9",
+          "#C6CACC",
+          "#ECEFF1"
+        ]
+      },
+      "on-slab": {
+        "role": "neutral",
+        "displayName": "Tiza sobre Losa",
+        "canonical": "#F4F5F6",
+        "oklch": "oklch(97.0% 0.002 248)",
+        "tonalRamp": [
+          "#0B0B0B",
+          "#252525",
+          "#414243",
+          "#606162",
+          "#818283",
+          "#A4A5A6",
+          "#C8C9CA",
+          "#EEEEEF"
+        ]
+      },
+      "wa": {
+        "role": "secondary",
+        "displayName": "Verde WhatsApp",
+        "canonical": "#15803D",
+        "oklch": "oklch(52.7% 0.137 150)",
+        "tonalRamp": [
+          "#001200",
+          "#00300A",
+          "#005120",
+          "#147437",
+          "#409758",
+          "#72B881",
+          "#A0DAAB",
+          "#CFFCD7"
+        ]
+      },
+      "good": {
+        "role": "status",
+        "displayName": "Bien",
+        "canonical": "#166534",
+        "oklch": "oklch(44.8% 0.108 151)",
+        "tonalRamp": [
+          "#001102",
+          "#012E13",
+          "#174E2A",
+          "#2E7143",
+          "#519363",
+          "#7DB58A",
+          "#A9D7B3",
+          "#D6F9DD"
+        ]
+      },
+      "good-bg": {
+        "role": "status",
+        "displayName": "Bien (fondo)",
+        "canonical": "#DCEFE2",
+        "oklch": "oklch(93.4% 0.027 156)",
+        "tonalRamp": [
+          "#070D09",
+          "#1F2822",
+          "#39453D",
+          "#56665B",
+          "#77877C",
+          "#9BA9A0",
+          "#C1CDC5",
+          "#E8F1EB"
+        ]
+      },
+      "warn": {
+        "role": "status",
+        "displayName": "Ojo",
+        "canonical": "#7A4E00",
+        "oklch": "oklch(46.2% 0.099 72)",
+        "tonalRamp": [
+          "#170700",
+          "#371F00",
+          "#5B3A06",
+          "#81581C",
+          "#A47940",
+          "#C39E6E",
+          "#E3C39D",
+          "#FFEACC"
+        ]
+      },
+      "warn-bg": {
+        "role": "status",
+        "displayName": "Ojo (fondo)",
+        "canonical": "#FBEFC9",
+        "oklch": "oklch(95.2% 0.051 93)",
+        "tonalRamp": [
+          "#0F0B02",
+          "#2B2512",
+          "#494229",
+          "#6B6142",
+          "#8C8262",
+          "#AEA589",
+          "#D0C9B2",
+          "#F4EEDC"
+        ]
+      },
+      "err": {
+        "role": "status",
+        "displayName": "Error",
+        "canonical": "#B42318",
+        "oklch": "oklch(50.0% 0.182 30)",
+        "tonalRamp": [
+          "#260000",
+          "#4F0000",
+          "#7C1109",
+          "#AC2A1F",
+          "#D45141",
+          "#F17F6F",
+          "#FFAC9D",
+          "#FFD9CC"
+        ]
+      },
+      "err-bg": {
+        "role": "status",
+        "displayName": "Error (fondo)",
+        "canonical": "#FDE3E0",
+        "oklch": "oklch(93.6% 0.029 26)",
+        "tonalRamp": [
+          "#110908",
+          "#2E2220",
+          "#4E3E3C",
+          "#705C59",
+          "#927C7A",
+          "#B3A09E",
+          "#D5C5C3",
+          "#F8EBEA"
+        ]
+      },
+      "dark-bg": {
+        "role": "neutral",
+        "displayName": "Fondo Carbón (oscuro)",
+        "canonical": "#111315",
+        "oklch": "oklch(18.5% 0.005 248)",
+        "tonalRamp": [
+          "#0A0B0C",
+          "#242527",
+          "#404244",
+          "#5F6164",
+          "#808385",
+          "#A3A5A7",
+          "#C7C9CB",
+          "#EDEFF0"
+        ]
+      },
+      "dark-surface": {
+        "role": "neutral",
+        "displayName": "Imprimación (oscuro)",
+        "canonical": "#1A1D1F",
+        "oklch": "oklch(22.8% 0.006 237)",
+        "tonalRamp": [
+          "#0A0B0C",
+          "#232527",
+          "#404244",
+          "#5E6264",
+          "#7F8385",
+          "#A2A5A8",
+          "#C7C9CB",
+          "#EDEFF0"
+        ]
+      },
+      "dark-card": {
+        "role": "neutral",
+        "displayName": "Panel (oscuro)",
+        "canonical": "#202426",
+        "oklch": "oklch(25.7% 0.007 229)",
+        "tonalRamp": [
+          "#0A0B0C",
+          "#232527",
+          "#3F4344",
+          "#5E6264",
+          "#7F8385",
+          "#A2A6A8",
+          "#C6CACB",
+          "#ECEFF0"
+        ]
+      },
+      "dark-ink": {
+        "role": "neutral",
+        "displayName": "Tinta (oscuro)",
+        "canonical": "#EDEFF0",
+        "oklch": "oklch(95.1% 0.003 229)",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#242526",
+          "#414243",
+          "#606162",
+          "#818283",
+          "#A4A5A6",
+          "#C8C9CA",
+          "#EEEEEF"
+        ]
+      },
+      "dark-muted": {
+        "role": "neutral",
+        "displayName": "Leyenda (oscuro)",
+        "canonical": "#A2AAAF",
+        "oklch": "oklch(73.3% 0.012 235)",
+        "tonalRamp": [
+          "#090C0D",
+          "#222628",
+          "#3E4346",
+          "#5C6267",
+          "#7C8388",
+          "#A0A6AA",
+          "#C5CACD",
+          "#EBEFF2"
+        ]
+      },
+      "dark-line": {
+        "role": "neutral",
+        "displayName": "Hilo (oscuro)",
+        "canonical": "#33393C",
+        "oklch": "oklch(34.0% 0.010 229)",
+        "tonalRamp": [
+          "#090C0D",
+          "#222627",
+          "#3E4345",
+          "#5C6265",
+          "#7D8387",
+          "#A0A6A9",
+          "#C5CACC",
+          "#EBEFF1"
+        ]
+      },
+      "dark-line-strong": {
+        "role": "neutral",
+        "displayName": "Hilo Marcado (oscuro)",
+        "canonical": "#4A5256",
+        "oklch": "oklch(43.3% 0.012 229)",
+        "tonalRamp": [
+          "#090C0D",
+          "#212628",
+          "#3D4346",
+          "#5B6366",
+          "#7C8488",
+          "#9FA6AA",
+          "#C4CACD",
+          "#EBEFF2"
+        ]
+      },
+      "dark-band": {
+        "role": "primary",
+        "displayName": "Óxido Quemado (banda oscura)",
+        "canonical": "#7A281C",
+        "oklch": "oklch(39.9% 0.117 31)",
+        "tonalRamp": [
+          "#1E0100",
+          "#42130C",
+          "#6A2C22",
+          "#954739",
+          "#BA685A",
+          "#D89082",
+          "#F6B8AC",
+          "#FFE1D7"
+        ]
+      },
+      "dark-accent": {
+        "role": "primary",
+        "displayName": "Óxido Encendido (acento oscuro)",
+        "canonical": "#E0664C",
+        "oklch": "oklch(65.5% 0.158 34)",
+        "tonalRamp": [
+          "#230000",
+          "#4B0600",
+          "#761F0C",
+          "#A43822",
+          "#CB5C44",
+          "#E88771",
+          "#FFB19E",
+          "#FFDCCD"
+        ]
+      },
+      "dark-accent-ink": {
+        "role": "primary",
+        "displayName": "Tinta sobre Óxido (oscuro)",
+        "canonical": "#1A0906",
+        "oklch": "oklch(16.6% 0.031 33)",
+        "tonalRamp": [
+          "#110907",
+          "#2E221F",
+          "#4E3D3A",
+          "#715C57",
+          "#937C77",
+          "#B4A09B",
+          "#D6C5C1",
+          "#F9EBE8"
+        ]
+      },
+      "dark-slab": {
+        "role": "neutral",
+        "displayName": "Losa (oscuro)",
+        "canonical": "#0B0C0D",
+        "oklch": "oklch(15.4% 0.003 248)",
+        "tonalRamp": [
+          "#0B0B0C",
+          "#242526",
+          "#414243",
+          "#606163",
+          "#818284",
+          "#A4A5A6",
+          "#C8C9CA",
+          "#EEEEEF"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Sólo el título de la banda de encabezado, en mayúsculas anchas."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Títulos de panel en mayúsculas angostas."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Subtítulos dentro de panel y nombres de trabajo."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Texto corrido y ayudas."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Rótulos de campo, sección y ficha técnica, en mayúsculas espaciadas."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Cifras de la ficha técnica, angostas y tabulares."
+      },
+      "total": {
+        "displayName": "Total",
+        "purpose": "Total en la losa fija; 28 px en la tarjeta de total."
+      }
+    },
+    "font": {
+      "family": "Archivo",
+      "source": "archivo.woff2 (self-hosted)",
+      "weightRange": "400 900",
+      "stretchRange": "62% 125%"
+    },
+    "shadows": [
+      {
+        "name": "shadow",
+        "value": "0 1px 2px rgba(23,25,26,.1)",
+        "dark": "0 1px 2px rgba(0,0,0,.4)",
+        "purpose": "Apenas: chips de paso inactivos y controles chicos."
+      },
+      {
+        "name": "lift",
+        "value": "0 1px 2px rgba(23,25,26,.08), 0 4px 10px -6px rgba(23,25,26,.18)",
+        "dark": "0 1px 2px rgba(0,0,0,.4), 0 6px 14px -8px rgba(0,0,0,.6)",
+        "purpose": "Despegue: paneles, tarjetas de trabajo, ítems."
+      },
+      {
+        "name": "oxide-button",
+        "value": "0 1px 2px rgba(94,29,20,.35)",
+        "purpose": "Botón principal y + del stepper."
+      },
+      {
+        "name": "slab",
+        "value": "0 -6px 16px -8px rgba(0,0,0,.4)",
+        "purpose": "Losa de total fija sobre el contenido."
+      }
+    ],
+    "motion": [
+      {
+        "name": "press",
+        "value": "transform .08s ease-out; translateY(1px)",
+        "purpose": "Al tocar, el control baja 1 px y pierde la sombra."
+      },
+      {
+        "name": "toggle",
+        "value": ".15s",
+        "purpose": "Interruptores y chevrones."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "transition:none",
+        "purpose": "Con prefers-reduced-motion se quitan todas las transiciones."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "fields-2col",
+        "value": "460px"
+      },
+      {
+        "name": "jobs-3col",
+        "value": "540px"
+      },
+      {
+        "name": "column-max",
+        "value": "600px"
+      }
+    ],
+    "themes": {
+      "modes": [
+        "auto (prefers-color-scheme)",
+        "light",
+        "dark (data-theme)"
+      ],
+      "note": "En oscuro, ink pasa a casi blanco, así que la regla superior de los paneles se vuelve clara; la banda baja a dark-band y el acento sube a dark-accent."
+    }
+  },
+  "components": [
+    {
+      "name": "Banda de encabezado",
+      "kind": "custom",
+      "refersTo": "header-band",
+      "description": "Franja de rojo óxido a sangre con el título de la pantalla; una por pantalla.",
+      "html": "<header class=\"ds-band\"><h1>Taller: cortes de barras</h1><p>barras 6 m · disco 3 mm</p></header>",
+      "css": ".ds-band{background:var(--band,#8A2E21);color:var(--on-band,#FFF4F0);padding:16px 14px 14px;font-family:var(--font,'Archivo',system-ui,sans-serif);}.ds-band h1{margin:0;font-size:19px;font-weight:900;font-stretch:110%;text-transform:uppercase;letter-spacing:.01em;line-height:1.05}.ds-band p{margin:4px 0 0;font-size:12.5px;font-stretch:92%;color:var(--on-band-mute,#F2CFC7)}"
+    },
+    {
+      "name": "Botón principal",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Acción principal de la pantalla, en óxido plano con sombra corta.",
+      "html": "<button class=\"ds-btn-primary\">Terminé de cortar</button>",
+      "css": ".ds-btn-primary{font-family:var(--font,'Archivo',system-ui,sans-serif);background:var(--accent,#8A2E21);color:var(--accent-ink,#FFFFFF);border:1.5px solid var(--accent-dark,#5E1D14);border-radius:8px;padding:10px 14px;min-height:42px;font-size:14px;font-weight:800;font-stretch:95%;box-shadow:0 1px 2px rgba(94,29,20,.35);transition:transform .08s ease-out}.ds-btn-primary:active{transform:translateY(1px)}.ds-btn-primary:focus-visible{outline:2px solid var(--accent,#8A2E21);outline-offset:2px}"
+    },
+    {
+      "name": "Botón fantasma",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Acción secundaria: blanco con borde marcado, sin sombra.",
+      "html": "<button class=\"ds-btn-ghost\">Cargar ejemplo del cuaderno</button>",
+      "css": ".ds-btn-ghost{font-family:var(--font,'Archivo',system-ui,sans-serif);background:var(--card,#FFFFFF);color:var(--ink,#17191A);border:1.5px solid var(--line-strong,#9AA1A5);border-radius:8px;padding:10px 14px;min-height:42px;font-size:14px;font-weight:800;font-stretch:95%;transition:transform .08s ease-out}.ds-btn-ghost:active{transform:translateY(1px)}.ds-btn-ghost:focus-visible{outline:2px solid var(--accent,#8A2E21);outline-offset:2px}"
+    },
+    {
+      "name": "Chips de paso",
+      "kind": "nav",
+      "refersTo": "step-chip-active",
+      "description": "Pasos del Taller; el activo en óxido.",
+      "html": "<div class=\"ds-steps\"><button class=\"ds-step\" aria-selected=\"true\"><b>1.</b> Cortes</button><button class=\"ds-step\"><b>2.</b> Plan y compra</button><button class=\"ds-step\"><b>3.</b> Retazos</button></div>",
+      "css": ".ds-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-family:var(--font,'Archivo',system-ui,sans-serif);}.ds-step{border:0;background:var(--card,#FFFFFF);color:var(--muted,#545B60);border-radius:8px;min-height:38px;padding:7px 4px;font-size:12px;font-weight:800;font-stretch:86%;box-shadow:0 1px 2px rgba(23,25,26,.1)}.ds-step[aria-selected=\"true\"]{background:var(--band,#8A2E21);color:var(--on-band,#FFF4F0);box-shadow:none}.ds-step:focus-visible{outline:2px solid var(--accent,#8A2E21);outline-offset:2px}"
+    },
+    {
+      "name": "Panel etiqueta",
+      "kind": "card",
+      "refersTo": "panel",
+      "description": "Panel blanco sin borde con regla superior de 4 px y sombra corta.",
+      "html": "<section class=\"ds-panel\"><h2>Obra o cliente</h2><p>Ej: Ventanas casa Pérez</p></section>",
+      "css": ".ds-panel{font-family:var(--font,'Archivo',system-ui,sans-serif);background:var(--card,#FFFFFF);color:var(--ink,#17191A);border-top:4px solid var(--ink,#17191A);border-radius:6px;padding:12px;box-shadow:0 1px 2px rgba(23,25,26,.08),0 4px 10px -6px rgba(23,25,26,.18)}.ds-panel h2{margin:0 0 6px;font-size:16.5px;font-weight:850;font-stretch:82%;text-transform:uppercase;letter-spacing:.015em}.ds-panel p{margin:0;font-size:15px;font-weight:500;color:var(--muted,#545B60)}"
+    },
+    {
+      "name": "Campo de texto",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Campo sobre gris imprimación con borde marcado; foco en óxido.",
+      "html": "<label class=\"ds-field\"><span>Ancho (mm)</span><input value=\"1200\"></label>",
+      "css": ".ds-field{display:flex;flex-direction:column;gap:5px;font-family:var(--font,'Archivo',system-ui,sans-serif);}.ds-field span{font-size:12px;font-weight:750;text-transform:uppercase;letter-spacing:.06em;font-stretch:92%;color:var(--muted,#545B60)}.ds-field input{font:inherit;background:var(--surface,#EEF0F1);color:var(--ink,#17191A);border:1.5px solid var(--line-strong,#9AA1A5);border-radius:10px;padding:8px 10px;font-size:14px;font-weight:600;font-stretch:85%;font-variant-numeric:tabular-nums;caret-color:var(--accent,#8A2E21)}.ds-field input:focus-visible{outline:2px solid var(--accent,#8A2E21);outline-offset:2px}"
+    },
+    {
+      "name": "Ficha técnica",
+      "kind": "custom",
+      "refersTo": "panel",
+      "description": "Firma del Plan de corte: cabecera con regla negra y cuatro cifras separadas por hilos.",
+      "html": "<div class=\"ds-spec\"><div class=\"ds-spec-h\"><h3>Caño estructural 80×40</h3><span>1,6 mm · $ 59.000 c/u</span></div><div class=\"ds-spec-g\"><div><small>Barras</small><b>4</b></div><div><small>Kilos</small><b>69,4</b></div><div><small>Pesos</small><b>236.000</b></div><div class=\"hot\"><small>Sobra</small><b>2,8 m</b></div></div></div>",
+      "css": ".ds-spec{font-family:var(--font,'Archivo',system-ui,sans-serif);background:var(--card,#FFFFFF);color:var(--ink,#17191A);padding:0 12px 8px}.ds-spec-h{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-top:10px;border-top:4px solid var(--ink,#17191A)}.ds-spec-h h3{margin:0;font-size:16.5px;font-weight:900;font-stretch:80%;text-transform:uppercase;letter-spacing:.01em}.ds-spec-h span{font-size:12px;color:var(--muted,#545B60);font-stretch:90%;white-space:nowrap}.ds-spec-g{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line,#CBD0D2);border-bottom:1px solid var(--line,#CBD0D2);margin-top:6px}.ds-spec-g>div{display:flex;flex-direction:column;padding:6px 8px 7px;border-left:1px solid var(--line,#CBD0D2)}.ds-spec-g>div:first-child{border-left:0;padding-left:0}.ds-spec-g small{font-size:10.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted,#545B60);font-stretch:90%}.ds-spec-g b{font-size:18px;font-weight:850;font-stretch:82%;font-variant-numeric:tabular-nums}.ds-spec-g .hot b{color:var(--accent,#8A2E21)}"
+    },
+    {
+      "name": "Losa de total",
+      "kind": "custom",
+      "refersTo": "total-slab",
+      "description": "Barra fija casi negra con el total y la acción principal.",
+      "html": "<div class=\"ds-slab\"><div><small>8 barras</small><b>$ 332.800</b></div><button>Terminé de cortar</button></div>",
+      "css": ".ds-slab{font-family:var(--font,'Archivo',system-ui,sans-serif);display:flex;align-items:center;gap:10px;background:var(--slab,#17191A);color:var(--on-slab,#F4F5F6);padding:9px 12px;box-shadow:0 -6px 16px -8px rgba(0,0,0,.4)}.ds-slab small{display:block;font-size:10.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:#B9C0C3;font-stretch:90%}.ds-slab b{font-size:21px;font-weight:900;font-stretch:82%;font-variant-numeric:tabular-nums}.ds-slab button{margin-left:auto;font:inherit;font-size:13.5px;font-weight:800;background:var(--accent,#8A2E21);color:var(--accent-ink,#FFFFFF);border:1.5px solid var(--accent-dark,#5E1D14);border-radius:8px;min-height:42px;padding:8px 15px}.ds-slab button:active{transform:translateY(1px)}.ds-slab button:focus-visible{outline:2px solid var(--on-slab,#F4F5F6);outline-offset:2px}"
+    },
+    {
+      "name": "Navegación inferior",
+      "kind": "nav",
+      "refersTo": "nav-item-active",
+      "description": "Cuatro destinos fijos abajo; el activo en óxido, sin fondo.",
+      "html": "<nav class=\"ds-nav\"><a>Presupuestar</a><a aria-current=\"page\">Taller</a><a>Precios</a><a>Ajustes</a></nav>",
+      "css": ".ds-nav{font-family:var(--font,'Archivo',system-ui,sans-serif);display:grid;grid-template-columns:repeat(4,1fr);gap:4px;background:var(--card,#FFFFFF);border-top:1px solid var(--line,#CBD0D2);padding:4px 8px}.ds-nav a{display:flex;align-items:center;justify-content:center;min-height:46px;font-size:11.5px;font-weight:700;font-stretch:92%;color:var(--muted,#545B60);text-decoration:none;cursor:pointer}.ds-nav a[aria-current=\"page\"]{color:var(--accent,#8A2E21);font-weight:850}.ds-nav a:focus-visible{outline:2px solid var(--accent,#8A2E21);outline-offset:2px}"
+    }
+  ],
+  "narrative": {
+    "northStar": "La etiqueta de la lata de antióxido",
+    "overview": "**Creative North Star: \"La etiqueta de la lata de antióxido\"**\n\nCada pantalla se lee como la etiqueta técnica de una lata de convertidor: arriba, una banda de rojo óxido a sangre con el nombre de la pantalla en mayúsculas anchas; abajo, sobre un fondo gris convertidor, paneles blancos que arrancan con una regla negra gruesa, como las fichas de una etiqueta. La ficha técnica manda: barras, kilos, pesos y sobra se leen de un vistazo, en números angostos y tabulares.\n\nEs una herramienta de taller para el celular, con sol fuerte y un pulgar. Por eso la densidad es alta pero ordenada (gutter de 12 px, separaciones de 6 a 10 px), los controles miden 38 a 46 px de alto y el contraste es de imprenta: casi negro sobre blanco, blanco sobre óxido. Una sola familia tipográfica (Archivo, variable en ancho) hace todo el trabajo: se ensancha para el título de la banda y se angosta para tablas y números.\n\nEl mundo reemplaza a \"Taller Táctil\": nada de panel gris con acento naranja ni de tarjetas con relieve de juguete (borde inferior duro desplazado). La profundidad es una sombra corta y suave; la estructura la dan las reglas, no los bordes.",
+    "keyCharacteristics": [
+      "Banda de encabezado en rojo óxido a sangre, una por pantalla.",
+      "Paneles blancos sin borde perimetral, con regla de 4 px arriba.",
+      "Archivo variable: ancha (110 %) en el título, angosta (80 a 88 %) en datos y títulos de panel.",
+      "Números siempre tabulares; totales en una losa casi negra fija abajo.",
+      "Sombra corta y suave; ninguna sombra dura desplazada.",
+      "Modo oscuro completo: la regla y la tinta se invierten a casi blanco, el óxido se aclara."
+    ],
+    "rules": [
+      {
+        "name": "The Banda a Sangre Rule",
+        "body": "El rojo óxido a sangre vive en una sola franja por pantalla: la banda de encabezado, de borde a borde, con margen negativo sobre el gutter. No se repite como fondo de paneles ni de secciones.",
+        "section": "colors"
+      },
+      {
+        "name": "The Un Solo Óxido Rule",
+        "body": "Dentro del contenido, el óxido marca sólo lo que está elegido, lo que es la acción principal o el dato que hay que mirar (sobra). Si todo es óxido, nada es óxido.",
+        "section": "colors"
+      },
+      {
+        "name": "The Divergencia Rule",
+        "body": "El contrato pedía `#4D5458` para lo secundario; el build usa `muted` para texto y deja `conv` para el gráfico de barras. Manda el build.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ancho y Angosto Rule",
+        "body": "Ancho por encima de 100 % sólo en el título de la banda. Todo lo que es número, medida, código de pieza o texto dentro de gráficos va angosto (80 %) y con cifras tabulares.",
+        "section": "typography"
+      },
+      {
+        "name": "The Mayúscula que Nombra Rule",
+        "body": "Las mayúsculas nombran (pantalla, panel, trabajo, rótulo); nunca van en texto corrido ni en botones.",
+        "section": "typography"
+      },
+      {
+        "name": "The Sombra Corta Rule",
+        "body": "Ninguna sombra desplazada y sin difuminar (\"relieve de juguete\"). Si una sombra tiene radio de desenfoque cero, está mal.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** abrir cada pantalla con la banda de rojo óxido a sangre y el título en mayúsculas anchas (900, ancho 110 %).",
+      "**Do** armar paneles blancos sin borde, con regla superior de 4 px en `ink` y 6 px de radio.",
+      "**Do** escribir toda cifra, medida y código de pieza en Archivo angosta (80 a 85 %) con cifras tabulares.",
+      "**Do** reservar el óxido para lo elegido, la acción principal y el dato a mirar.",
+      "**Do** usar sólo las sombras `--shadow` y `--lift` (y la del botón óxido); al tocar, bajar 1 px.",
+      "**Do** mantener controles de 38 a 46 px de alto, al alcance del pulgar."
+    ],
+    "donts": [
+      "**Don't** volver al relieve de juguete: nada de sombras duras desplazadas sin desenfoque bajo botones, chips o tarjetas.",
+      "**Don't** poner bordes perimetrales a los paneles ni radios de 12 a 16 px.",
+      "**Don't** usar el óxido como fondo de paneles o secciones fuera de la banda.",
+      "**Don't** sumar una segunda familia tipográfica ni una monoespaciada: el ancho de Archivo hace ese trabajo.",
+      "**Don't** usar el verde WhatsApp ni los colores de estado como acento decorativo."
+    ]
+  }
+}
