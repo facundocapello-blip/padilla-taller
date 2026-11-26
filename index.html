@@ -34,18 +34,6 @@
   --mono:"Archivo", system-ui, sans-serif;
   color-scheme: light;
 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#111315; --surface:#1A1D1F; --card:#202426; --ink:#EDEFF0; --muted:#A2AAAF; --line:#33393C; --line-strong:#4A5256;
-  --accent:#E0664C; --accent-dark:#A8412E; --accent-soft:rgba(224,102,76,.16); --accent-ink:#1A0906;
-  --band:#7A281C; --on-band:#FFF1EC; --on-band-mute:#E9C2B9; --conv:#5F676B;
-  --slab:#0B0C0D; --slab-soft:#24282A; --on-slab:#F3F4F5;
-  --good:#6EE7A0; --good-bg:rgba(34,197,94,.15); --warn:#FBBF24; --warn-bg:rgba(245,158,11,.15);
-  --err:#FCA5A5; --err-bg:rgba(239,68,68,.16);
-  --ml-dot:#FACC15;
-  --shadow:0 1px 2px rgba(0,0,0,.4);
-  --lift:0 1px 2px rgba(0,0,0,.4),0 6px 14px -8px rgba(0,0,0,.6);
-  color-scheme: dark;
-} }
 :root[data-theme="dark"]{
   --bg:#111315; --surface:#1A1D1F; --card:#202426; --ink:#EDEFF0; --muted:#A2AAAF; --line:#33393C; --line-strong:#4A5256;
   --accent:#E0664C; --accent-dark:#A8412E; --accent-soft:rgba(224,102,76,.16); --accent-ink:#1A0906;
@@ -560,7 +548,7 @@ dialog.dlg p{margin:0 0 14px;font-size:13.5px;color:var(--muted)}
 /* ===== Mundo Antióxido: capa de componentes ===== */
 body{font-stretch:100%;font-weight:500}
 h1{font-size:19px;font-weight:900;font-stretch:110%;text-transform:uppercase;letter-spacing:.01em;line-height:1.05}
-h2{font-size:16.5px;font-weight:850;font-stretch:82%;text-transform:uppercase;letter-spacing:.015em}
+h2{font-size:16px;font-weight:800;font-stretch:92%;letter-spacing:0}
 h3{font-size:14px;font-weight:800;font-stretch:88%}
 .sec-lbl,.field > label,.flabel{font-stretch:92%;letter-spacing:.06em;font-weight:750}
 .small,.muted{font-stretch:95%}
@@ -576,11 +564,9 @@ h3{font-size:14px;font-weight:800;font-stretch:88%}
 .top .askpill{background:rgba(255,255,255,.14);color:var(--on-band)}
 
 /* Paneles con regla negra de etiqueta; sin relieve de juguete */
-.card,.clickie-box,.rep-card,.item,.picker{border:0;border-top:4px solid var(--ink);border-radius:6px;box-shadow:var(--lift)}
-.card.tactile,.clickie-box.open{border:0;border-top:4px solid var(--band);box-shadow:var(--lift)}
-.card.flush{border-top-width:4px}
-.item{border-top-width:3px}
-.item.cont,.rep-card.in-cart{border-top-color:var(--accent)}
+.card,.clickie-box,.rep-card,.item,.picker{border:0;border-radius:10px;box-shadow:var(--lift)}
+.card.tactile,.clickie-box.open{border:0;box-shadow:var(--lift)}
+.item.cont,.rep-card.in-cart{box-shadow:inset 0 0 0 1.5px var(--accent),var(--lift)}
 .total-card{border-top:4px solid var(--band);border-radius:6px}
 .job{border:0;border-top:4px solid var(--ink);border-radius:6px;box-shadow:var(--lift);font-stretch:88%;text-transform:uppercase;letter-spacing:.01em;font-weight:850}
 .job:active{transform:translateY(1px);box-shadow:var(--shadow);border-top-color:var(--band)}
@@ -652,6 +638,23 @@ details.card > summary .sumv{white-space:nowrap}
 .tfix .done svg{width:15px;height:15px}
 .tfix-sp{height:70px}
 .tmarcas{margin:0;font-size:13px;line-height:1.4;padding:8px 10px;background:var(--surface);border-radius:6px;font-variant-numeric:tabular-nums}
+/* Inicio: lista de trabajos en un solo panel */
+.tdet{font-size:13px}
+.tdet > summary{cursor:pointer;font-weight:700;color:var(--on-slab);opacity:.85;padding:4px 0;list-style:none}
+.tdet > summary::-webkit-details-marker{display:none}
+.tdet > summary::after{content:" ›";opacity:.7}
+.tdet[open] > summary{margin-bottom:8px}
+.tdet[open]{display:flex;flex-direction:column;gap:8px}
+.jobs{list-style:none;margin:0;padding:0;background:var(--card);border-radius:10px;box-shadow:var(--lift);overflow:hidden}
+.jobs li+li{border-top:1px solid var(--line)}
+.jrow{width:100%;display:flex;align-items:center;gap:12px;border:0;background:none;padding:13px 14px;text-align:left;min-height:60px}
+.jrow:active{background:var(--surface)}
+.jrow > svg:first-child{width:26px;height:26px;color:var(--band);flex:none}
+.jrow .jt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.jrow b{font-size:16px;font-weight:750;font-stretch:96%}
+.jrow small{font-size:13px;color:var(--muted);font-weight:500}
+.jrow .jchev{width:18px;height:18px;color:var(--line-strong);transform:rotate(-90deg);flex:none}
+.clickie-toggle{font-size:15px;font-weight:700}
 .tmarcas b{color:var(--accent);font-stretch:90%;text-transform:uppercase;letter-spacing:.04em;font-size:11.5px}
 </style>
 </head>
@@ -1973,8 +1976,7 @@ let hist=LS.get("presu_hist",[]);
 
 function applyTheme(){
   const r=document.documentElement;
-  if(cfg.theme==="dark"||cfg.theme==="light") r.setAttribute("data-theme",cfg.theme);
-  else r.removeAttribute("data-theme");
+  r.setAttribute("data-theme","light"); /* Siempre clara: se lee mejor al sol (pedido de Padilla) */
 }
 applyTheme();
 
@@ -2121,69 +2123,59 @@ function renderHome(){
   bar.classList.add("hidden");
   renderNav();
 
+  const cOpen=S.clickieOpen||!!S.clickieText||!!S.errs.clickie;
   app.innerHTML=`
   <div class="top">
     <div>
-      <h1>Padilla · Presupuestos</h1>
-      <p class="top-sub" style="margin:2px 0 0">1. Elegí el trabajo → 2. Materiales y horas → 3. Precio y envío</p>
+      <h1>Padilla</h1>
+      <p class="top-sub" style="margin:2px 0 0">¿Qué trabajo vas a presupuestar?</p>
     </div>
-    <button type="button" class="chipbtn" data-go="precios" aria-label="Cambiar mi valor hora en Ajustes">${svg("gear")} ${ars(cfg.valor_hora)}/h</button>
   </div>
 
-  ${S.installPrompt?`<button type="button" class="btn primary sm" data-act="installapp" style="width:100%">${svg("box")} Instalar app Padilla en este celular</button>`:""}
-
-  <div class="steps g2" role="group" aria-label="Filtrar trabajos por rubro">
-    <button type="button" class="stepbtn" data-soloherr="0" aria-selected="${!cfg.solo_herreria}">Todos los rubros (10)</button>
-    <button type="button" class="stepbtn" data-soloherr="1" aria-selected="${!!cfg.solo_herreria}">Solo herrería (4)</button>
-  </div>
-
-  ${(()=>{ const cOpen=S.clickieOpen||!!S.clickieText||!!S.errs.clickie; return `
-  <section class="clickie-box ${cOpen?"open":""}" aria-label="Pegar necesidad de Clickie">
-    <div class="clickie-hd">
-      <button type="button" class="clickie-toggle" data-act="clickietoggle" aria-expanded="${cOpen}">
-        ${svg("sparkle",'class="ico" style="color:var(--accent)"')}
-        <span>Pegar pedido de Clickie</span>
-        <span class="cbadge">Auto</span>
-        ${svg("chev",'class="chev"')}
-      </button>
-      <button type="button" class="clickie-paste" data-act="clickiepaste" aria-label="Pegar pedido desde el portapapeles">${svg("copy")} Pegar</button>
-    </div>
-    ${cOpen?`<textarea id="clickietxt" aria-label="Pegá acá lo que necesita el cliente en Clickie" placeholder="Pegá acá lo que pide el cliente en Clickie o WhatsApp (ej: 'Necesito 2 rejas ventana de 1,20 x 1,00 y puerta reja de 0,90 x 2,00' o 'Cambiar 3 enchufes y colocar 2 lámparas')">${esc(S.clickieText)}</textarea>
-    ${S.errs.clickie?`<p class="field-err" role="alert">${esc(S.errs.clickie)}</p>`:""}
-    <div class="clickie-acts">
-      <button type="button" class="btn primary sm" style="flex:1" data-act="clickieload">Armar presupuesto automático →</button>
-      ${S.clickieText?`<button type="button" class="btn ghost sm" data-act="clickieclear" aria-label="Limpiar texto">${svg("x")}</button>`:""}
-    </div>`:""}
-  </section>`; })()}
+  ${S.installPrompt?`<button type="button" class="btn primary sm" data-act="installapp" style="width:100%">${svg("box")} Instalar en este celular</button>`:""}
 
   ${draft&&JOBS.find(j=>j.id===draft.jobId)?`<div class="draft">
     <button type="button" class="item cont" data-act="draft">
       <span class="t1">Seguir: ${esc(draft.cliente?draft.cliente+" · ":"")}${esc(draft.desc)}</span>
-      <span class="t2">Quedó sin terminar · tocá para continuar</span>
+      <span class="t2">Quedó sin terminar</span>
       <span class="t3">${ars(draft.total)}</span>
     </button>
     <button type="button" class="x" data-act="nodraft" aria-label="Descartar borrador">${svg("x")}</button>
   </div>`:""}
 
-  ${favs.length?`<h2>${svg("star",'class="ico" style="color:var(--accent)"')} Mis frecuentes</h2>
+  <ul class="jobs" aria-label="Trabajos">
+    ${jobIds.map(id=>JOBS.find(j=>j.id===id)).map(j=>`<li><button type="button" class="jrow" data-job="${j.id}">${svg(j.icon)}<span class="jt"><b>${esc(j.name)}</b><small>${esc(j.hint)}</small></span>${svg("chev",'class="jchev"')}</button></li>`).join("")}
+  </ul>
+
+  <section class="clickie-box ${cOpen?"open":""}" aria-label="Pegar pedido de Clickie">
+    <div class="clickie-hd">
+      <button type="button" class="clickie-toggle" data-act="clickietoggle" aria-expanded="${cOpen}">
+        ${svg("copy",'class="ico" style="color:var(--accent)"')}
+        <span>Pegar pedido de Clickie</span>
+        ${svg("chev",'class="chev"')}
+      </button>
+      ${cOpen?`<button type="button" class="clickie-paste" data-act="clickiepaste" aria-label="Pegar pedido desde el portapapeles">Pegar</button>`:""}
+    </div>
+    ${cOpen?`<textarea id="clickietxt" aria-label="Pedido del cliente" placeholder="Ej: 2 rejas de ventana de 1,20 x 1,00 y una puerta reja de 0,90 x 2,00">${esc(S.clickieText)}</textarea>
+    ${S.errs.clickie?`<p class="field-err" role="alert">${esc(S.errs.clickie)}</p>`:""}
+    <div class="clickie-acts">
+      <button type="button" class="btn primary sm" style="flex:1" data-act="clickieload">Armar presupuesto →</button>
+      ${S.clickieText?`<button type="button" class="btn ghost sm" data-act="clickieclear" aria-label="Limpiar texto">${svg("x")}</button>`:""}
+    </div>`:""}
+  </section>
+
+  ${favs.length?`<h2>Mis frecuentes</h2>
   <ul class="list">${favs.map((f,k)=>`<li class="draft">
     <button type="button" class="item" data-fav="${k}">
       <span class="t1">${esc(f.name)}</span>
-      <span class="t2">${esc((JOBS.find(j=>j.id===f.jobId)||JOBS[0]).name)} · tocá para presupuestar</span>
+      <span class="t2">${esc((JOBS.find(j=>j.id===f.jobId)||JOBS[0]).name)}</span>
       <span class="t3">${svg("resume",'class="ico" style="color:var(--accent)"')}</span>
     </button>
     <button type="button" class="x" data-delfav="${k}" aria-label="Borrar frecuente ${esc(f.name)}">${svg("x")}</button>
   </li>`).join("")}</ul>`:""}
 
-  <h2 class="sr-only">Lista de trabajos</h2>
-  <ul class="grid">
-    ${jobIds.map(id=>JOBS.find(j=>j.id===id)).map(j=>`<li>
-      <button type="button" class="job" data-job="${j.id}">${svg(j.icon)}<span>${esc(j.name)}</span><small>${esc(j.hint)}</small></button>
-    </li>`).join("")}
-  </ul>
-
-  ${hist.length?`<h2>Últimos presupuestos</h2>${histStats()}
-  <ul class="list">${hist.slice(0,8).map((x,k)=>`<li class="hist">
+  ${hist.length?`<h2>Últimos presupuestos</h2>
+  <ul class="list">${hist.slice(0,5).map((x,k)=>`<li class="hist">
     <button type="button" class="item" data-hist="${k}">
       <span class="t1">${esc(x.cliente?x.cliente+" · ":"")}${esc(x.desc)}</span>
       <span class="t2">${new Date(x.date).toLocaleDateString("es-AR",{day:"numeric",month:"short"})}
@@ -2611,6 +2603,7 @@ function renderJob(){
         <span class="v">${ars(res.bolsillo)}</span>
       </div>
 
+      <details class="tdet"><summary>Cómo se arma el precio</summary>
       <div class="desglose">
         <span class="dl">Mano de obra (${fmtQ(res.horas)} h)</span><span class="dv">${ars(res.mo)}</span>
         ${res.matCost>0?`<span class="dl">Materiales${S.opts.clienteCompra?" (paga cliente)":""}</span><span class="dv">${S.opts.clienteCompra?"$ 0":ars(res.matCobrado)}</span>`:""}
@@ -2621,6 +2614,7 @@ function renderJob(){
 
       ${mk?`<div class="kg">Mercado (reja ventana, ${PRECIOS_FECHA}): ${ars(mk.lo)} a ${ars(mk.hi)} · ${mk.estado==="ok"?"estás en precio":mk.estado==="bajo"?"estás barato: revisá no regalar trabajo":"estás por arriba del promedio"}</div>`:""}
       ${res.kg?`<div class="kg">≈ ${fmtQ(Math.round(res.kg*10)/10)} kg de hierro · por kilo serían ${ars(Math.ceil(res.kg*cfg.precio_kg/(cfg.redondeo||1))*(cfg.redondeo||1))}${kgPropio()?"":" (ref.)"}</div>`:""}
+      </details>
     </section>
 
     ${res.warns.map(w=>`<div class="banner warn">${svg("alert")}<div>${esc(w)}</div></div>`).join("")}
@@ -2631,16 +2625,7 @@ function renderJob(){
         <span class="pill-badge ${esClickie?"clk":"dir"}">${esClickie?"Para Clickie":"Particular"}</span>
       </div>
       <div class="msg" id="msgtxt">${esc(msg)}</div>
-      <div class="actions">
-        ${esClickie
-          ? `<button type="button" class="btn primary" data-act="copiar">${svg("copy")} Copiar para pegar en Clickie</button>
-             <div class="two">
-               <button type="button" class="btn ghost" data-act="copiarnum">${svg("copy")} Solo el monto</button>
-               <a class="btn wa" data-act="wa" target="_blank" rel="noopener" href="${wa}">${svg("wa")} WhatsApp</a>
-             </div>`
-          : `<a class="btn wa" data-act="wa" target="_blank" rel="noopener" href="${wa}">${svg("wa")} Mandar por WhatsApp</a>
-             <button type="button" class="btn primary" data-act="copiar">${svg("copy")} Copiar presupuesto</button>`}
-      </div>
+      ${esClickie?`<button type="button" class="btn ghost sm" data-act="copiarnum">${svg("copy")} Copiar solo el monto</button>`:""}
     </section>
 
     <section class="card">
@@ -2659,17 +2644,16 @@ function renderJob(){
       <h1 style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(j.name)}</h1>
     </div>
     ${st===1
-      ? `<a class="askpill" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(pedirMessage(j,cfg))}">${svg("wa")} Pedir medidas</a>`
-      : `<span class="small muted num">${fmtQ(res.horas)} h · ${res.mats.filter(m=>m.qty>0).length} mat.</span>`}
+      ? `<a class="askpill" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(pedirMessage(j,cfg))}">${svg("wa")} Pedir medidas</a>`:""}
   </div>
 
   <div class="steps" role="tablist" aria-label="Pasos del presupuesto">
     <button type="button" class="stepbtn" role="tab" data-stepgo="1" aria-selected="${st===1}"><span class="snum">1.</span>Medidas${S.extraItems.length?` (${S.extraItems.length+1})`:""}</button>
-    <button type="button" class="stepbtn" role="tab" data-stepgo="2" aria-selected="${st===2}"><span class="snum">2.</span>Materiales y horas${nEj?'<span class="sdot" title="Hay precios de referencia"></span>':""}</button>
-    <button type="button" class="stepbtn" role="tab" data-stepgo="3" aria-selected="${st===3}"><span class="snum">3.</span>Precio y envío</button>
+    <button type="button" class="stepbtn" role="tab" data-stepgo="2" aria-selected="${st===2}"><span class="snum">2.</span>Materiales${nEj?'<span class="sdot" title="Hay precios de referencia"></span>':""}</button>
+    <button type="button" class="stepbtn" role="tab" data-stepgo="3" aria-selected="${st===3}"><span class="snum">3.</span>Precio</button>
   </div>
 
-  ${S.note?`<div class="banner good">${svg("sparkle")}<div>${esc(S.note)}</div></div>`:""}
+  ${S.note&&st===1?`<div class="banner good">${svg("sparkle")}<div>${esc(S.note)}</div></div>`:""}
   ${bodyHTML}
   ${j.id==="reja"&&st!==2?`<button type="button" class="btn ghost" style="color:var(--accent);border-color:var(--accent)" data-act="rejataller">${svg("regla")} Ver cortes y compra en Taller${S.extraItems.length?` (${[...S.extraItems,S.inputs].reduce((a,x)=>a+(x.cant||1),0)} aberturas)`:""} →</button>`:""}`;
 
@@ -2684,7 +2668,7 @@ function renderJob(){
     </div>
     <div class="acts">
       ${st < 3
-        ? `<button type="button" class="btn primary" data-stepgo="${st+1}">${st===1?"Materiales y horas →":"Precio y envío →"}</button>`
+        ? `<button type="button" class="btn primary" data-stepgo="${st+1}">${st===1?"Materiales →":"Precio →"}</button>`
         : esClickie
           ? `<a class="iconbtn" data-act="wa" target="_blank" rel="noopener" href="${wa}" aria-label="Mandar por WhatsApp">${svg("wa")}</a>
              <button type="button" class="btn primary" data-act="copiar">${svg("copy")} Copiar</button>`
@@ -2852,14 +2836,6 @@ function renderPrecios(){
         <div class="opts g2" role="group" aria-label="Rubros visibles en Inicio">
           <button type="button" class="opt sm" data-soloherr="0" aria-pressed="${!cfg.solo_herreria}">Todos los rubros</button>
           <button type="button" class="opt sm" data-soloherr="1" aria-pressed="${!!cfg.solo_herreria}">Solo herrería</button>
-        </div>
-      </div>
-      <div class="setrow full">
-        <span>Colores de pantalla</span>
-        <div class="opts g3" role="group" aria-label="Tema de pantalla">
-          <button type="button" class="opt sm" data-theme="auto" aria-pressed="${cfg.theme==="auto"}">Auto</button>
-          <button type="button" class="opt sm" data-theme="light" aria-pressed="${cfg.theme==="light"}">Claro</button>
-          <button type="button" class="opt sm" data-theme="dark" aria-pressed="${cfg.theme==="dark"}">Oscuro</button>
         </div>
       </div>
     </div>
@@ -3868,7 +3844,7 @@ function tModelSVG(m,pmap,sel,opts){
     body+=dimV(x1-12,y,y+h,`${B}`);
   } else {
     /* Vista frontal 2D: Reja, Portón, Marco con cortes anotados sobre cada zona */
-    const padL=62, padR=46, padT=34, padB=m.type==="porton"&&m.corredizo?44:34;
+    const padL=76, padR=46, padT=34, padB=m.type==="porton"&&m.corredizo?44:34;
     const sc=Math.min((W-padL-padR)/A,(H-padT-padB)/B);
     const w=A*sc, h=B*sc, x=padL+(W-padL-padR-w)/2, y=padT+(H-padT-padB-h)/2;
 
@@ -3970,13 +3946,8 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
   const selBar=sel?`<div class="tmod-sel">
     <div><b>${esc(selLabel)}</b>${barHits.length?`<div class="small" style="margin-top:2px">Sale en: <b>${esc(barHits.join(" · "))}</b></div>`:(T.cuts.length?`<div class="small muted" style="margin-top:2px">No coincide con cortes cargados todavía</div>`:"")}</div>
     <button type="button" class="tmod-clr" data-tselclr aria-label="Quitar selección">✕</button>
-  </div>`:`<div class="small muted" style="padding:0 2px">Cada etiqueta sobre el plano muestra <b>cant. × largo (mm)</b>. Tocá una pieza${compact?" o una barra":""} para cruzarlas.</div>`;
+  </div>`:"";
 
-  const chips=`<div class="tmod-chips">${pieces.map(p=>{
-    const hl=sel&&tMatchSel(p,p.perfil,sel);
-    const payload=esc(JSON.stringify({key:p.key,label:p.label,parte:p.parte,perfil:p.perfil,len:p.len,qty:p.qty,ang:p.ang}));
-    return `<button type="button" class="tmod-chip ${hl?"hl":""}" data-tsel="${payload}">${esc(p.parte)} <span>${p.len}</span><span class="q">×${p.qty}</span></button>`;
-  }).join("")}</div>`;
 
   const legend=`<div class="tmod-leg">
     <span><i class="l-m"></i>${esc(pname(m.pMarco))}</span>
@@ -3985,12 +3956,11 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
   </div>`;
 
   if(compact){
-    return `<details class="card" data-sec="tmodel2" ${S.open.tmodel2!==false?"open":""}>
+    return `<details class="card" data-sec="tmodel2" ${S.open.tmodel2?"open":""}>
       <summary><h2>Plano y cortes del pedido</h2><span class="sumv mono">${m.ancho}×${m.alto}${isProf?`×${m.prof}`:""} mm</span>${svg("chev",'class="chev"')}</summary>
       <div class="inner">
         ${multiTabs}
         <div class="tmod-stage">${tModelSVG(m,pmap,sel,{plan})}${legend}</div>
-        ${chips}
         ${tMarcasTxt(m)?`<p class="tmarcas"><b>Marcas:</b> ${esc(tMarcasTxt(m))}</p>`:""}
         ${selBar}
       </div>
@@ -4007,7 +3977,6 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
       ${T_MODELS.map(x=>`<button type="button" class="preset" data-tmtype="${x.id}" aria-pressed="${m.type===x.id}">${x.label}</button>`).join("")}
     </div>
     <div class="tmod-stage">${tModelSVG(m,pmap,sel,{plan})}${legend}</div>
-    ${chips}
     ${tMarcasTxt(m)?`<p class="tmarcas"><b>Marcas:</b> ${esc(tMarcasTxt(m))}</p>`:""}
     ${selBar}
     <div class="tmod-fields ${isProf||isReja?"g3":""}">
@@ -4022,7 +3991,7 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
     </div>
     ${isReja?`<button type="button" class="swrow inline" data-tact="tmint" aria-pressed="${!!m.medInt}"><span class="swlbl">La medida es interior<span class="swsub">Ancho y alto sin el marco; el marco se corta más largo</span></span><span class="sw" aria-hidden="true"></span></button>`:""}
     ${m.type==="porton"?`<button type="button" class="swrow inline" data-tact="tmcorr" aria-pressed="${!!m.corredizo}"><span class="swlbl">Portón corredizo<span class="swsub">Suma riel inferior en el plano y cortes</span></span><span class="sw" aria-hidden="true"></span></button>`:""}
-    <details class="tnew" ${S.open.tmperfs?"open":""} data-sec="tmperfs"><summary>Perfiles del modelo (${esc(pname(m.pMarco))}${hasInt?" / "+esc(pname(m.pInt)):""})</summary>
+    <details class="tnew" ${S.open.tmperfs?"open":""} data-sec="tmperfs"><summary>Cambiar perfiles</summary>
       <div class="tmod-fields" style="margin-top:8px">
         <div class="field"><label for="tm_pm">${isProf?"Patas / parantes":"Marco"}</label><select id="tm_pm" class="txt" data-tmf="pMarco">${perf.map(p=>`<option value="${esc(p.key)}" ${p.key===m.pMarco?"selected":""}>${esc(p.n)}</option>`).join("")}</select></div>
         <div class="field"><label for="tm_pi">${isProf?"Largueros":"Interior / barrotes"}</label><select id="tm_pi" class="txt" data-tmf="pInt">${perf.map(p=>`<option value="${esc(p.key)}" ${p.key===m.pInt?"selected":""}>${esc(p.n)}</option>`).join("")}</select></div>
@@ -4203,8 +4172,9 @@ function renderTaller(){
 
     ${tModelCardHTML(T.model,perf,pmap,plan,false)}
 
-    <section class="card" aria-labelledby="t_addh">
-      <h2 id="t_addh">Agregar cortes manuales</h2>
+    <details class="card" data-sec="taddman" ${S.open.taddman||!T.cuts.length&&!T.modelActive?"open":""}>
+      <summary><h2 id="t_addh">Agregar cortes a mano</h2><span class="sumv"></span>${svg("chev",'class="chev"')}</summary>
+      <div class="inner">
       <div class="field"><label for="t_perfil">Perfil</label>
         <select id="t_perfil" class="txt">${perf.map(p=>`<option value="${esc(p.key)}" ${p.key===T.form.perfil?"selected":""}>${esc(p.n)}</option>`).join("")}</select>
         <details class="tnew"><summary>${svg("plus",'class="ico"')} ¿No está tu perfil? Agregalo</summary>
@@ -4244,7 +4214,8 @@ function renderTaller(){
           :"Ej: <b>2640x2 1530x3</b> (también <b>2x2640</b> o <b>2,64</b> en m)."}</p>
         ${S.errs.t?`<p class="field-err" role="alert">${esc(S.errs.t)}</p>`:""}
       </div>
-    </section>
+      </div>
+    </details>
 
     ${T.cuts.length?`
     <section class="card" aria-labelledby="t_listh">
@@ -4290,11 +4261,6 @@ function renderTaller(){
         <span><b style="font-size:13px">${esc(pname(g.perfil))}</b><br><span class="small muted">${p?ars(p.price)+" c/u":"sin precio"}${g.retUsed.length?` · +${g.retUsed.length} retazo${g.retUsed.length>1?"s":""}`:""}${g.empBars?` · +${g.empBars} empalme`:""}</span></span>
         ${p?`<input id="tp_${esc(g.perfil)}" class="pricein num ${p.example?"example":""}" data-price="${esc(g.perfil)}" inputmode="numeric" value="${fmtN(p.price)}" aria-label="Precio por barra de ${esc(p.n)}">`:""}
       </div>`; }).join("")}</div>
-      <div class="tstat">
-        <span>Aprovechamiento: ${aprovPct}%</span>
-        ${totGuardMm>0?`<span>Retazos: ${fmtQ(totGuardMm/1000)} m</span>`:""}
-        ${totKg>0?`<span>≈ ${fmtQ(Math.round(totKg*10)/10)} kg</span>`:""}
-      </div>
       <div class="two">
         ${totBuy>0?`<button type="button" class="btn ghost sm" style="background:rgba(255,255,255,.1);color:var(--on-slab);border-color:rgba(255,255,255,.22)" data-tact="corralon">${svg("cart")} Corralón</button>`:`<span></span>`}
         <button type="button" class="btn primary sm" data-tact="presu">Presupuestar →</button>
@@ -4303,7 +4269,7 @@ function renderTaller(){
     </section>
 
     ${retUsedBanner}
-    ${T.modelActive?tModelCardHTML(T.model,perf,pmap,plan,true):`<details class="card" data-sec="tmodel2" ${S.open.tmodel2!==false?"open":""}>
+    ${T.modelActive?tModelCardHTML(T.model,perf,pmap,plan,true):`<details class="card" data-sec="tmodel2" ${S.open.tmodel2?"open":""}>
       <summary><h2>Gráfico de cortes del pedido</h2><span class="sumv mono">${nPzas} pieza${nPzas>1?"s":""}</span>${svg("chev",'class="chev"')}</summary>
       <div class="inner">
         <div class="tmod-stage">${tOrderCutsSVG(T.cuts,pmap,S.tSel)}</div>
@@ -4333,7 +4299,7 @@ function renderTaller(){
               <button type="button" class="barck" data-tdone="${esc(dk)}" aria-pressed="${isDone}">${svg("check")} ${isDone?"Cortado":"Tildar"}</button>
             </div>
             ${tBarSVG(x.bar,T.barra,T.disco,T.minSob,g.perfil,S.tSel)}
-            <div class="bc"><span>${x.bar.pieces.map(p=>esc(tCutTxt(p))).join(" · ")} → sobra ${fmtQ(x.bar.sobra)} mm</span>${x.bar.sobra>=T.minSob?`<button type="button" class="tsavbtn" data-tsaveret="${esc(g.perfil)}" data-rlen="${Math.round(x.bar.sobra)}">+ Retazo</button>`:""}</div>
+            <div class="bc"><span>Sobra ${fmtQ(x.bar.sobra)} mm</span>${x.bar.sobra>=T.minSob?`<button type="button" class="tsavbtn" data-tsaveret="${esc(g.perfil)}" data-rlen="${Math.round(x.bar.sobra)}">+ Retazo</button>`:""}</div>
           </div>`;
         }).join("")}
       </div>`; }).join("")}
@@ -4343,16 +4309,15 @@ function renderTaller(){
 
     <section class="card" aria-labelledby="t_planillah">
       <h2 id="t_planillah">Planilla para el que corta</h2>
-      <div class="msg">${esc(planilla)}</div>
-      <div class="actions">
-        <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(planilla)}">${svg("wa")} Mandar por WhatsApp</a>
-        <div class="two">
+      <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(planilla)}">${svg("wa")} Mandar por WhatsApp</a>
+      <details class="tnew"><summary>Ver planilla, copiar o imprimir</summary>
+        <div class="msg" style="margin-top:6px">${esc(planilla)}</div>
+        <div class="two" style="margin-top:8px">
           <button type="button" class="btn ghost" data-tact="copiar">${svg("copy")} Copiar</button>
           <button type="button" class="btn ghost" data-tact="print">${svg("layers")} Imprimir / PDF</button>
         </div>
-      </div>
+      </details>
     </section>
-    <button type="button" class="btn ghost sm" data-tstep="1">← Volver a 1. Cargar o editar cortes</button>
     <div class="tfix-sp" aria-hidden="true"></div>
     <div class="tfix"><div class="in"><div><small>${totBuy} barra${totBuy!==1?"s":""}</small><b>${ars(totCost)}</b></div>${tTerminada()?`<span class="done">${svg("check")} Obra terminada</span>`:`<button type="button" class="btn primary" data-tact="finish">${svg("check")} Terminé de cortar</button>`}</div></div>
     ` : `<section class="card">
@@ -4395,7 +4360,7 @@ function renderTaller(){
   app.innerHTML=`
   <div class="top">
     <div>
-      <h1>Taller: cortes de barras</h1>
+      <h1>Taller</h1>
       <p class="top-sub" style="margin:2px 0 0">${T.obra?esc(T.obra)+" — ":""}barras ${fmtQ(T.barra/1000)} m · disco ${fmtQ(T.disco)} mm</p>
     </div>
   </div>

@@ -161,7 +161,7 @@ components:
 
 **Creative North Star: "La etiqueta de la lata de antióxido"**
 
-Cada pantalla se lee como la etiqueta técnica de una lata de convertidor: arriba, una banda de rojo óxido a sangre con el nombre de la pantalla en mayúsculas anchas; abajo, sobre un fondo gris convertidor, paneles blancos que arrancan con una regla negra gruesa, como las fichas de una etiqueta. La ficha técnica manda: barras, kilos, pesos y sobra se leen de un vistazo, en números angostos y tabulares.
+Cada pantalla se lee como la etiqueta técnica de una lata de convertidor: arriba, una banda de rojo óxido a sangre con el nombre de la pantalla en mayúsculas anchas; abajo, sobre un fondo gris convertidor, paneles blancos limpios, sin bordes ni reglas; la regla negra gruesa queda solo para la ficha técnica de cada perfil en el Plan de corte. La ficha técnica manda: barras, kilos, pesos y sobra se leen de un vistazo, en números angostos y tabulares.
 
 Es una herramienta de taller para el celular, con sol fuerte y un pulgar. Por eso la densidad es alta pero ordenada (gutter de 12 px, separaciones de 6 a 10 px), los controles miden 38 a 46 px de alto y el contraste es de imprenta: casi negro sobre blanco, blanco sobre óxido. Una sola familia tipográfica (Archivo, variable en ancho) hace todo el trabajo: se ensancha para el título de la banda y se angosta para tablas y números.
 
@@ -169,11 +169,11 @@ El mundo reemplaza a "Taller Táctil": nada de panel gris con acento naranja ni 
 
 **Key Characteristics:**
 - Banda de encabezado en rojo óxido a sangre, una por pantalla.
-- Paneles blancos sin borde perimetral, con regla de 4 px arriba.
+- Paneles blancos sin borde ni regla, radio 10 px, sombra corta y suave. La regla de 4 px queda solo en la ficha técnica por perfil.
 - Archivo variable: ancha (110 %) en el título, angosta (80 a 88 %) en datos y títulos de panel.
 - Números siempre tabulares; totales en una losa casi negra fija abajo.
 - Sombra corta y suave; ninguna sombra dura desplazada.
-- Modo oscuro completo: la regla y la tinta se invierten a casi blanco, el óxido se aclara.
+- Siempre clara (pedido de Padilla: se lee mejor al sol). No sigue el modo oscuro del celular; los tokens `dark-*` quedan sin uso.
 
 ## Colors
 
@@ -192,7 +192,7 @@ Una paleta de etiqueta industrial: un solo color con voz (rojo óxido), grises d
 - **Gris Convertidor Claro** (`bg`): fondo de toda la app.
 - **Gris Imprimación** (`surface`): interior de campos, pistas de controles segmentados y pie de panel.
 - **Blanco Etiqueta** (`card`): paneles, tarjetas de trabajo, botones fantasma.
-- **Tinta de Etiqueta** (`ink`): texto principal y la regla de 4 px de los paneles.
+- **Tinta de Etiqueta** (`ink`): texto principal y la regla de 4 px de la ficha técnica.
 - **Gris Leyenda** (`muted`): subtítulos, unidades, rótulos de campo.
 - **Gris Convertidor** (`conv`): piezas de barra en el gráfico de corte (alterna con `ink`).
 - **Hilo** (`line`) y **Hilo Marcado** (`line-strong`): divisores finos de la ficha técnica y bordes de campos y controles.
@@ -238,7 +238,7 @@ El ritmo de espacios sale de 4, 6, 8, 10 y 12 px; los paneles rellenan a 12 px y
 
 ## Elevation & Depth
 
-Sistema casi plano. La estructura la dan la regla negra, los hilos y el contraste entre fondo gris y panel blanco; la sombra es corta, suave y sólo despega el panel del fondo. Al tocar, un control baja 1 px y pierde la sombra.
+Sistema casi plano. La estructura la dan los hilos y el contraste entre fondo gris y panel blanco; la sombra es corta, suave y sólo despega el panel del fondo. Al tocar, un control baja 1 px y pierde la sombra.
 
 ### Shadow Vocabulary
 - **Apenas** (`--shadow`: `0 1px 2px rgba(23,25,26,.1)`): chips de paso inactivos, controles chicos.
@@ -311,3 +311,12 @@ Barra fija sobre la navegación, fondo `slab`, rótulo Label en gris claro, tota
 - **Don't** usar el óxido como fondo de paneles o secciones fuera de la banda.
 - **Don't** sumar una segunda familia tipográfica ni una monoespaciada: el ancho de Archivo hace ese trabajo.
 - **Don't** usar el verde WhatsApp ni los colores de estado como acento decorativo.
+
+
+## Menos información (2026-11-26)
+
+Pedido de Padilla: "que no haya tanta información" y que sea más intuitiva.
+- Inicio: título "Padilla", una pregunta ("¿Qué trabajo vas a presupuestar?") y los trabajos como lista de un solo panel (ícono, nombre, pista corta). Sin filtro de rubros (está en Ajustes), sin chip de tarifa, "Pegar pedido de Clickie" como un renglón debajo.
+- Presupuesto: pasos cortos ("Medidas · Materiales · Precio"); el aviso de Clickie solo en el paso 1; en Precio, el desglose, mercado y kilos van dentro de "Cómo se arma el precio"; copiar y WhatsApp viven solo en la barra fija.
+- Taller: título "Taller"; sin chips de piezas (el plano ya las rotula); "Agregar cortes a mano" plegado; plano plegado en Plan y compra; bajo cada barra solo "Sobra N mm"; la planilla se manda por WhatsApp y el texto completo queda plegado.
+- Encabezados de sección en minúscula normal; mayúsculas solo en la banda y en la ficha técnica.
