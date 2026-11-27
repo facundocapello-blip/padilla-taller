@@ -664,6 +664,40 @@ details.card > summary .sumv{white-space:nowrap}
 .total-card .estmark{color:#FFB4A8}
 .storage-error{padding:14px 18px;background:var(--err-bg);color:var(--err);border-block:1px solid var(--err);font-weight:700;line-height:1.5;position:relative;z-index:80}
 .profile-details summary{list-style:revert}
+
+/* Inicio operativo: datos del navegador y accesos al trabajo diario. */
+.dashboard-overview{background:var(--card);border-radius:12px;overflow:hidden;margin:4px 0 24px;padding:16px}
+.dashboard-overview h2,.dashboard-tools h2,.dashboard-history h2{font-size:17px;margin:0 0 12px}
+.dashboard-counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--line)}
+.dashboard-counts button{min-height:94px;padding:12px 4px;border:0;background:transparent;color:var(--ink);display:flex;flex-direction:column;align-items:flex-start;gap:6px;cursor:pointer;text-align:left}
+.dashboard-counts button+button{padding-left:12px;border-left:1px solid var(--line)}
+.dashboard-counts button[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
+.dashboard-counts span{font-size:12px;font-weight:650}.dashboard-counts b{font-size:28px;font-weight:800;font-variant-numeric:tabular-nums;line-height:1.1}
+.dashboard-caption{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;padding-top:8px;color:var(--muted);font-size:11px}
+.dashboard-caption button{border:0;background:none;color:var(--muted);text-decoration:underline;text-underline-offset:3px;min-height:36px;padding:0 4px}
+.dashboard-caption button[aria-pressed="true"]{color:var(--accent);font-weight:800}
+.dashboard-tools{margin:0 0 26px}.dashboard-links{list-style:none;margin:0;padding:0;background:var(--card);border-radius:12px;overflow:hidden}
+.dashboard-links li+li{border-top:1px solid var(--line)}
+.dashboard-link{border:0;background:transparent;color:var(--ink);width:100%;display:flex;align-items:center;gap:12px;padding:14px;text-align:left;min-height:72px;cursor:pointer}
+.dashboard-link:hover,.dashboard-link:active{background:var(--surface)}.dashboard-link>svg{width:24px;height:24px;flex:none;color:var(--accent)}
+.dashboard-link>span{display:flex;flex-direction:column;min-width:0;flex:1;gap:3px}.dashboard-link b{font-size:15px}.dashboard-link small{font-size:12px;color:var(--muted);line-height:1.4}
+.dashboard-link>.dashboard-chev{width:16px;height:16px;transform:rotate(-90deg);color:var(--muted)}
+.dashboard-draft{margin:0 0 20px}.dashboard-empty{padding:16px 0;border-top:1px solid var(--line-strong);margin:0;color:var(--muted);line-height:1.6;font-size:14px}
+.dashboard-more{width:100%;margin-top:10px}.dashboard-history .t2{white-space:normal}
+@media(min-width:900px){.dashboard-tools .dashboard-link{min-height:68px}.dashboard-overview{padding:20px}.dashboard-counts button{padding:14px 12px}}
+
+/* Planos amplios y navegación disponible también dentro de un presupuesto. */
+:root{--app-nav-height:calc(56px + env(safe-area-inset-bottom,0px))}
+body[data-screen="taller"] .wrap{max-width:1200px}
+body[data-screen="job"] .wrap{max-width:900px;padding-bottom:calc(var(--app-nav-height) + 130px)}
+.drawing svg{width:100%;max-width:none;max-height:none;height:auto;display:block}
+.draw-det[open] .drawing{padding:4px 0 10px}
+.tmod-svg,.tord-svg{width:100%;height:auto;max-height:none}
+.tmod-stage{padding:8px 0 6px}
+.bar{bottom:var(--app-nav-height);padding-bottom:8px}
+.tfix{bottom:var(--app-nav-height)}
+body[data-screen="taller"] .tfix .in{max-width:1200px}
+.cartbar{bottom:calc(var(--app-nav-height) + 6px)}
 </style>
 
 
@@ -672,6 +706,7 @@ details.card > summary .sumv{white-space:nowrap}
 <div id="cartbar" class="cartbar hidden" role="region" aria-label="Repuestos elegidos para cotizar"></div>
 <nav id="nav" class="nav" aria-label="Navegación principal"></nav>
 <aside id="storage-error" class="storage-error" role="alert" hidden></aside>
+<div id="dashboard-announcement" class="sr-only" role="status" aria-live="polite" aria-atomic="true"></div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <dialog id="confirmDlg" class="dlg" aria-labelledby="dlgTitle" aria-describedby="dlgDesc">
   <h2 id="dlgTitle"></h2>
@@ -1065,6 +1100,12 @@ function barPurchases(cuts, barra=6000, disco=3, retazos=[]){
   });
   return result;
 }
+/* El resumen cuenta registros guardados; no representa cobros ni ventas. */
+function dashboardStats(history){
+  const rows=Array.isArray(history)?history.filter(x=>x&&typeof x==="object"&&!Array.isArray(x)):[];
+  return {total:rows.length,accepted:rows.filter(x=>x.estado==="si").length,pending:rows.filter(x=>x.estado!=="si"&&x.estado!=="no").length,rejected:rows.filter(x=>x.estado==="no").length};
+}
+
 function pendingStandards(jobId, list){
   const out=new Set();
   list.forEach(i=>{
@@ -2281,7 +2322,7 @@ function validateBackup(raw){
 
 if(typeof module!=="undefined") module.exports={
   refMercado,MERCADO_REJA,PRECIOS_FECHA,pedirMessage,rango,REF,computeObra,obraMessage,rejaCuts,rejaCutsAll,
-  validateBackup,jobCuts,barPurchases,pendingStandards,puertitasCuts,JOBS,CATALOG,CATS,DEFAULT_CONFIG,compute,defaults,clientMessage,shoppingList,ars,mlUrl,getAllCatalog,parseClickieOrder
+  dashboardStats,validateBackup,jobCuts,barPurchases,pendingStandards,puertitasCuts,JOBS,CATALOG,CATS,DEFAULT_CONFIG,compute,defaults,clientMessage,shoppingList,ars,mlUrl,getAllCatalog,parseClickieOrder
 };
 </script>
 
@@ -2455,13 +2496,19 @@ function renderCartBar(){
     </div>`;
 }
 
+function updateNavSize(){
+  const height=Math.ceil(nav.getBoundingClientRect().height);
+  if(height>0)document.documentElement.style.setProperty("--app-nav-height",height+"px");
+}
+window.addEventListener("resize",updateNavSize);
+if("ResizeObserver" in window)new ResizeObserver(updateNavSize).observe(nav);
 function renderNav(){
   renderCartBar();
-  if(S.screen==="job"){ nav.classList.add("hidden"); return; }
   nav.classList.remove("hidden");
-  const cur = S.screen==="obra" ? "repuestos" : S.screen==="selector"?"home":S.screen;
+  document.body.dataset.screen=S.screen;
+  const cur = S.screen==="obra" ? "repuestos" : ["selector","job"].includes(S.screen)?"home":S.screen;
   const tabs=[
-    ["home","Presupuestar","llave"],
+    ["home","Inicio","llave"],
     ["taller","Taller","regla"],
     ["repuestos","Precios","box"],
     ["precios","Ajustes","gear"]
@@ -2470,6 +2517,7 @@ function renderNav(){
     <button type="button" class="navbtn" data-go="${id}" ${cur===id?'aria-current="page"':""}>
       ${svg(ic)}<span>${label}</span>
     </button>`).join("")}</div>`;
+  updateNavSize();
 }
 
 function preciosSubTabs(){
@@ -2483,57 +2531,51 @@ function preciosSubTabs(){
 const ORDER=["reja","puertitas","soldadura","pintura","mosquitero","bacha","inodoro","luz","colgar","pared","otro"];
 const HERR_ORDER=["reja","puertitas","soldadura","pintura","otro"];
 function renderHome(){
-  const propios=Object.keys(prices).length + Object.keys(customMats).length;
-  const draft=LS.get("presu_draft",null);
-  const jobIds=cfg.solo_herreria ? HERR_ORDER : ORDER;
-  bar.classList.add("hidden");
-  renderNav();
-
-  const cOpen=S.clickieOpen||!!S.clickieText||!!S.errs.clickie;
+  const draft=LS.get("presu_draft",null), stats=dashboardStats(hist);
+  const filter=["si","no","pending"].includes(S.homeFilter)?S.homeFilter:"all";
+  const rows=(Array.isArray(hist)?hist:[]).map((entry,index)=>({entry,index})).filter(({entry})=>entry&&typeof entry==="object"&&!Array.isArray(entry));
+  const selected=rows.filter(({entry:x})=>filter==="all"||filter==="pending"?(filter==="all"||x.estado!=="si"&&x.estado!=="no"):x.estado===filter);
+  const visible=S.homeAll?selected:selected.slice(0,5);
+  const title={all:"Últimos presupuestos",si:"Presupuestos aceptados",no:"Presupuestos rechazados",pending:"Esperando respuesta"}[filter];
+  const pieces=(T.cuts||[]).reduce((n,c)=>n+(Number.isFinite(c?.qty)&&c.qty>0?c.qty:0),0);
+  const own=Object.keys(prices||{}).length;
+  const backup=LS.get("presu_last_backup",null), backupDate=typeof backup==="string"?new Date(backup):null;
+  const lastBackup=backupDate&&Number.isFinite(backupDate.getTime())?"Última copia: "+backupDate.toLocaleDateString("es-AR"):"Todavía no descargaste una copia";
+  const quick=(go,icon,label,desc,aria,extra="")=>`<li><button type="button" class="dashboard-link" ${go?`data-go="${go}"`:extra} aria-label="${aria}">${svg(icon)}<span><b>${label}</b><small>${esc(desc)}</small></span>${svg("chev",'class="dashboard-chev"')}</button></li>`;
+  bar.classList.add("hidden");renderNav();
   app.innerHTML=`
-  <div class="top">
-    <div>
-      <h1>Padilla</h1>
-      <p class="top-sub" style="margin:2px 0 0">¿Qué trabajo vas a presupuestar?</p>
-    </div>
-  </div>
-
-  ${S.installPrompt?`<button type="button" class="btn primary sm" data-act="installapp" style="width:100%">${svg("box")} Instalar en este celular</button>`:""}
-
-  ${draft&&JOBS.find(j=>j.id===draft.jobId)?`<div class="draft">
-    <button type="button" class="item cont" data-act="draft">
-      <span class="t1">Seguir: ${esc(draft.cliente?draft.cliente+" · ":"")}${esc(draft.desc)}</span>
-      <span class="t2">Quedó sin terminar</span>
-      <span class="t3">${ars(draft.total)}</span>
-    </button>
+  <div class="top"><div><h1>Padilla</h1><p class="top-sub" style="margin:2px 0 0">Tu taller de un vistazo</p></div></div>
+  ${S.installPrompt?`<button type="button" class="btn ghost sm" data-act="installapp">${svg("box")} Instalar en este celular</button>`:""}
+  <button type="button" class="btn primary new-quote" data-go="selector">${svg("plus")} Nuevo presupuesto</button>
+  ${draft&&JOBS.find(j=>j.id===draft.jobId)?`<div class="draft dashboard-draft">
+    <button type="button" class="item cont" data-act="draft"><span class="t1">Continuar: ${esc(draft.cliente?draft.cliente+" · ":"")}${esc(draft.desc||"Presupuesto")}</span><span class="t2">Borrador sin terminar</span><span class="t3">${Number.isFinite(draft.total)?ars(draft.total):"Abrir"}</span></button>
     <button type="button" class="x" data-act="nodraft" aria-label="Descartar borrador">${svg("x")}</button>
   </div>`:""}
-
-  <button type="button" class="btn primary new-quote" data-go="selector">${svg("plus")} Nuevo presupuesto</button>
-  ${!hist.length&&!draft?`<p class="small muted">Elegí un trabajo, cargá las medidas y revisá el precio antes de compartir.</p>`:""}
-
-  ${favs.length?`<h2>Mis frecuentes</h2>
-  <ul class="list">${favs.map((f,k)=>`<li class="draft">
-    <button type="button" class="item" data-fav="${k}">
-      <span class="t1">${esc(f.name)}</span>
-      <span class="t2">${esc((JOBS.find(j=>j.id===f.jobId)||JOBS[0]).name)}</span>
-      <span class="t3">${svg("resume",'class="ico" style="color:var(--accent)"')}</span>
-    </button>
-    <button type="button" class="x" data-delfav="${k}" aria-label="Borrar frecuente ${esc(f.name)}">${svg("x")}</button>
-  </li>`).join("")}</ul>`:""}
-
-  ${hist.length?`<h2>Últimos presupuestos</h2>
-  <ul class="list">${hist.slice(0,5).map((x,k)=>`<li class="hist">
-    <button type="button" class="item" data-hist="${k}">
-      <span class="t1">${esc(x.cliente?x.cliente+" · ":"")}${esc(x.desc)}</span>
-      <span class="t2">${new Date(x.date).toLocaleDateString("es-AR",{day:"numeric",month:"short"})}
-        <span class="pill-badge ${x.usarComision===false?"dir":"clk"}">${x.usarComision===false?"Directo":"Clickie"}</span>
-      </span>
-      <span class="t3">${ars(x.total)}</span>
-    </button>
-    <button type="button" class="mk ok" data-mk="${k}" data-v="si" aria-pressed="${x.estado==="si"}" aria-label="Marcar como aceptado">${svg("check")}</button>
-    <button type="button" class="mk no" data-mk="${k}" data-v="no" aria-pressed="${x.estado==="no"}" aria-label="Marcar como rechazado">${svg("x")}</button>
-  </li>`).join("")}</ul>`:""}`;
+  <section class="dashboard-overview" data-dashboard aria-labelledby="dashboard-title">
+    <h2 id="dashboard-title">Mis presupuestos</h2>
+    <div class="dashboard-counts" role="group" aria-label="Filtrar presupuestos por respuesta">
+      <button type="button" data-home-filter="all" aria-pressed="${filter==="all"}"><span>Guardados</span><b>${stats.total}</b></button>
+      <button type="button" data-home-filter="pending" aria-pressed="${filter==="pending"}"><span>Sin respuesta</span><b>${stats.pending}</b></button>
+      <button type="button" data-home-filter="si" aria-pressed="${filter==="si"}"><span>Aceptados</span><b>${stats.accepted}</b></button>
+    </div>
+    <div class="dashboard-caption"><span>En este navegador · hasta 30 registros</span><button type="button" data-home-filter="no" aria-pressed="${filter==="no"}">Rechazados: ${stats.rejected}</button></div>
+  </section>
+  <section class="dashboard-tools" aria-labelledby="dashboard-tools-title"><h2 id="dashboard-tools-title">El taller a mano</h2>
+    <ul class="dashboard-links">
+      ${quick("taller","regla","Taller y cortes",pieces?pieces+" pieza"+(pieces!==1?"s":"")+" en el plan actual":"Prepará tu próximo plan de cortes","Abrir Taller")}
+      ${quick("repuestos","box","Mis precios",own?own+" precio"+(own!==1?"s":"")+" propio"+(own!==1?"s":"")+" guardado"+(own!==1?"s":""):"Cargá los precios de tu proveedor","Abrir mis precios")}
+      ${quick("","copy","Pegar pedido de Clickie","Traé el pedido y revisá las medidas","Pegar pedido de Clickie",'data-act="dashboardclickie"')}
+      ${quick("","layers","Copia de seguridad",lastBackup,"Abrir respaldos",'data-act="dashboardbackup"')}
+    </ul>
+  </section>
+  ${favs.length?`<section><h2>Mis frecuentes</h2><ul class="list">${favs.map((f,k)=>`<li class="draft"><button type="button" class="item" data-fav="${k}"><span class="t1">${esc(f.name)}</span><span class="t2">${esc((JOBS.find(j=>j.id===f.jobId)||JOBS[0]).name)}</span><span class="t3">${svg("resume",'class="ico"')}</span></button><button type="button" class="x" data-delfav="${k}" aria-label="Borrar frecuente ${esc(f.name)}">${svg("x")}</button></li>`).join("")}</ul></section>`:""}
+  <section class="dashboard-history" aria-labelledby="dashboard-history-title"><h2 id="dashboard-history-title">${title}</h2>
+  ${visible.length?`<ul class="list">${visible.map(({entry:x,index:k})=>{
+    const d=new Date(x.date), date=Number.isFinite(d.getTime())?d.toLocaleDateString("es-AR",{day:"numeric",month:"short"}):"Sin fecha";
+    const state=x.estado==="si"?"Aceptado":x.estado==="no"?"Rechazado":"Sin respuesta";
+    return `<li class="hist"><button type="button" class="item" data-hist="${k}"><span class="t1">${esc(x.cliente?x.cliente+" · ":"")}${esc(x.desc||"Presupuesto")}</span><span class="t2">${esc(date)} · ${state}</span><span class="t3">${Number.isFinite(x.total)?ars(x.total):"Sin importe"}</span></button><button type="button" class="mk ok" data-mk="${k}" data-v="si" aria-pressed="${x.estado==="si"}" aria-label="Marcar como aceptado">${svg("check")}</button><button type="button" class="mk no" data-mk="${k}" data-v="no" aria-pressed="${x.estado==="no"}" aria-label="Marcar como rechazado">${svg("x")}</button></li>`;
+  }).join("")}</ul>${selected.length>5?`<button type="button" class="btn ghost sm dashboard-more" data-home-all>${S.homeAll?"Mostrar los últimos 5":"Ver todos ("+selected.length+")"}</button>`:""}`:`<p class="dashboard-empty">${stats.total?"No hay presupuestos con este estado. Podés cambiar el filtro de arriba.":"Todavía no guardaste presupuestos. Cuando copies o compartas uno, aparecerá acá para seguir su respuesta."}</p>`}
+  </section>`;
 }
 
 function renderSelector(){
@@ -2732,7 +2774,9 @@ function fieldsHTML(fields){
 
 function drawing(j=S.job,i=S.inputs){
   if(!j.drawing) return "";
-  const W=380,H=270,pad=48, A=i.ancho, B=i.alto, s=Math.min((W-2*pad)/A,(H-2*pad)/B);
+  const W=380,pad=40,A=Math.max(1,Number(i.ancho)||1200),B=Math.max(1,Number(i.alto)||1000);
+  const H=Math.min(1200,Math.max(160,Math.round((W-2*pad)*B/A+2*pad)));
+  const s=Math.min((W-2*pad)/A,(H-2*pad)/B);
   const w=A*s,h=B*s,x=(W-w)/2,y=(H-h)/2+4;
   let inner="", summaryTxt=`${A} × ${B} mm`;
   if(j.drawing==="mosq"){ const g=Math.max(6,Math.min(w,h)/10); let p="";
@@ -2797,7 +2841,7 @@ function drawing(j=S.job,i=S.inputs){
       <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="var(--card)" stroke="var(--ink)" stroke-width="4" rx="2"/>${inner}
       <g fill="var(--accent)" font-weight="800" font-size="15" font-family="Archivo, sans-serif">
       <text x="${W/2}" y="${y-(j.drawing==="mosq"&&i.tipo==="enrollable"?18:8)}" text-anchor="middle">${A} mm</text>
-      <text x="${x-8}" y="${y+h/2}" text-anchor="end" dominant-baseline="middle">${B} mm</text></g></svg></div>
+      <text x="22" y="${y+h/2}" transform="rotate(-90 22 ${y+h/2})" text-anchor="middle" dominant-baseline="middle">${B} mm</text></g></svg></div>
   </details>`;
 }
 
@@ -3306,7 +3350,7 @@ function renderPrecios(){
     <p class="small muted" style="margin:0">Para tenerla siempre a mano sin buscar el archivo: tocá el menú del navegador (<b>⋮</b> en Chrome o <b>Compartir</b> en iPhone) y elegí <b>"Agregar a la pantalla principal"</b>.</p>
   </section>
 
-  <section class="card"><h2>Copia de seguridad</h2>
+  <section class="card" id="backup-section"><h2>Copia de seguridad</h2>
     <p class="small muted">Incluye precios, tarifas, historial, obras del Taller y borrador. Guardá el archivo en un lugar que puedas recuperar si cambiás de celular.</p>
     <p class="small">Última descarga: ${lastBackup&&Number.isFinite(Date.parse(lastBackup))?esc(new Date(lastBackup).toLocaleString("es-AR")):"todavía no hiciste una copia"}.</p>
     <button type="button" class="btn primary" data-act="downloadbackup">Descargar copia</button>
@@ -3465,6 +3509,16 @@ app.addEventListener("click",e=>{
   const b=e.target.closest("button,[data-act],[data-go]"); if(!b) return;
   const d=b.dataset;
 
+  if(d.homeFilter||d.homeAll!==undefined){
+    if(d.homeFilter){S.homeFilter=["si","no","pending"].includes(d.homeFilter)?d.homeFilter:"all";S.homeAll=false;}else S.homeAll=!S.homeAll;
+    renderHome();
+    const control=d.homeFilter?app.querySelector(`[data-home-filter="${S.homeFilter}"]`):app.querySelector("[data-home-all]");
+    control?.focus({preventScroll:true});
+    document.getElementById("dashboard-announcement").textContent=document.getElementById("dashboard-history-title").textContent+": "+app.querySelectorAll("[data-hist]").length+" presupuestos visibles.";
+    return;
+  }
+  if(d.act==="dashboardbackup"){go("precios");document.getElementById("backup-section")?.scrollIntoView({block:"start"});app.querySelector('[data-act="downloadbackup"]')?.focus({preventScroll:true});return;}
+  if(d.act==="dashboardclickie"){S.clickieOpen=true;go("selector");document.getElementById("clickietxt")?.focus();return;}
   if(d.go) return go(d.go);
   if(d.act==="installapp"&&S.installPrompt){ const ev=S.installPrompt; S.installPrompt=null; ev.prompt(); ev.userChoice.finally(()=>{ if(S.screen==="home") renderSelector(); }); return; }
   if(d.act==="clickietoggle"){ S.clickieOpen=!S.clickieOpen; renderSelector(); if(S.clickieOpen){ const ta=document.getElementById("clickietxt"); if(ta) ta.focus(); } return; }
@@ -4167,7 +4221,10 @@ function tIsPieceDone(piece,plan){
 
 function tModelSVG(m,pmap,sel,opts){
   const print=!!(opts&&opts.forPrint), plan=opts&&opts.plan;
-  const W=380, H=240, pieces=tModelPieces(m);
+  const A=tClamp(m.ancho||1200,200,6000), B=tClamp(m.alto||1000,200,4500), P=tClamp(m.prof||600,150,2500);
+  const W=380, doubleView=m.type==="mesa"||m.type==="rack";
+  const H=print?240:Math.min(1200,Math.max(200,Math.ceil(doubleView?274*B/(A+P)+66:292*B/A+78)));
+  const pieces=tModelPieces(m);
   const byKey=Object.fromEntries(pieces.map(p=>[p.key,p]));
   const hasSel=!print&&!!sel;
   const tag=(cx,cy,p,isDone)=>{
@@ -4190,9 +4247,9 @@ function tModelSVG(m,pmap,sel,opts){
     return `<g${attrs}>${inner}${!print&&hitPath?`<path d="${hitPath}" fill="none" stroke="transparent" stroke-width="14"/>`:""}${callout}</g>`;
   };
   const dimH=(x1,x2,y,txt)=>`<g class="tm-dim"><line x1="${x1}" y1="${y}" x2="${x2}" y2="${y}"/><line x1="${x1}" y1="${y-4}" x2="${x1}" y2="${y+4}"/><line x1="${x2}" y1="${y-4}" x2="${x2}" y2="${y+4}"/></g><text x="${(x1+x2)/2}" y="${y-6}" text-anchor="middle" class="tm-dim-t">${txt}</text>`;
-  const dimV=(x,y1,y2,txt)=>`<g class="tm-dim"><line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}"/><line x1="${x-4}" y1="${y1}" x2="${x+4}" y2="${y1}"/><line x1="${x-4}" y1="${y2}" x2="${x+4}" y2="${y2}"/></g><text x="${x-7}" y="${(y1+y2)/2}" text-anchor="end" dominant-baseline="middle" class="tm-dim-t">${txt}</text>`;
+  const dimV=(x,y1,y2,txt)=>`<g class="tm-dim"><line x1="${x}" y1="${y1}" x2="${x}" y2="${y2}"/><line x1="${x-4}" y1="${y1}" x2="${x+4}" y2="${y1}"/><line x1="${x-4}" y1="${y2}" x2="${x+4}" y2="${y2}"/></g><text x="${x-12}" y="${(y1+y2)/2}" transform="rotate(-90 ${x-12} ${(y1+y2)/2})" text-anchor="middle" dominant-baseline="middle" class="tm-dim-t">${txt}</text>`;
 
-  const A=tClamp(m.ancho||1200,200,6000), B=tClamp(m.alto||1000,200,4500), P=tClamp(m.prof||600,150,2500);
+
   let body="";
 
   if(m.type==="mesa"||m.type==="rack"){
@@ -4239,7 +4296,7 @@ function tModelSVG(m,pmap,sel,opts){
     body+=dimV(x1-12,y,y+h,`${B}`);
   } else {
     /* Vista frontal 2D: Reja, Portón, Marco con cortes anotados sobre cada zona */
-    const padL=76, padR=46, padT=34, padB=m.type==="porton"&&m.corredizo?44:34;
+    const padL=70, padR=18, padT=34, padB=m.type==="porton"&&m.corredizo?44:34;
     const sc=Math.min((W-padL-padR)/A,(H-padT-padB)/B);
     const w=A*sc, h=B*sc, x=padL+(W-padL-padR-w)/2, y=padT+(H-padT-padB-h)/2;
 

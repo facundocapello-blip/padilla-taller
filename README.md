@@ -25,6 +25,7 @@ En el entorno de desarrollo con Node, Playwright y Chromium disponibles:
 ```sh
 node --test tests/*.test.cjs
 node tests/mejoras.browser.cjs
+node tests/dashboard.browser.cjs
 ```
 
 Los tests de navegador cubren móvil y escritorio, uso sin conexión, recorrido de presupuesto, cortes y copias de seguridad. No son dependencias de la aplicación publicada.
