@@ -1,57 +1,50 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#111E2A">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Padilla">
-<meta name="description" content="Padilla · Taller y Presupuestos: app de herrería, pintura y trabajos del hogar con planos 2D, planilla de cortes y presupuestos con y sin comisión de Clickie.">
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+.new-quote{width:100%;min-height:64px;font-size:20px;justify-content:center;margin:8px 0 20px}
+.quote-status{padding:16px 0;margin:0 0 18px;border-bottom:1px solid var(--line-strong)}
+.quote-status.pending>b,.estimate-label{color:var(--err)}
+.quote-status p{margin:6px 0 10px;line-height:1.5}
+.quote-status details{margin-top:12px}.quote-status li{margin:8px 0;line-height:1.5}
+.profile-details{margin:18px 0;padding:16px 0;border-block:1px solid var(--line)}
+.profile-details>summary{font-weight:800;color:var(--accent);cursor:pointer;min-height:44px;display:flex;align-items:center}
+.opt,.preset,.mini button{min-height:44px}.draw-det[open] .drawing{padding:6px 0 16px}
+.estimate-label{font-size:12px}.bar .estimate-label{color:var(--on-slab)}
+::selection{background:var(--accent);color:#fff}input{caret-color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+@media(min-width:1000px){.wrap{max-width:780px}.drawing svg{max-height:350px}}
+</style></head><body>
 <title>Padilla · Taller y Presupuestos</title>
 <link rel="manifest" href="./manifest.webmanifest">
-<link rel="apple-touch-icon" href="./icon-192.png">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23111E2A'/%3E%3Crect x='7' y='7' width='50' height='50' fill='none' stroke='%23223547' stroke-width='3'/%3E%3Cpath d='M19 15h17a11.5 11.5 0 0 1 0 23H28v11h-9V15zm9 8v7h8a3.5 3.5 0 0 0 0-7h-8z' fill='%23F8FAFC'/%3E%3Crect x='31' y='43' width='16' height='6' fill='%23FF7A2E'/%3E%3C/svg%3E">
+<meta name="theme-color" content="#8A2E21">
 <style>
-/* Diseño Opción 1 · Taller Táctil: gris chapa, tinta azul acero, acento naranja seguridad, relieve táctil y steppers agrupados al pulgar derecho. */
+@font-face{font-family:"Archivo";src:url(./archivo.woff2) format("woff2");font-weight:400 900;font-stretch:62% 125%;font-display:swap}
+/* Mundo Antióxido: cada pantalla es la etiqueta técnica de una lata de convertidor. Rojo óxido a sangre arriba, gris convertidor de fondo, paneles blancos con regla negra, Archivo ancha para títulos y angosta para datos. */
 :root{
-  --bg:#E9EDF1; --surface:#DCE3EA; --card:#FFFFFF; --ink:#13212E; --muted:#526373; --line:#B8C4D0; --line-strong:#8A99A8;
-  --accent:#B93D0A; --accent-dark:#7C2806; --accent-soft:#FFF1E8; --accent-ink:#FFFFFF;
-  --wa:#15803D; --slab:#13212E; --slab-soft:#1E3142; --on-slab:#EEF3F7;
-  --good:#15803D; --good-bg:#DDF3E7; --warn:#8A5A00; --warn-bg:#FFF1C7;
-  --err:#B91C1C; --err-bg:#FEE2E2;
+  --bg:#E2E5E6; --surface:#EEF0F1; --card:#FFFFFF; --ink:#17191A; --muted:#545B60; --line:#CBD0D2; --line-strong:#9AA1A5;
+  --accent:#8A2E21; --accent-dark:#5E1D14; --accent-soft:#F6E4E0; --accent-ink:#FFFFFF;
+  --band:#8A2E21; --on-band:#FFF4F0; --on-band-mute:#F2CFC7; --conv:#4D5458;
+  --wa:#15803D; --slab:#17191A; --slab-soft:#2A2F32; --on-slab:#F4F5F6;
+  --good:#166534; --good-bg:#DCEFE2; --warn:#7A4E00; --warn-bg:#FBEFC9;
+  --err:#B42318; --err-bg:#FDE3E0;
   --ml-dot:#EAB308;
-  --shadow:0 2px 0 rgba(19,33,46,.12);
-  --tactile-ink:0 3px 0 #13212E;
-  --tactile-accent:0 3px 0 #7C2806;
+  --shadow:0 1px 2px rgba(23,25,26,.1);
+  --lift:0 1px 2px rgba(23,25,26,.08),0 4px 10px -6px rgba(23,25,26,.18);
+  --tactile-ink:var(--lift);
+  --tactile-accent:var(--lift);
   --z-bar:20; --z-toast:30; --z-dialog:40;
-  --font:system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  --mono:ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --font:"Archivo", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --mono:"Archivo", system-ui, sans-serif;
   color-scheme: light;
 }
-@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#0B1117; --surface:#161F2A; --card:#111923; --ink:#F3F4F6; --muted:#94A3B8; --line:#263547; --line-strong:#3B4F66;
-  --accent:#FF7A2E; --accent-dark:#B94A0B; --accent-soft:rgba(255,122,46,.16); --accent-ink:#140E0A;
-  --slab:#172230; --slab-soft:#223142; --on-slab:#F8FAFC;
-  --good:#4ADE80; --good-bg:rgba(34,197,94,.16); --warn:#FBBF24; --warn-bg:rgba(245,158,11,.15);
-  --err:#FCA5A5; --err-bg:rgba(239,68,68,.16);
-  --ml-dot:#FACC15;
-  --shadow:0 2px 0 rgba(0,0,0,.38);
-  --tactile-ink:0 3px 0 #05080C;
-  --tactile-accent:0 3px 0 #9A3B06;
-  color-scheme: dark;
-} }
 :root[data-theme="dark"]{
-  --bg:#0B1117; --surface:#161F2A; --card:#111923; --ink:#F3F4F6; --muted:#94A3B8; --line:#263547; --line-strong:#3B4F66;
-  --accent:#FF7A2E; --accent-dark:#B94A0B; --accent-soft:rgba(255,122,46,.16); --accent-ink:#140E0A;
-  --slab:#172230; --slab-soft:#223142; --on-slab:#F8FAFC;
-  --good:#4ADE80; --good-bg:rgba(34,197,94,.16); --warn:#FBBF24; --warn-bg:rgba(245,158,11,.15);
+  --bg:#111315; --surface:#1A1D1F; --card:#202426; --ink:#EDEFF0; --muted:#A2AAAF; --line:#33393C; --line-strong:#4A5256;
+  --accent:#E0664C; --accent-dark:#A8412E; --accent-soft:rgba(224,102,76,.16); --accent-ink:#1A0906;
+  --band:#7A281C; --on-band:#FFF1EC; --on-band-mute:#E9C2B9; --conv:#5F676B;
+  --slab:#0B0C0D; --slab-soft:#24282A; --on-slab:#F3F4F5;
+  --good:#6EE7A0; --good-bg:rgba(34,197,94,.15); --warn:#FBBF24; --warn-bg:rgba(245,158,11,.15);
   --err:#FCA5A5; --err-bg:rgba(239,68,68,.16);
   --ml-dot:#FACC15;
-  --shadow:0 2px 0 rgba(0,0,0,.38);
-  --tactile-ink:0 3px 0 #05080C;
-  --tactile-accent:0 3px 0 #9A3B06;
+  --shadow:0 1px 2px rgba(0,0,0,.4);
+  --lift:0 1px 2px rgba(0,0,0,.4),0 6px 14px -8px rgba(0,0,0,.6);
   color-scheme: dark;
 }
 
@@ -552,13 +545,133 @@ dialog.dlg p{margin:0 0 14px;font-size:13.5px;color:var(--muted)}
 }
 @media (prefers-reduced-motion: reduce){*{transition:none !important}}
 @media (min-width:540px){ .grid{grid-template-columns:repeat(3,1fr)} }
+
+/* ===== Mundo Antióxido: capa de componentes ===== */
+body{font-stretch:100%;font-weight:500}
+h1{font-size:19px;font-weight:900;font-stretch:110%;text-transform:uppercase;letter-spacing:.01em;line-height:1.05}
+h2{font-size:16px;font-weight:800;font-stretch:92%;letter-spacing:0}
+h3{font-size:14px;font-weight:800;font-stretch:88%}
+.sec-lbl,.field > label,.flabel{font-stretch:92%;letter-spacing:.06em;font-weight:750}
+.small,.muted{font-stretch:95%}
+::selection{background:var(--band);color:var(--on-band)}
+
+/* Banda de encabezado a sangre en cada pantalla */
+.top{background:var(--band);color:var(--on-band);margin:-12px -12px 2px;padding:16px 14px 14px;min-height:0;align-items:flex-start}
+.top h1{color:var(--on-band)}
+.top .top-sub{color:var(--on-band-mute);font-stretch:92%;font-size:12.5px;margin-top:4px}
+.top .back{color:var(--on-band)}
+.top .chipbtn{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);color:var(--on-band);box-shadow:none}
+.top .chipbtn svg{color:var(--on-band)}
+.top .askpill{background:rgba(255,255,255,.14);color:var(--on-band)}
+
+/* Paneles con regla negra de etiqueta; sin relieve de juguete */
+.card,.clickie-box,.rep-card,.item,.picker{border:0;border-radius:10px;box-shadow:var(--lift)}
+.card.tactile,.clickie-box.open{border:0;box-shadow:var(--lift)}
+.item.cont,.rep-card.in-cart{box-shadow:inset 0 0 0 1.5px var(--accent),var(--lift)}
+.total-card{border-top:4px solid var(--band);border-radius:6px}
+.job{border:0;border-top:4px solid var(--ink);border-radius:6px;box-shadow:var(--lift);font-stretch:88%;text-transform:uppercase;letter-spacing:.01em;font-weight:850}
+.job:active{transform:translateY(1px);box-shadow:var(--shadow);border-top-color:var(--band)}
+.job svg{color:var(--band)}
+.job small{text-transform:none;letter-spacing:0;font-stretch:95%}
+
+/* Botones: rojo óxido plano, sombra corta y suave */
+.btn{border-radius:8px;font-weight:800;font-stretch:95%;letter-spacing:.005em}
+.btn.primary,.btn.primary:active{box-shadow:0 1px 2px rgba(94,29,20,.35)}
+.btn.ghost,.btn.ghost:active{box-shadow:none;border-color:var(--line-strong)}
+.btn.wa,.btn.wa:active{box-shadow:none}
+.btn:active{transform:translateY(1px)}
+.chipbtn,.preset,.tangbtn,.barck,.mini button,.clickie-paste{box-shadow:none}
+.preset[aria-pressed="true"],.opt[aria-pressed="true"],.tmod-chip.hl{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);box-shadow:none}
+.stepper button.st-minus{box-shadow:none}
+.stepper button.st-plus{box-shadow:0 1px 2px rgba(94,29,20,.35)}
+.stepper button:active{box-shadow:none;transform:translateY(1px)}
+.swrow{box-shadow:none}
+.stepper input{font-stretch:85%}
+
+/* Pasos: chips con número, el activo en óxido */
+.steps{background:transparent;border:0;padding:0;gap:6px}
+.stepbtn{display:block;text-align:center;line-height:1.15;padding:7px 4px;background:var(--card);color:var(--muted);border-radius:8px;min-height:38px;font-size:12px;font-stretch:86%;box-shadow:var(--shadow)}
+.stepbtn[aria-selected="true"]{background:var(--band);color:var(--on-band);box-shadow:none}
+.stepbtn[aria-selected="true"] .snum{color:var(--on-band)}
+.stepbtn .snum{margin-right:3px}
+
+/* Totales y barras fijas: negro de etiqueta */
+.total-card .big,.bar .t,.com-box .val,.pocket .v,.duo .box .v{font-stretch:82%;font-weight:900}
+.bar{border-top:0}
+.navbtn{font-stretch:92%}
+.navbtn[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+.nav{border-top:1px solid var(--line)}
+
+/* Ficha técnica por perfil en el Plan de corte */
+.tspec{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);border-bottom:1px solid var(--line);margin:2px 0 4px}
+.tspec > div{padding:6px 8px 7px;border-left:1px solid var(--line);display:flex;flex-direction:column;min-width:0}
+.tspec > div:first-child{border-left:0;padding-left:0}
+.tspec small{font-size:10.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);font-stretch:90%}
+.tspec b{font-size:18px;font-weight:850;font-stretch:82%;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tspec .hot b{color:var(--accent)}
+.tlabh{display:flex;justify-content:space-between;align-items:baseline;gap:8px;padding-top:10px;border-top:4px solid var(--ink);margin-top:6px}
+.tlabh h3{font-size:16.5px;min-width:0;font-weight:900;font-stretch:80%;text-transform:uppercase;letter-spacing:.01em}
+.tlabh span{white-space:nowrap;flex:none;font-size:12px;color:var(--muted);font-stretch:90%}
+.barsvg .bp{fill:var(--conv)} .barsvg .bp.alt{fill:var(--ink)}
+.barsvg .bt{fill:#fff} .barsvg .bt.alt{fill:var(--card)}
+.barsvg .bseg.hl .bp{fill:var(--accent)}
+.btn.danger{color:var(--card)}
+.clickie-toggle .cbadge{color:var(--card)}
+.preset:active,.clickie-paste:active{box-shadow:none}
+dialog.dlg{border-radius:8px;border:0;border-top:4px solid var(--ink)}
+.bar .modepill.clk{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.28);color:var(--on-slab)}
+.tangbtn.on,.barck[aria-pressed="true"]{box-shadow:none}
+.mono,.bargrp .bc,.tparte,.tmod-chip,.tangbtn,.tlen,.tlenw,.mini .qval,.tmod-sel b,.tmod-svg text,.tord-svg text,.barsvg text{font-family:var(--font);font-stretch:80%;font-variant-numeric:tabular-nums}
+.navbtn[aria-current="page"]{background:transparent;font-weight:850}
+.navbtn[aria-current="page"] svg{stroke-width:2.2}
+details.card > summary .sumv{white-space:nowrap}
+.pricein.example{border-color:var(--line-strong);background:var(--surface);color:var(--ink)}
+.tbuy .pricein.example{color:var(--ink)}
+.tag-ex{color:var(--muted);text-transform:uppercase;letter-spacing:.06em;font-size:10px;font-stretch:90%}
+.addqbtn{background:transparent;border-color:var(--line-strong);color:var(--accent)}
+/* Total y acción fijos sobre la navegación en Plan y compra */
+.tfix{position:fixed;left:0;right:0;bottom:calc(56px + env(safe-area-inset-bottom));z-index:var(--z-bar);display:flex;justify-content:center;padding:0 0 0;pointer-events:none}
+.tfix .in{pointer-events:auto;max-width:600px;width:100%;background:var(--slab);color:var(--on-slab);display:flex;align-items:center;gap:10px;padding:9px 12px;padding-left:max(12px,env(safe-area-inset-left,0px));padding-right:max(12px,env(safe-area-inset-right,0px));box-shadow:0 -6px 16px -8px rgba(0,0,0,.4)}
+.tfix small{display:block;font-size:10.5px;font-weight:750;letter-spacing:.07em;text-transform:uppercase;color:#B9C0C3;font-stretch:90%}
+.tfix b{font-size:21px;font-weight:900;font-stretch:82%;font-variant-numeric:tabular-nums}
+.tfix .btn{margin-left:auto;min-height:42px}
+.tfix .done{margin-left:auto;font-size:13px;font-weight:750;color:#9BE2B5;display:inline-flex;align-items:center;gap:5px}
+.tfix .done svg{width:15px;height:15px}
+.tfix-sp{height:70px}
+.tmarcas{margin:0;font-size:13px;line-height:1.4;padding:8px 10px;background:var(--surface);border-radius:6px;font-variant-numeric:tabular-nums}
+/* Inicio: lista de trabajos en un solo panel */
+.tdet{font-size:13px}
+.tdet > summary{cursor:pointer;font-weight:700;color:var(--on-slab);opacity:.85;padding:4px 0;list-style:none}
+.tdet > summary::-webkit-details-marker{display:none}
+.tdet > summary::after{content:" ›";opacity:.7}
+.tdet[open] > summary{margin-bottom:8px}
+.tdet[open]{display:flex;flex-direction:column;gap:8px}
+.jobs{list-style:none;margin:0;padding:0;background:var(--card);border-radius:10px;box-shadow:var(--lift);overflow:hidden}
+.jobs li+li{border-top:1px solid var(--line)}
+.jrow{width:100%;display:flex;align-items:center;gap:12px;border:0;background:none;padding:13px 14px;text-align:left;min-height:60px}
+.jrow:active{background:var(--surface)}
+.jrow > svg:first-child{width:26px;height:26px;color:var(--band);flex:none}
+.jrow .jt{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px}
+.jrow b{font-size:16px;font-weight:750;font-stretch:96%}
+.jrow small{font-size:13px;color:var(--muted);font-weight:500}
+.jrow .jchev{width:18px;height:18px;color:var(--line-strong);transform:rotate(-90deg);flex:none}
+.clickie-toggle{font-size:15px;font-weight:700}
+.tmarcas b{color:var(--accent);font-stretch:90%;text-transform:uppercase;letter-spacing:.04em;font-size:11.5px}
+.estmark{color:var(--err);font-weight:800;font-size:10.5px;text-transform:uppercase;letter-spacing:.04em}
+.pricein.est{border:1.5px dashed var(--err);background:var(--err-bg);color:var(--ink)}
+
+.btn.new-quote{min-height:64px;font-size:20px}
+.total-card .estmark{color:#FFB4A8}
+.storage-error{padding:14px 18px;background:var(--err-bg);color:var(--err);border-block:1px solid var(--err);font-weight:700;line-height:1.5;position:relative;z-index:80}
+.profile-details summary{list-style:revert}
 </style>
-</head>
-<body>
+
+
 <main id="app" class="wrap"></main>
 <div id="bar" class="bar hidden"></div>
 <div id="cartbar" class="cartbar hidden" role="region" aria-label="Repuestos elegidos para cotizar"></div>
 <nav id="nav" class="nav" aria-label="Navegación principal"></nav>
+<aside id="storage-error" class="storage-error" role="alert" hidden></aside>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 <dialog id="confirmDlg" class="dlg" aria-labelledby="dlgTitle" aria-describedby="dlgDesc">
   <h2 id="dlgTitle"></h2>
@@ -619,10 +732,11 @@ const CATALOG = {
   cano_5050:{cat:"herreria",n:"Caño estructural 50x50 (1,6 mm)",u:"barra 6 m",p:49000,kgm:2.39,q:"cano estructural 50x50 1.6 6 metros"},
   cano_8040:{cat:"herreria",n:"Caño estructural 80x40 (1,6 mm)",u:"barra 6 m",p:59000,kgm:2.89,q:"cano estructural 80x40 1.6 6 metros"},
   perfil_c_100:{cat:"herreria",n:"Perfil C galvanizado 100x50 (1,6 mm)",u:"barra 6 m",p:54000,kgm:2.70,q:"perfil c galvanizado 100x50 1.6 6 metros"},
-  planchuela:{cat:"herreria",n:"Planchuela 1 1/4 x 1/8",u:"barra 6 m",p:9800,kgm:0.79,q:"planchuela hierro 1 1/4 x 1/8 6 metros"},
+  planchuela:{cat:"herreria",n:"Planchuela 1 1/4 x 1/4",u:"barra 6 m",p:19500,kgm:1.58,q:"planchuela hierro 1 1/4 x 1/4 6 metros"},
   hierro_12:{cat:"herreria",n:"Hierro redondo / cuadrado 12 mm",u:"barra 6 m",p:11500,kgm:0.89,q:"hierro redondo liso 12 mm 6 metros"},
   redondo_916:{cat:"herreria",n:"Hierro redondo 9/16\"",u:"barra 6 m",p:16000,kgm:1.26,q:"hierro redondo liso 9/16 6 metros"},
-  angulo:{cat:"herreria",n:"Hierro ángulo 1 x 1/8",u:"barra 6 m",p:15000,kgm:0.94,q:"hierro angulo 1 x 1/8 6 metros"},
+  cuadrado_12:{cat:"herreria",n:"Hierro cuadrado 12 mm",u:"barra 6 m",p:14500,kgm:1.13,q:"hierro cuadrado macizo 12 mm 6 metros"},
+  angulo:{cat:"herreria",n:"Hierro ángulo 1 x 1/8",u:"barra 6 m",p:15000,est:true,kgm:0.94,q:"hierro angulo 1 x 1/8 6 metros"},
   riel_porton:{cat:"herreria",n:"Riel / ángulo guía para portón",u:"barra 6 m",p:18500,kgm:1.45,q:"riel porton corredizo hierro 6 metros"},
   chapa_18:{cat:"herreria",n:"Chapa negra BWG 18 (1,25 mm) 1x2 m",u:"hoja 1x2 m",p:42000,kgu:19.6,q:"chapa negra 18 1x2 metros"},
   metal_desp:{cat:"herreria",n:"Metal desplegado pesado 1x2 m",u:"hoja 1x2 m",p:38000,kgu:12.0,q:"metal desplegado pesado 1x2 metros"},
@@ -636,9 +750,35 @@ const CATALOG = {
   grampa:{cat:"herreria",n:"Grampas / brocas de fijación",u:"u",p:1200,q:"grampa amurar hierro"},
   pomela:{cat:"herreria",n:"Pomelas (bisagras para soldar)",u:"u",p:2500,q:"pomela hierro para soldar"},
   pasador:{cat:"herreria",n:"Pasador o porta candado",u:"u",p:6000,q:"pasador reforzado hierro porton"},
-  cerradura:{cat:"herreria",n:"Cerradura para puerta / reja",u:"u",p:28000,q:"cerradura doble paleta puerta reja"},
+  cerradura:{cat:"herreria",n:"Cerradura doble perno (Kallay, Sekur, Trabex o Acytra)",u:"u",p:75000,est:true,q:"cerradura doble perno kallay reja"},
+  bisagra_mun_100:{cat:"herreria",n:"Bisagra a munición ala corta 100×37",u:"u",p:4500,est:true,q:"bisagra municion ala corta 100 x 37"},
+  pasador_emb:{cat:"herreria",n:"Pasador de embutir con varilla (Arena)",u:"u",p:9000,est:true,q:"pasador de embutir con varilla arena"},
+  cano_12040:{cat:"herreria",n:"Caño estructural 120x40 (1,6 mm) — zócalo",u:"barra 6 m",p:0,est:true,q:"cano estructural 120x40 1.6 6 metros"},
+  rueda_roma120:{cat:"herreria",n:"Rueda quita y pon Roma 120",u:"u",p:0,est:true,q:"rueda quita y pon Roma 120"},
+  guia_roma84:{cat:"herreria",n:"Guía superior Roma art. 84",u:"u",p:0,est:true,q:"guia superior Roma articulo 84 porton"},
+  ruleman_roma84:{cat:"herreria",n:"Rulemán con perno compatible con guía Roma 84 (verificar medida)",u:"u",p:0,est:true,q:"ruleman con perno guia Roma 84"},
   rueda_porton:{cat:"herreria",n:"Rueda para portón corredizo",u:"u",p:14000,q:"rueda porton corredizo canal v"},
   flete_corralon:{cat:"herreria",n:"Flete de corralón (barras 6 m)",u:"viaje",p:18000,q:"flete corralon materiales"},
+  /* Perfiles sumados con Padilla. est:true = precio estimado por peso, SIN referencia segura hasta que cargue el real */
+  red_38:{cat:"herreria",n:"Hierro redondo 3/8\"",u:"barra 6 m",p:7100,kgm:0.56,est:true,q:"hierro redondo liso 3/8 6 metros"},
+  red_12:{cat:"herreria",n:"Hierro redondo 1/2\"",u:"barra 6 m",p:12500,kgm:0.99,est:true,q:"hierro redondo liso 1/2 6 metros"},
+  red_58:{cat:"herreria",n:"Hierro redondo 5/8\"",u:"barra 6 m",p:19500,kgm:1.55,est:true,q:"hierro redondo liso 5/8 6 metros"},
+  cua_38:{cat:"herreria",n:"Hierro cuadrado 3/8\"",u:"barra 6 m",p:8900,kgm:0.71,est:true,q:"hierro cuadrado macizo 3/8 6 metros"},
+  cua_12:{cat:"herreria",n:"Hierro cuadrado 1/2\"",u:"barra 6 m",p:16000,kgm:1.27,est:true,q:"hierro cuadrado macizo 1/2 6 metros"},
+  cua_916:{cat:"herreria",n:"Hierro cuadrado 9/16\"",u:"barra 6 m",p:20200,kgm:1.6,est:true,q:"hierro cuadrado macizo 9/16 6 metros"},
+  cua_58:{cat:"herreria",n:"Hierro cuadrado 5/8\"",u:"barra 6 m",p:24900,kgm:1.98,est:true,q:"hierro cuadrado macizo 5/8 6 metros"},
+  pla_112_14:{cat:"herreria",n:"Planchuela 1 1/2 x 1/4",u:"barra 6 m",p:23900,kgm:1.9,est:true,q:"planchuela hierro 1 1/2 x 1/4 6 metros"},
+  pla_2_14:{cat:"herreria",n:"Planchuela 2 x 1/4",u:"barra 6 m",p:31900,kgm:2.53,est:true,q:"planchuela hierro 2 x 1/4 6 metros"},
+  pla_114_316:{cat:"herreria",n:"Planchuela 1 1/4 x 3/16",u:"barra 6 m",p:15000,kgm:1.19,est:true,q:"planchuela hierro 1 1/4 x 3/16 6 metros"},
+  pla_112_316:{cat:"herreria",n:"Planchuela 1 1/2 x 3/16",u:"barra 6 m",p:17900,kgm:1.42,est:true,q:"planchuela hierro 1 1/2 x 3/16 6 metros"},
+  pla_2_316:{cat:"herreria",n:"Planchuela 2 x 3/16",u:"barra 6 m",p:23900,kgm:1.9,est:true,q:"planchuela hierro 2 x 3/16 6 metros"},
+  ang_78_18:{cat:"herreria",n:"Hierro ángulo 7/8 x 1/8",u:"barra 6 m",p:13000,kgm:1.03,est:true,q:"hierro angulo 7/8 x 1/8 6 metros"},
+  ang_114_18:{cat:"herreria",n:"Hierro ángulo 1 1/4 x 1/8",u:"barra 6 m",p:18900,kgm:1.5,est:true,q:"hierro angulo 1 1/4 x 1/8 6 metros"},
+  chapa_16_h12:{cat:"herreria",n:"Chapa negra 1,6 mm 1x2 m",u:"hoja 1x2 m",p:53800,kgu:25.1,est:true,q:"chapa negra 1.6 mm 1x2 metros"},
+  chapa_16_h122:{cat:"herreria",n:"Chapa negra 1,6 mm 1,22x2,44 m",u:"hoja 1,22x2,44 m",p:80100,kgu:37.4,est:true,q:"chapa negra 1.6 mm 1.22x2.44"},
+  chapa_16_m2:{cat:"herreria",n:"Chapa negra 1,6 mm (recorte)",u:"m²",p:29600,est:true,q:"chapa negra 1.6 mm"},
+  bisagra_80:{cat:"herreria",n:"Bisagra ficha 80 mm",u:"u",p:2000,est:true,q:"bisagra ficha 80 mm para soldar"},
+  pasador_ch:{cat:"herreria",n:"Pasador chico (puertita)",u:"u",p:3500,est:true,q:"pasador chico hierro"},
 
   /* Pintura */
   latex:{cat:"pintura",n:"Látex interior",u:"lata 4 l",p:28000,q:"pintura latex interior 4 litros"},
@@ -694,6 +834,9 @@ const CATALOG = {
   mensula:{cat:"albanileria",n:"Ménsulas para estante",u:"u",p:3000,q:"mensula reforzada estante hierro"}
 };
 
+/* Valores de catálogo orientativos, sin referencia segura por ítem; el precio propio los normaliza. */
+Object.values(CATALOG).forEach(c=>{c.est=true;});
+
 function mlUrl(query){
   const slug = String(query||"")
     .normalize("NFD").replace(/[\u0300-\u036f]/g,"")
@@ -715,18 +858,140 @@ const C = Math.ceil, R1 = x => Math.round(x*10)/10;
 const it = (mat, qty, nota) => ({mat, qty, nota});
 const task = (name, hours) => ({name, hours: Math.max(0.25, Math.round(hours*4)/4)});
 
+/* Grosor que se ve de frente (mm) de cada perfil usado como barrote, marco o estante. Planchuela va de canto: se ve su espesor. */
+const ESP_VISTO={cano_2020:20,cano_2525:25,cano_3030:30,cano_4040:40,cano_5050:50,cano_4020:20,cano_6040:40,cano_8040:40,cano_12040:120,redondo_916:14.3,hierro_12:12,cuadrado_12:12,planchuela:6.35,
+  angulo:25.4,ang_78_18:22.2,ang_114_18:31.75,red_38:9.5,red_12:12.7,red_58:15.9,cua_38:9.5,cua_12:12.7,cua_916:14.3,cua_58:15.9,
+  pla_112_14:6.35,pla_2_14:6.35,pla_114_316:4.76,pla_112_316:4.76,pla_2_316:4.76};
+const espVisto=k=>ESP_VISTO[k]||20;
+/* Reparto con luz libre igual en todos los espacios (también contra el marco).
+   W: espacio libre interior (mm); L: luz máxima; t: grosor del barrote. Devuelve cantidad mínima, luz real y marcas
+   (borde cercano de cada barrote medido desde el filo interior del marco, redondeado al mm desde el valor exacto). */
+function repartoLuz(W,L,t){
+  W=+W||0; L=Math.max(1,+L||120); t=Math.max(0,+t||0);
+  if(W<=L) return {n:0,luz:Math.max(0,W),marcas:[]};
+  const n=Math.max(0,Math.ceil((W-L)/(L+t)-1e-9));
+  const luz=(W-n*t)/(n+1);
+  const marcas=[]; for(let k=1;k<=n;k++) marcas.push(Math.round(k*luz+(k-1)*t));
+  return {n,luz,marcas};
+}
+
 const REJA_MATS = [
-  ["cano_2020","Caño 20×20"],
-  ["hierro_12","Redondo 12 mm"],
-  ["redondo_916","Redondo 9/16\""],
-  ["chapa_18","Chapa ciega"],
-  ["metal_desp","Metal desplegado"]
+  ["red_38","Redondo 3/8\""],["red_12","Redondo 1/2\""],["redondo_916","Redondo 9/16\""],["red_58","Redondo 5/8\""],
+  ["cua_38","Cuadrado 3/8\""],["cua_12","Cuadrado 1/2\""],["cua_916","Cuadrado 9/16\""],["cua_58","Cuadrado 5/8\""],
+  ["cano_2020","Caño 20×20"],["chapa_18","Chapa ciega"],["metal_desp","Metal desplegado"],
+  ["cuadrado_12","Cuadrado 12 mm"],["hierro_12","Redondo 12 mm"]
 ];
+/* Tipo y medida de cada perfil para el selector (tipo arriba, medida abajo). */
+const PERF_META={
+  red_38:["Redondo",'3/8"'],red_12:["Redondo",'1/2"'],redondo_916:["Redondo",'9/16"'],red_58:["Redondo",'5/8"'],
+  cua_38:["Cuadrado",'3/8"'],cua_12:["Cuadrado",'1/2"'],cua_916:["Cuadrado",'9/16"'],cua_58:["Cuadrado",'5/8"'],
+  cuadrado_12:["Cuadrado","12 mm"],hierro_12:["Redondo","12 mm"],
+  chapa_18:["Chapa","Ciega BWG 18"],metal_desp:["Metal desplegado","Pesado"],
+  planchuela:["Planchuela",'1 1/4" × 1/4"'],pla_112_14:["Planchuela",'1 1/2" × 1/4"'],pla_2_14:["Planchuela",'2" × 1/4"'],
+  pla_114_316:["Planchuela",'1 1/4" × 3/16"'],pla_112_316:["Planchuela",'1 1/2" × 3/16"'],pla_2_316:["Planchuela",'2" × 3/16"'],
+  ang_78_18:["Ángulo",'7/8" × 1/8"'],angulo:["Ángulo",'1" × 1/8"'],ang_114_18:["Ángulo",'1 1/4" × 1/8"'],
+  cano_12040:["Caño","120×40"],cano_2020:["Caño","20×20"],cano_2525:["Caño","25×25"],cano_3030:["Caño","30×30"],cano_4040:["Caño","40×40"],cano_5050:["Caño","50×50"]
+};
+const P_BARROTES=["red_38","red_12","redondo_916","red_58","cua_38","cua_12","cua_916","cua_58","cano_2020","chapa_18","metal_desp"];
+const P_PLANCH=["planchuela","pla_112_14","pla_2_14","pla_114_316","pla_112_316","pla_2_316"];
+const P_ANG=["ang_78_18","angulo","ang_114_18"];
+const P_CANOS=["cano_2020","cano_2525","cano_3030","cano_4040","cano_5050"];
+/* Estándar de Padilla por tipo de abertura: se carga solo al elegir ventana, puerta o portón. */
+const REJA_STD={
+  ventana:{material:"redondo_916",pMarco:"planchuela",pTrav:"planchuela"},
+  puerta:{material:"redondo_916",pMarco:"cano_4040",pBast:"cano_4040",pTrav:"planchuela",marcoFijo:true,cerradura:true},
+  porton:{material:"redondo_916",pBast:"cano_4040",pTrav:"planchuela",cerradura:true,pRiel:"angulo",rielAuto:true,largoRiel:6000,pZocalo:"cano_12040"}
+};
+const esHojaMat=m=>m==="chapa_18"||m==="metal_desp";
+/* Hojas de la abertura: portón de 2 hojas o puerta de 2 hojas (una fija soldada o las dos que abren). */
+const rejaHojas=i=>((i.uso==="porton"&&i.apertura==="doble")||(i.uso==="puerta"&&(i.hojasPta==="2"||i.hojasPta==="2f")))?2:1;
+/* Las medidas se cargan en mm; algunas cuentas viejas trabajan en cm. */
+const toCm=i=>({...i,ancho:(i.ancho||0)/10,alto:(i.alto||0)/10,sep:(i.sep||120)/10});
+/* Perfiles de una abertura. frame = lo que rodea la reja (marco en ventana, bastidor en puerta/portón). mf = marco fijo de la puerta (3 lados). Medidas en mm. */
+function rejaFrames(i){
+  const ventana=i.uso==="ventana", mat=i.material||"redondo_916", hoja=esHojaMat(mat);
+  const frame=ventana?(i.pMarco||(hoja?"cano_3030":"planchuela")):(i.pBast||"cano_4040");
+  const trav=i.pTrav||"planchuela";
+  let A=Math.round(i.ancho||1200), B=Math.round(i.alto||1000), medInt=!!i.medInt, mf=null;
+  if(i.uso==="puerta"&&i.marcoFijo){
+    const mk=i.pMarco||"cano_4040", f=espVisto(mk);
+    if(medInt) mf={key:mk,A:Math.round(A+2*f),B:Math.round(B+f)};
+    else { mf={key:mk,A,B}; A=Math.round(A-2*f); B=Math.round(B-f); }
+    medInt=false;
+  }
+  return {frame,trav,mat,hoja,A,B,medInt,mf};
+}
+/* Reparto exacto de una abertura de Presupuestar, con la misma cuenta que el Taller. Medidas en mm. */
+function rejaReparto(i){
+  const ventana=i.uso==="ventana", porton=i.uso==="porton", F=rejaFrames(i), nh=rejaHojas(i);
+  return tMarcas({type:ventana?"reja":(porton||nh===2)?"porton":"puertareja",ancho:F.A,alto:F.B,sep:Math.round(i.sep||120),hojas:nh,pMarco:F.frame,pInt:F.mat,medInt:F.medInt,corredizo:i.uso==="porton"&&i.apertura==="corredizo",pZocalo:i.pZocalo||"cano_12040"});
+}
+function tPackOne(rem,barLen,disco){
+  const S=10, B=Math.round(barLen*S), D=Math.round(disco*S), cap=B+D;
+  if(cap<=0) return null;
+  const reach=new Int32Array(cap+1).fill(-1); reach[0]=-2;
+  let best=0;
+  for(let i=0;i<rem.length&&best<cap;i++){
+    const w=Math.round(rem[i].len*S)+D;
+    if(w<=0||w>cap) continue;
+    for(let c=cap;c>=w;c--) if(reach[c]===-1&&reach[c-w]!==-1){ reach[c]=i; if(c>best) best=c; }
+  }
+  if(best===0) return null;
+  const take=new Set(); let c=best;
+  while(c>0){ const i=reach[c]; if(i<0) break; take.add(i); c-=Math.round(rem[i].len*S)+D; }
+  if(!take.size) return null;
+  const pieces=rem.filter((_,i)=>take.has(i));
+  const nextRem=rem.filter((_,i)=>!take.has(i));
+  const used=pieces.reduce((s,p)=>s+p.len,0)+disco*pieces.length;
+  const sobra=Math.max(0,Math.round((barLen-used)*10)/10);
+  return {pieces,sobra,len:barLen,nextRem};
+}
+
+function tPack(pcs,barra,disco,retazos){
+  const largas=pcs.filter(p=>p.len>barra);
+  let rem=pcs.filter(p=>p.len<=barra).sort((a,b)=>b.len-a.len);
+  const bars=[];
+  /* Primero intentar ubicar cortes en retazos guardados del taller (de menor a mayor para cuidar los largos) */
+  const rets=(retazos||[]).map(r=>typeof r==="number"?{len:r}:r).filter(r=>r.len>0&&r.len<=barra).sort((a,b)=>a.len-b.len);
+  for(const ret of rets){
+    if(!rem.length) break;
+    const rLen=ret.len, fit=tPackOne(rem,rLen,disco);
+    if(fit){
+      bars.push({pieces:fit.pieces,sobra:fit.sobra,len:rLen,retazo:true,retId:ret.id});
+      rem=fit.nextRem;
+    }
+  }
+  while(rem.length){
+    const fit=tPackOne(rem,barra,disco);
+    if(!fit) break;
+    bars.push({pieces:fit.pieces,sobra:fit.sobra,len:barra,retazo:false});
+    rem=fit.nextRem;
+  }
+  return {bars,largas};
+}
+
+
+/* Riel inicial editable por presupuesto. Longitud total en mm, sin recortar a una barra. */
+function rejaRiel(i, ancho){
+  const perfil=P_ANG.includes(i.pRiel)?i.pRiel:"angulo";
+  const manual=Number(i.largoRiel);
+  const len=i.rielAuto===false&&Number.isFinite(manual)&&manual>0
+    ?Math.round(manual):Math.round((ancho??i.ancho??3000)*2);
+  return {perfil,len};
+}
+/* Un riel de más de 6 m se arma en tramos: nunca perder el excedente en el Taller. */
+function rejaRielTramos(i, ancho){
+  const {perfil,len}=rejaRiel(i,ancho), n=i.cant||1, tramos=[];
+  const completas=Math.floor(len/6000), resto=len%6000;
+  if(completas) tramos.push({perfil,len:6000,qty:completas*n});
+  if(resto) tramos.push({perfil,len:resto,qty:n});
+  return tramos;
+}
 function rejaCuts(i, tagPrefix){
-  const n=i.cant||1, A=Math.round(i.ancho*10), B=Math.round(i.alto*10);
-  const ventana=i.uso==="ventana", porton=i.uso==="porton", doble=porton&&i.apertura==="doble", corredizo=porton&&i.apertura==="corredizo";
-  const mat=i.material||"cano_2020", esHoja=mat==="chapa_18"||mat==="metal_desp";
-  const marcoKey=ventana?(esHoja?"cano_3030":"cano_2020"):"cano_4040";
+  const g=rejaReparto(i), n=i.cant||1, A=g.Ao, B=g.Bo;
+  const ventana=i.uso==="ventana", porton=i.uso==="porton", doble=rejaHojas(i)===2, corredizo=porton&&i.apertura==="corredizo";
+  const F=rejaFrames(i), mat=F.mat, esHoja=F.hoja;
+  const marcoKey=F.frame;
   const ang=ventana&&!esHoja?"90":"45";
   const cuts=[];
   const parte=tagPrefix || ({ventana:"REJA",puerta:"PTA",porton:"PORTON"}[i.uso]||"REJA");
@@ -739,6 +1004,10 @@ function rejaCuts(i, tagPrefix){
     const hA=Math.round(A/2);
     cuts.push({perfil:marcoKey,parte:pMar,ang,len:hA,qty:4*n});
     cuts.push({perfil:marcoKey,parte:pMar,ang,len:B,qty:4*n});
+  } else if(corredizo){
+    cuts.push({perfil:marcoKey,parte:pMar+" superior",ang,len:A,qty:n});
+    cuts.push({perfil:marcoKey,parte:pMar+" jambas",ang:"90",len:B-espVisto(i.pZocalo||"cano_12040"),qty:2*n});
+    cuts.push({perfil:i.pZocalo||"cano_12040",parte:parte+" zócalo",ang:"90",len:A,qty:n});
   } else {
     cuts.push({perfil:marcoKey,parte:pMar,ang,len:A,qty:2*n});
     cuts.push({perfil:marcoKey,parte:pMar,ang,len:B,qty:2*n});
@@ -748,13 +1017,17 @@ function rejaCuts(i, tagPrefix){
     cuts.push({perfil:"cano_2020",parte:pRef,ang:"90",len:Math.max(100,A-80),qty:tv*n});
     cuts.push({perfil:"cano_2020",parte:pRef,ang:"90",len:Math.max(100,B-80),qty:(doble?2:1)*n});
   } else {
-    const barrotes=Math.max(0,C(i.ancho/(i.sep||12))-1);
-    const lBar=Math.max(100,B-(ventana?40:80));
-    if(barrotes>0) cuts.push({perfil:mat,parte:pBar,ang:"90",len:lBar,qty:barrotes*n});
+    const barrotes=g.n*g.hojas;
+    if(barrotes>0) cuts.push({perfil:mat,parte:pBar,ang:"90",len:g.lBar,qty:barrotes*n});
     const tv=ventana?2:3;
-    cuts.push({perfil:"planchuela",parte:pTrv,ang:"90",len:A,qty:tv*n});
+    cuts.push({perfil:F.trav,parte:pTrv,ang:"90",len:A,qty:tv*n});
   }
-  if(corredizo) cuts.push({perfil:"riel_porton",parte:pRie,ang:"90",len:Math.min(6000,A*2),qty:n});
+  if(corredizo) cuts.push(...rejaRielTramos(i,A).map(c=>({...c,parte:pRie,ang:"90"})));
+  if(F.mf){
+    const pMf=tagPrefix?parte+" mfijo":parte+" marco fijo";
+    cuts.push({perfil:F.mf.key,parte:pMf,ang:"45",len:F.mf.B,qty:2*n});
+    cuts.push({perfil:F.mf.key,parte:pMf,ang:"45",len:F.mf.A,qty:n});
+  }
   return cuts;
 }
 function rejaCutsAll(list){
@@ -769,68 +1042,124 @@ function rejaCutsAll(list){
   return out;
 }
 
+function puertitasCuts(i){
+  const A=+i.ancho, B=+i.alto, n=i.cant||1, hojas=+i.hojas||1;
+  return [
+    {perfil:i.marco||"angulo",parte:"PUERTITAS marco H",len:A,qty:2*n,ang:"45"},
+    {perfil:i.marco||"angulo",parte:"PUERTITAS marco V",len:B,qty:2*n,ang:"45"},
+    {perfil:i.bastidor||"ang_78_18",parte:"PUERTITAS bastidor H",len:Math.round(A/hojas),qty:2*hojas*n,ang:"45"},
+    {perfil:i.bastidor||"ang_78_18",parte:"PUERTITAS bastidor V",len:B,qty:2*hojas*n,ang:"45"}
+  ];
+}
+function jobCuts(jobId, inputs, extraItems){
+  if(jobId==="reja") return rejaCutsAll([...(extraItems||[]),inputs]);
+  if(jobId==="puertitas") return puertitasCuts(inputs);
+  return [];
+}
+function barPurchases(cuts, barra=6000, disco=3, retazos=[]){
+  const by={}, result={};
+  cuts.forEach(c=>{ if(!by[c.perfil]) by[c.perfil]=[]; for(let k=0;k<c.qty;k++) by[c.perfil].push({len:c.len}); });
+  Object.entries(by).forEach(([key,pcs])=>{
+    const pack=tPack(pcs,barra,disco,retazos.filter(r=>r.perfil===key));
+    result[key]=pack.bars.filter(b=>!b.retazo).length+pack.largas.reduce((n,p)=>n+Math.ceil(p.len/barra),0);
+  });
+  return result;
+}
+function pendingStandards(jobId, list){
+  const out=new Set();
+  list.forEach(i=>{
+    if(jobId==="puertitas") out.add("Horas de las puertitas estimadas: confirmar con Padilla.");
+    if(jobId==="reja"&&i.uso==="puerta"&&i.marcoFijo) out.add("Holgura entre bastidor y marco fijo sin confirmar; medidas de referencia sin holgura.");
+    if(jobId==="reja"&&i.uso==="porton"&&i.apertura==="doble") out.add("Confirmar cantidad de pasadores al piso, bisagras y bastidor del portón de dos hojas.");
+    if(jobId==="reja"&&i.uso==="porton"&&i.apertura==="corredizo"){
+      out.add("Verificar encuentros del zócalo con jambas y superior antes de cortar; longitudes exteriores de referencia.");
+      out.add("Confirmar medida de los rulemanes con perno para la guía Roma 84.");
+    }
+  });return [...out];
+}
+
 const JOBS = [
  { id:"reja", name:"Reja o portón", hint:"ventana, puerta, portón", icon:"reja", drawing:"reja",
    multiItem:true, multiWord:"otra abertura", multiSingular:"Abertura", multiPlural:"Aberturas",
+   std(i){ return REJA_STD[i.uso]||{}; },
+   mm:true,
    itemLabel(i){
-    const mat=i.material||"cano_2020";
-    const matNom=(REJA_MATS.find(([k])=>k===mat)||[0,"Caño 20×20"])[1];
+    const mat=i.material||"redondo_916";
+    const matNom=(REJA_MATS.find(([k])=>k===mat)||[0,"Redondo 9/16\""])[1];
     const ventana=i.uso==="ventana", porton=i.uso==="porton";
     const corredizo=porton&&i.apertura==="corredizo", doble=porton&&i.apertura==="doble";
-    const nom=ventana?"Reja de ventana":i.uso==="puerta"?"Puerta de hierro":corredizo?"Portón corredizo":doble?"Portón de 2 hojas":"Portón";
-    const nomShort=ventana?"Ventana":i.uso==="puerta"?"Puerta":corredizo?"Portón corr.":doble?"Portón 2h":"Portón";
+    const pta=i.uso==="puerta"?(i.hojasPta==="2"?"Puerta reja de 2 hojas":i.hojasPta==="2f"?"Puerta reja de 2 hojas (1 fija)":"Puerta reja"):"";
+    const nom=ventana?"Reja de ventana":pta?pta:corredizo?"Portón corredizo":doble?"Portón de 2 hojas":"Portón";
+    const nomShort=ventana?"Ventana":pta?(i.hojasPta==="2"||i.hojasPta==="2f"?"Puerta 2h":"Puerta"):corredizo?"Portón corr.":doble?"Portón 2h":"Portón";
     const n=i.cant||1;
     const extra=(!ventana&&i.cerradura?" · c/cerradura":"")+(i.colocar?"":" · sin colocar");
     return {
-      short:`${n>1?n+"× ":""}${nomShort} ${i.ancho}×${i.alto} cm`,
+      short:`${n>1?n+"× ":""}${nomShort} ${i.ancho}×${i.alto} mm`,
       sub:`${matNom}${extra}`,
-      full:`${n>1?n+" x ":""}${nom} de ${i.ancho} x ${i.alto} cm (${matNom})`
+      full:`${n>1?n+" x ":""}${nom} de ${i.ancho} x ${i.alto} mm (${matNom})`
     };
    },
    presets:[
-     {label:"Ventana 120×100", vals:{uso:"ventana",ancho:120,alto:100,cant:1}},
-     {label:"Ventana 150×110", vals:{uso:"ventana",ancho:150,alto:110,cant:1}},
-     {label:"Puerta 90×200", vals:{uso:"puerta",ancho:90,alto:200,cant:1,cerradura:true}},
-     {label:"Portón 240×200", vals:{uso:"porton",apertura:"doble",ancho:240,alto:200,cant:1,cerradura:true}},
-     {label:"Corredizo 300×200", vals:{uso:"porton",apertura:"corredizo",ancho:300,alto:200,cant:1,cerradura:true}}
+     {label:"Ventana 1200×1000", vals:{uso:"ventana",ancho:1200,alto:1000,cant:1}},
+     {label:"Ventana 1500×1100", vals:{uso:"ventana",ancho:1500,alto:1100,cant:1}},
+     {label:"Puerta 900×2000", vals:{uso:"puerta",hojasPta:"1",ancho:900,alto:2000,cant:1,cerradura:true}},
+     {label:"Portón 2400×2000", vals:{uso:"porton",apertura:"doble",ancho:2400,alto:2000,cant:1,cerradura:true}},
+     {label:"Corredizo 3000×2000", vals:{uso:"porton",apertura:"corredizo",ancho:3000,alto:2000,cant:1,cerradura:true}}
    ],
    fields:[
     {id:"uso",label:"¿Para qué es?",type:"choice",def:"ventana",options:[["ventana","Reja de ventana"],["puerta","Puerta"],["porton","Portón"]]},
     {id:"apertura",label:"Tipo de portón",type:"choice",def:"batiente",show:i=>i.uso==="porton",options:[["batiente","Batiente 1 hoja"],["doble","Batiente 2 hojas"],["corredizo","Corredizo"]]},
-    {id:"material",label:"Barrotes o relleno",type:"choice",def:"cano_2020",options:REJA_MATS},
-    {id:"ancho",label:"Ancho",type:"num",unit:"cm",min:30,max:600,step:5,def:120},
-    {id:"alto",label:"Alto",type:"num",unit:"cm",min:30,max:300,step:5,def:100},
+    {id:"hojasPta",label:"Hojas de la puerta",type:"choice",def:"1",show:i=>i.uso==="puerta",options:[["1","1 hoja"],["2f","2 hojas, 1 fija soldada"],["2","2 hojas que abren"]]},
+    {id:"material",label:"Barrotes o relleno",type:"perfil",def:"redondo_916",options:P_BARROTES},
+    {id:"marcoFijo",label:"¿Lleva marco fijo? (3 lados)",type:"yesno",def:true,show:i=>i.uso==="puerta"},
+    {id:"pMarco",label:"Marco",type:"perfil",def:"planchuela",options:[...P_PLANCH,...P_ANG,...P_CANOS],show:i=>i.uso==="ventana"||(i.uso==="puerta"&&i.marcoFijo)},
+    {id:"pBast",label:"Bastidor (la hoja)",type:"perfil",def:"cano_4040",options:[...P_CANOS,...P_ANG],show:i=>i.uso!=="ventana"},
+    {id:"pTrav",label:"Travesaños",type:"perfil",def:"planchuela",options:P_PLANCH,show:i=>!esHojaMat(i.material)},
+    {id:"ancho",label:"Ancho",type:"num",unit:"mm",min:300,max:6000,step:10,def:1200},
+    {id:"alto",label:"Alto",type:"num",unit:"mm",min:300,max:3000,step:10,def:1000},
+    {id:"pZocalo",label:"Zócalo inferior",type:"perfil",def:"cano_12040",options:["cano_12040"],show:i=>i.uso==="porton"&&i.apertura==="corredizo"},
+    {id:"pRiel",label:"Ángulo del riel de piso",type:"perfil",def:"angulo",options:P_ANG,show:i=>i.uso==="porton"&&i.apertura==="corredizo"},
+    {id:"rielAuto",label:"Riel automático: doble del ancho",type:"yesno",def:true,show:i=>i.uso==="porton"&&i.apertura==="corredizo"},
+    {id:"largoRiel",label:"Largo total del riel de piso",type:"num",unit:"mm",min:300,max:12000,step:10,def:6000,show:i=>i.uso==="porton"&&i.apertura==="corredizo"&&i.rielAuto===false},
     {id:"cant",label:"¿Cuántas?",type:"num",unit:"",min:1,max:20,step:1,def:1},
-    {id:"sep",label:"Separación entre barrotes",type:"num",unit:"cm",min:8,max:25,step:1,def:12,show:i=>i.material!=="chapa_18"&&i.material!=="metal_desp"},
+    {id:"sep",label:"Luz máxima entre barrotes",type:"num",unit:"mm",min:80,max:250,step:5,def:120,show:i=>i.material!=="chapa_18"&&i.material!=="metal_desp"},
+    {id:"medInt",label:"¿La medida es interior (sin el marco)?",type:"yesno",def:false},
     {id:"pintura",label:"Terminación",type:"choice",def:"pintada",options:[["pintada","Antióxido + esmalte"],["convertidor","Convertidor 3 en 1"],["antioxido","Solo antióxido"]]},
-    {id:"cerradura",label:"¿Lleva cerradura?",type:"yesno",def:false,show:i=>i.uso!=="ventana"},
+    {id:"cerradura",label:"¿Lleva cerradura doble perno?",type:"yesno",def:false,show:i=>i.uso!=="ventana"},
     {id:"colocar",label:"¿La colocás vos?",type:"yesno",def:true}
    ],
    calcMulti(list){
     const barM={}, hojaM2={}, unitMap={}, warnSet=new Set(), incSet=new Set(), excSet=new Set();
-    const addBar=(k,m,nota)=>{
+    const addBar=(k,m,nota,tramos=null)=>{
       if(!(m>0)) return;
       if(!barM[k]) barM[k]={m:0,notes:new Set()};
-      barM[k].m+=m;
+      if(tramos){
+        if(!barM[k].rails) barM[k].rails=[];
+        tramos.forEach(c=>{ for(let j=0;j<c.qty;j++) barM[k].rails.push({len:c.len}); });
+      } else barM[k].m+=m;
       if(nota) barM[k].notes.add(nota);
     };
     const addU=(k,q)=>{ if(q>0) unitMap[k]=(unitMap[k]||0)+q; };
-    let kg=0, totM2=0, totUnits=0, rielM=0;
+    let kg=0, totM2=0, totUnits=0;
     let pintConvFrac=0, pintAntiFrac=0, pintEsmFrac=0;
     let hCorte=0, hSold=0, hPint=0, hCol=0, allConv=true;
     const single=list.length===1;
 
-    list.forEach(i=>{
+    list.forEach(i0=>{
+      const i=toCm(i0);
       const n=i.cant||1;
-      const mat=i.material||"cano_2020", esHoja=mat==="chapa_18"||mat==="metal_desp";
-      const ventana=i.uso==="ventana", porton=i.uso==="porton";
-      const corredizo=porton&&i.apertura==="corredizo", doble=porton&&i.apertura==="doble";
+      const mat=i.material||"redondo_916", esHoja=mat==="chapa_18"||mat==="metal_desp";
+      const ventana=i.uso==="ventana", porton=i.uso==="porton", puerta=i.uso==="puerta";
+      const corredizo=porton&&i.apertura==="corredizo", doble=rejaHojas(i0)===2;
       const usaCerr=!ventana&&i.cerradura;
-      const marco=(2*(i.ancho+i.alto)+(doble?2*i.alto:0))/100;
-      const barrotes=esHoja?0:Math.max(0,C(i.ancho/(i.sep||12))-1);
+      const hAbren=puerta?(i.hojasPta==="2"?2:1):0;
+      const rg=rejaReparto(i0), exA=rg.Ao/10, exB=rg.Bo/10;
+      const marco=(2*(exA+exB)+(doble?2*exB:0))/100;
+      const barrotes=esHoja?0:rg.n*rg.hojas;
       const m2=i.ancho*i.alto/10000*n;
-      const marcoKey=ventana?(esHoja?"cano_3030":"cano_2020"):"cano_4040";
+      const RF=rejaFrames(i0), marcoKey=RF.frame, travKey=RF.trav;
       totM2+=m2; totUnits+=n;
+      if(RF.mf){ const mfM=(2*RF.mf.B+RF.mf.A)/1000*n; addBar(RF.mf.key,mfM,"marco fijo"); kg+=mfM*(CATALOG[RF.mf.key].kgm||1.89); }
 
       if(esHoja){
         hojaM2[mat]=(hojaM2[mat]||0)+m2;
@@ -839,7 +1168,7 @@ const JOBS = [
         addBar("cano_2020",refM,"refuerzos");
         kg+=marco*n*(CATALOG[marcoKey].kgm||1.89)+refM*0.89;
       } else {
-        const bM=barrotes*i.alto/100*n;
+        const bM=barrotes*rg.lBar/1000*n;
         if(mat===marcoKey){
           addBar(mat,bM+marco*n,single?`${barrotes} barrotes + marco`:"barrotes + marco");
           kg+=(bM+marco*n)*(CATALOG[mat].kgm||0.89);
@@ -849,8 +1178,8 @@ const JOBS = [
           kg+=marco*n*(CATALOG[marcoKey].kgm||1.89)+bM*(CATALOG[mat].kgm||0.89);
         }
         const travM=(ventana?2:3)*i.ancho/100*n;
-        addBar("planchuela",travM,"travesaños");
-        kg+=travM*(CATALOG.planchuela.kgm||0.79);
+        addBar(travKey,travM,"travesaños");
+        kg+=travM*(CATALOG[travKey].kgm||0.79);
       }
 
       const frac=m2/(esHoja?2.5:3);
@@ -865,12 +1194,16 @@ const JOBS = [
         if(i.colocar) addU("grampa",4*n);
       } else {
         if(corredizo){
-          addU("rueda_porton",2*n);
-          rielM+=i.ancho*2/100*n;
-          kg+=i.ancho*2/100*n*(CATALOG.riel_porton.kgm||1.45);
+          addU("rueda_roma120",2*n); addU("guia_roma84",n); addU("ruleman_roma84",2*n);
+          const riel=rejaRiel(i0,rg.Ao), metros=riel.len/1000*n;
+          addBar(riel.perfil,metros,`riel de piso: ${riel.len} mm por portón`,rejaRielTramos(i0,rg.Ao));
+          kg+=metros*(CATALOG[riel.perfil].kgm||0);
+          if(riel.len>6000) warnSet.add("El riel supera 6000 mm: el Taller lo separa en tramos para unir en obra.");
         } else {
-          addU("pomela",(doble?6:porton?4:3)*n);
+          if(puerta) addU("bisagra_mun_100",4*hAbren*n);
+          else addU("pomela",(doble?6:4)*n);
         }
+        if(puerta&&i.hojasPta==="2") addU("pasador_emb",2*n);
         if(!usaCerr) addU("pasador",n);
         if(i.colocar) addU("grampa",(corredizo?4:6)*n);
       }
@@ -882,17 +1215,26 @@ const JOBS = [
       if(i.colocar) hCol+=(ventana?1.5:i.uso==="puerta"?2:corredizo?3.75:3)*n;
 
       if(porton&&i.ancho>300&&!corredizo) warnSet.add("Portón grande: fijate si conviene hacerlo corredizo o en 2 hojas para que no caiga.");
-      if(!esHoja&&(i.sep||12)>12) warnSet.add("Más de 12 cm entre barrotes: puede pasar la cabeza de un nene.");
+      if(!esHoja&&(i.sep||12)>12) warnSet.add("Más de 12 cm de luz entre barrotes: puede pasar la cabeza de un nene.");
 
-      const matNom=(REJA_MATS.find(([k])=>k===mat)||[0,"Caño 20×20"])[1];
+      const matNom=(REJA_MATS.find(([k])=>k===mat)||[0,"Redondo 9/16\""])[1];
       const pintTxt=i.pintura==="convertidor"?"Convertidor de óxido 3 en 1 (color a elección)":i.pintura==="pintada"?"Antióxido y esmalte (color a elección)":"Antióxido";
       incSet.add("Fabricación a medida en "+matNom);
       incSet.add(pintTxt);
       if(!ventana){
-        if(corredizo) incSet.add("Ruedas y riel guía para corredizo");
+        if(corredizo){
+          const riel=rejaRiel(i0,rg.Ao);
+          incSet.add("2 ruedas quita y pon Roma 120, guía superior Roma art. 84 y 2 rulemanes con perno (medida a verificar)");
+          incSet.add("Zócalo de caño 120×40×1,6 mm");
+          incSet.add(`Riel de piso de ${CATALOG[riel.perfil].n.toLowerCase()} (${riel.len} mm por portón)`);
+        }
+        else if(puerta) incSet.add(`Bisagras a munición ala corta 100×37 (4 por hoja${i.hojasPta==="2f"?" que abre":""})`);
         else incSet.add("Bisagras (pomelas)");
-        incSet.add(usaCerr?"Cerradura instalada":"Pasador");
+        incSet.add(usaCerr?"Cerradura doble perno":"Pasador");
+        if(puerta&&i.hojasPta==="2") incSet.add("2 pasadores de embutir con varilla en la hoja con pasadores");
+        if(puerta&&i.hojasPta==="2f") incSet.add("Una hoja fija soldada al marco");
       }
+      if(RF.mf) incSet.add("Marco fijo de "+(PERF_META[RF.mf.key]?PERF_META[RF.mf.key].join(" ").toLowerCase():RF.mf.key));
       if(i.colocar) incSet.add("Colocación y amurado");
       excSet.add("Arreglo de revoque o pintura de la pared");
       if(!usaCerr&&!ventana) excSet.add("Cerradura (si se quiere, se cotiza aparte)");
@@ -901,7 +1243,9 @@ const JOBS = [
 
     const items=[];
     Object.entries(barM).forEach(([k,v])=>{
-      items.push(it(k,C(v.m*1.1/6),[...v.notes].join(" + ")));
+      // El riel usa el mismo optimizador que Taller: sumar metros puede subestimar barras.
+      const rielBars=v.rails?tPack(v.rails,6000,3,[]).bars.length:0;
+      items.push(it(k,C(v.m*1.1/6)+rielBars,[...v.notes].join(" + ")));
     });
     Object.entries(hojaM2).forEach(([k,m2h])=>{
       const hojas=Math.max(1,C(m2h*1.1/2));
@@ -913,12 +1257,13 @@ const JOBS = [
     if(pintEsmFrac>0) items.push(it("esmalte",Math.max(1,C(pintEsmFrac))));
     items.push(it("aguarras",totM2>8?2:1));
     items.push(it("kit_soldar",Math.max(1,C(totM2/4))));
-    if(unitMap.rueda_porton) items.push(it("rueda_porton",unitMap.rueda_porton));
-    if(rielM>0) items.push(it("riel_porton",C(rielM/6),"riel guía"));
+    ["rueda_roma120","guia_roma84","ruleman_roma84"].forEach(k=>{if(unitMap[k]) items.push(it(k,unitMap[k]));});
     if(unitMap.pomela) items.push(it("pomela",unitMap.pomela));
     if(unitMap.pasador) items.push(it("pasador",unitMap.pasador));
     if(unitMap.grampa) items.push(it("grampa",unitMap.grampa));
     if(unitMap.cerradura) items.push(it("cerradura",unitMap.cerradura));
+    if(unitMap.bisagra_mun_100) items.push(it("bisagra_mun_100",unitMap.bisagra_mun_100,"4 por hoja"));
+    if(unitMap.pasador_emb) items.push(it("pasador_emb",unitMap.pasador_emb,"arriba y abajo"));
 
     const tasks=[
       task("Medición y corte",0.5+hCorte),
@@ -933,6 +1278,49 @@ const JOBS = [
     return {items,tasks,warns,kg,secado:true,desc,itemsList,incluye:[...incSet],excluye:[...excSet]};
    },
    calc(i){ return this.calcMulti([i]); }},
+ { id:"puertitas", name:"Puertitas bajo parrilla", hint:"marco de ángulo y chapa 1,6 mm", icon:"puertita", drawing:"puertitas", mm:true,
+   fields:[
+    {id:"ancho",label:"Ancho del hueco",type:"num",unit:"mm",min:300,max:3000,step:10,def:800},
+    {id:"alto",label:"Alto del hueco",type:"num",unit:"mm",min:300,max:1500,step:10,def:600},
+    {id:"cant",label:"¿Cuántos huecos?",type:"num",unit:"",min:1,max:6,step:1,def:1},
+    {id:"bis",label:"Bisagras ficha 80 por hoja",type:"num",unit:"",min:2,max:4,step:1,def:2},
+    {id:"hojas",label:"Hojas",type:"choice",def:"2",options:[["1","Una"],["2","Dos"]]},
+    {id:"marco",label:"Marco",type:"perfil",def:"angulo",options:P_ANG},
+    {id:"bastidor",label:"Bastidor de cada hoja",type:"perfil",def:"ang_78_18",options:P_ANG},
+    {id:"chapa",label:"Chapa de 1,6 mm",type:"choice",def:"auto",options:[["auto","La que menos desperdicia"],["h12","Hoja 1×2"],["h122","Hoja 1,22×2,44"],["m2","Recorte por m²"]]},
+    {id:"pintura",label:"Terminación",type:"choice",def:"pintada",options:[["pintada","Antióxido + esmalte"],["convertidor","Convertidor 3 en 1"],["antioxido","Solo antióxido"]]},
+    {id:"colocar",label:"¿Las colocás vos?",type:"yesno",def:true}
+   ],
+   calc(i0){
+    const i={...i0,ancho:i0.ancho/10,alto:i0.alto/10};
+    const n=i.cant||1, hn=+i.hojas||1, hw=i.ancho/hn, pzs=hn*n, area=pzs*hw*i.alto/10000, items=[], tasks=[], warns=[];
+    const bar={}, addB=(k,m,nota)=>{ if(!(m>0)) return; if(!bar[k]) bar[k]={m:0,notas:[]}; bar[k].m+=m; bar[k].notas.push(nota); };
+    addB(i.marco,2*(i.ancho+i.alto)/100*n,"marco");
+    addB(i.bastidor,2*(hw+i.alto)/100*pzs,`${pzs} hoja${pzs>1?"s":""}`);
+    let kg=0;
+    Object.entries(bar).forEach(([k,v])=>{ items.push(it(k,C(v.m*1.1/6),v.notas.join(" + "))); kg+=v.m*((CATALOG[k]&&CATALOG[k].kgm)||1); });
+    const fit=(W,H)=>Math.max(Math.floor(W/hw)*Math.floor(H/i.alto),Math.floor(W/i.alto)*Math.floor(H/hw));
+    const opc=[["chapa_16_h12",100,200],["chapa_16_h122",122,244]].map(([k,W,H])=>{ const per=fit(W,H); if(!per) return null; const q=C(pzs/per); return {k,q,aprov:area/(q*W*H/10000)}; }).filter(Boolean);
+    const want={h12:"chapa_16_h12",h122:"chapa_16_h122"}[i.chapa];
+    const pick=i.chapa==="m2"?null:want?opc.find(o=>o.k===want):opc.slice().sort((a,b)=>b.aprov-a.aprov)[0];
+    if(i.chapa!=="m2"&&!pick) warns.push("La hoja de la puertita no entra en esa chapa: la calculé como recorte por m².");
+    if(pick){ items.push(it(pick.k,pick.q,`${pzs} pieza${pzs>1?"s":""} · aprovechás el ${Math.round(pick.aprov*100)}%`)); kg+=pick.q*(CATALOG[pick.k].kgu||0); }
+    else { items.push(it("chapa_16_m2",R1(area*1.1),`${pzs} pieza${pzs>1?"s":""}`)); kg+=area*12.56; }
+    const latas=Math.max(1,C(area/4));
+    if(i.pintura==="convertidor") items.push(it("convertidor",latas));
+    else { items.push(it("antioxido",latas)); if(i.pintura==="pintada") items.push(it("esmalte",latas)); }
+    items.push(it("kit_soldar",1), it("bisagra_80",i.bis*pzs), it("pasador_ch",(hn===2?3:1)*n,hn===2?"2 por dentro en la hoja fija y 1 central por fuera en la que abre":"1 central"));
+    if(i.colocar) items.push(it("grampa",4*n));
+    tasks.push(task("Marco de ángulo",0.75*n), task("Bastidores y chapa",1.25*pzs), task(i.pintura==="convertidor"?"Pintura (convertidor 3 en 1)":"Antióxido y pintura",0.5*pzs));
+    if(i.colocar) tasks.push(task("Colocación",1.5*n));
+    warns.push("Las horas de las puertitas son una primera estimación: ajustalas en el paso 2.");
+    warns.push("Lleva más de un día por el secado de la pintura: avisale al cliente el plazo.");
+    const nm=k=>(CATALOG[k]?CATALOG[k].n:k).toLowerCase();
+    return {items,tasks,warns,kg,secado:true,
+      desc:`${n>1?n+" x ":""}Puertitas bajo parrilla (${hn} hoja${hn>1?"s":""}) de ${i0.ancho} x ${i0.alto} mm`,
+      incluye:[`Marco de ${nm(i.marco)}`,`Hojas con bastidor de ${nm(i.bastidor)} y chapa de 1,6 mm`,"Bisagras ficha 80 y pasadores",i.pintura==="convertidor"?"Convertidor de óxido 3 en 1 (color a elección)":i.pintura==="pintada"?"Antióxido y esmalte (color a elección)":"Antióxido",...(i.colocar?["Colocación"]:[])],
+      excluye:["Arreglo de la mampostería de la parrilla"]};
+   }},
  { id:"soldadura", name:"Soldadura / arreglo", hint:"bisagra, reja floja, portón", icon:"spark",
    presets:[
      {label:"Bisagra suelta (1,5 h)", vals:{horas:1.5,pintar:true,domicilio:true}},
@@ -1005,29 +1393,30 @@ const JOBS = [
    }},
  { id:"mosquitero", name:"Mosquitero", hint:"ventana o puerta", icon:"mosq", drawing:"mosq",
    multiItem:true, multiWord:"otro mosquitero", multiSingular:"Mosquitero", multiPlural:"Mosquiteros",
+   mm:true,
    itemLabel(i){
     const n=i.cant||1, tipo=i.tipo||"fijo";
     return {
-      short:`${n>1?n+"× ":""}${i.ancho}×${i.alto} cm`,
+      short:`${n>1?n+"× ":""}${i.ancho}×${i.alto} mm`,
       sub:tipo[0].toUpperCase()+tipo.slice(1),
-      full:`${n>1?n+" mosquiteros":"Mosquitero"} ${tipo} de ${i.ancho} x ${i.alto} cm`
+      full:`${n>1?n+" mosquiteros":"Mosquitero"} ${tipo} de ${i.ancho} x ${i.alto} mm`
     };
    },
    presets:[
-     {label:"Ventana 120×100", vals:{ancho:120,alto:100,cant:1}},
-     {label:"Ventana 150×110", vals:{ancho:150,alto:110,cant:1}},
-     {label:"Puerta balcón 80×200", vals:{ancho:80,alto:200,cant:1,tipo:"corredizo"}}
+     {label:"Ventana 1200×1000", vals:{ancho:1200,alto:1000,cant:1}},
+     {label:"Ventana 1500×1100", vals:{ancho:1500,alto:1100,cant:1}},
+     {label:"Puerta balcón 800×2000", vals:{ancho:800,alto:2000,cant:1,tipo:"corredizo"}}
    ],
    fields:[
-    {id:"ancho",label:"Ancho",type:"num",unit:"cm",min:20,max:400,step:5,def:120},
-    {id:"alto",label:"Alto",type:"num",unit:"cm",min:20,max:300,step:5,def:100},
+    {id:"ancho",label:"Ancho",type:"num",unit:"mm",min:200,max:4000,step:10,def:1200},
+    {id:"alto",label:"Alto",type:"num",unit:"mm",min:200,max:3000,step:10,def:1000},
     {id:"cant",label:"¿Cuántos?",type:"num",unit:"",min:1,max:30,step:1,def:1},
     {id:"tipo",label:"Tipo",type:"choice",def:"fijo",options:[["fijo","Fijo"],["corredizo","Corredizo"],["enrollable","Enrollable"]]}
    ],
    calcMulti(list){
     const items=[], tasks=[], warnSet=new Set();
     let perM=0, telaM2=0, esq=0, rued=0, enr=0, hArm=0, hCol=0, totUnits=0;
-    list.forEach(i=>{
+    list.map(x=>({...x,ancho:x.ancho/10,alto:x.alto/10})).forEach(i=>{
       const n=i.cant||1; totUnits+=n;
       if(i.tipo==="enrollable"){
         enr+=n; hCol+=0.75*n;
@@ -1103,7 +1492,7 @@ const JOBS = [
     {id:"tomas",label:"Enchufes o llaves para cambiar",type:"num",unit:"",min:0,max:30,step:1,def:2},
     {id:"lamparas",label:"Lámparas o apliques para colocar",type:"num",unit:"",min:0,max:30,step:1,def:0},
     {id:"bocas",label:"Enchufes nuevos (donde no hay)",type:"num",unit:"",min:0,max:20,step:1,def:0},
-    {id:"metros",label:"Metros de cable por enchufe nuevo",type:"num",unit:"m",min:1,max:30,step:1,def:6,show:i=>i.bocas>0}
+    {id:"metros",label:"Cable por enchufe nuevo",type:"num",unit:"m",min:1,max:30,step:1,def:6,show:i=>i.bocas>0}
    ],
    calc(i){
     const items=[], tasks=[], warns=["Si hay que tocar el tablero general o hacer una instalación nueva, conviene electricista matriculado."];
@@ -1236,7 +1625,7 @@ function refMercado(job,inputs,total,extraItems){
   if(!job||job.id!=="reja") return null;
   const list=extraItems&&extraItems.length?[...extraItems,inputs]:[inputs];
   if(list.some(x=>x.uso!=="ventana")) return null;
-  const m2=list.reduce((a,x)=>a+x.ancho*x.alto/10000*(x.cant||1),0);
+  const m2=list.reduce((a,x)=>a+x.ancho*x.alto/1e6*(x.cant||1),0);
   if(!(m2>0)) return null;
   const lo=Math.round(MERCADO_REJA.lo*m2/1000)*1000, hi=Math.round(MERCADO_REJA.hi*m2/1000)*1000;
   return {lo,hi,m2,estado:total<lo?"bajo":total>hi?"alto":"ok"};
@@ -1255,7 +1644,7 @@ function computeObra(lines,cfg,prices,opts,customMats){
   }
   const mats=Object.entries(need).map(([k,q])=>{
     const c=cat[k]||CATALOG[k], qty=Math.ceil(q-1e-9), price=prices[k]??c.p;
-    return {key:k,name:c.n,unit:c.u,q:c.q||c.n,qty,price,cost:qty*price,example:!(k in prices)&&!c.customDef};
+    return {key:k,name:c.n,unit:c.u,q:c.q||c.n,qty,price,cost:qty*price,example:!(k in prices)&&!c.customDef,est:!!c.est&&!(k in prices)};
   });
   const mo=rows.reduce((a,r)=>a+r.mo,0), matCost=mats.reduce((a,m)=>a+m.cost,0);
   const viaje=rows.length?(opts.viaje??cfg.viaje):0;
@@ -1286,7 +1675,7 @@ function computeObra(lines,cfg,prices,opts,customMats){
 }
 
 function obraMessage(res,cfg,conMat){
-  const L=[`¡Hola! Te paso el presupuesto${cfg.nombre?" de "+cfg.nombre:""}:`,""];
+  const L=[...(res.mats.some(m=>m.est)?["ESTIMADO: falta confirmar precios de materiales."]:[]),`¡Hola! Te paso el presupuesto${cfg.nombre?" de "+cfg.nombre:""}:`,""];
   const PL={boca:"bocas",visita:"visitas","día":"días",ambiente:"ambientes",trabajo:"trabajos"};
   res.rows.forEach(r=>L.push(`• ${r.it.n}: ${fmtQ(r.qty)} ${r.qty>1&&PL[r.it.u]?PL[r.it.u]:r.it.u}`));
   L.push("");
@@ -1305,12 +1694,21 @@ function obraMessage(res,cfg,conMat){
   return L.join("\n");
 }
 
-function defaults(job){ const o={}; job.fields.forEach(f=>o[f.id]=Array.isArray(f.def)?[...f.def]:f.def); return o; }
+function defaults(job){ const o={}; job.fields.forEach(f=>o[f.id]=Array.isArray(f.def)?[...f.def]:f.def); if(job.mm) o._mm=true; return o; }
 
 /* Cálculo principal de un trabajo: devuelve SIEMPRE ambos modos (conCom y sinCom) y el activo en el nivel raíz. */
 function compute(job, inputs, cfg, prices, hoursOv, opts, extraMats, qtyOv, customMats, extraItems){
   const cat = getAllCatalog(customMats);
   const r = (job.calcMulti && extraItems && extraItems.length) ? job.calcMulti([...extraItems, inputs]) : job.calc(inputs);
+  const cuts=jobCuts(job.id,inputs,extraItems);
+  const standards=pendingStandards(job.id,[...(extraItems||[]),inputs]);
+  if(cuts.length){
+    const quantities=barPurchases(cuts,6000,opts.cutDisco??3,opts.cutRetazos||[]);
+    r.items=r.items.filter(x=>CATALOG[x.mat]?.u!=="barra 6 m");
+    Object.entries(quantities).forEach(([k,q])=>r.items.unshift(it(k,q,"Compra según plan de cortes · barras de 6000 mm")));
+    r.kg=cuts.reduce((n,c)=>n+c.len*c.qty/1000*(CATALOG[c.perfil]?.kgm||0),0)+r.items.reduce((n,x)=>n+x.qty*(CATALOG[x.mat]?.kgu||0),0);
+    if(cuts.some(c=>c.len>6000)) standards.push("Hay piezas de más de 6000 mm: requieren empalme o revisar el diseño antes de cortar.");
+  }
   const qOv = qtyOv || {};
 
   const mats = r.items.filter(x=>x.qty>0).map((x, idx)=>{
@@ -1318,7 +1716,7 @@ function compute(job, inputs, cfg, prices, hoursOv, opts, extraMats, qtyOv, cust
     const c = cat[x.mat] || CATALOG[x.mat];
     const price = prices[x.mat] ?? c.p;
     const qty = qOv[x.mat] !== undefined ? qOv[x.mat] : x.qty;
-    return {id:"mat_"+x.mat,key:x.mat,name:c.n,unit:c.u,q:c.q||c.n,qty,autoQty:x.qty,nota:x.nota,price,cost:qty*price,example:!(x.mat in prices)&&!c.customDef};
+    return {id:"mat_"+x.mat,key:x.mat,name:c.n,unit:c.u,q:c.q||c.n,qty,autoQty:x.qty,nota:x.nota,price,cost:qty*price,example:!(x.mat in prices)&&!c.customDef,est:!!c.est&&!(x.mat in prices)};
   });
 
   /* Sumar repuestos agregados a mano por el usuario */
@@ -1326,7 +1724,7 @@ function compute(job, inputs, cfg, prices, hoursOv, opts, extraMats, qtyOv, cust
     if(em.key && cat[em.key]){
       const c = cat[em.key];
       const price = prices[em.key] ?? c.p;
-      mats.push({id:"ex_"+idx,extraIdx:idx,key:em.key,name:c.n,unit:c.u,q:c.q||c.n,qty:em.qty,autoQty:em.qty,nota:"agregado",price,cost:em.qty*price,example:!(em.key in prices)&&!c.customDef});
+      mats.push({id:"ex_"+idx,extraIdx:idx,key:em.key,name:c.n,unit:c.u,q:c.q||c.n,qty:em.qty,autoQty:em.qty,nota:"agregado",price,cost:em.qty*price,example:!(em.key in prices)&&!c.customDef,est:!!c.est&&!(em.key in prices)});
     } else {
       mats.push({id:"ex_"+idx,extraIdx:idx,key:null,name:em.name||"Repuesto",unit:em.unit||"u",q:em.name||"repuesto",qty:em.qty,autoQty:em.qty,nota:"agregado",price:em.price||0,cost:(em.qty||0)*(em.price||0),example:false});
     }
@@ -1387,7 +1785,7 @@ function compute(job, inputs, cfg, prices, hoursOv, opts, extraMats, qtyOv, cust
   }
 
   return {
-    ...r, kg, mats, tasks, horas, matCost, matCobrado, mo, viaje, neto, dias,
+    ...r, cuts, pendingStandards:standards, estimated:mats.some(m=>m.est&&m.qty>0)||standards.length>0, kg, mats, tasks, horas, matCost, matCobrado, mo, viaje, neto, dias,
     usarComision, conCom, sinCom, ...act, warns,
     matCliente: opts.clienteCompra ? 0 : Math.round(matCobrado * ivaF)
   };
@@ -1397,8 +1795,9 @@ const ars = x => "$\u00a0" + Math.round(x).toLocaleString("es-AR");
 const fmtQ = q => String(Math.round(q*100)/100).replace(".",",");
 
 const PEDIR={
- mosquitero:["Ancho y alto de la ventana o puerta (por dentro del marco), en cm","¿Cuántos son?","¿Fijo, corredizo o enrollable?","Una foto de la abertura"],
- reja:["Ancho y alto del hueco, en cm","¿Es para ventana, puerta o portón? ¿Cuántas?","Foto de frente de la abertura","¿En qué piso es?","Si te gusta algún modelo, mandame una foto"],
+ mosquitero:["Ancho y alto de la ventana o puerta (por dentro del marco), en mm","¿Cuántos son?","¿Fijo, corredizo o enrollable?","Una foto de la abertura"],
+ reja:["Ancho y alto del hueco, en mm","¿Es para ventana, puerta o portón? ¿Cuántas?","Foto de frente de la abertura","¿En qué piso es?","Si te gusta algún modelo, mandame una foto"],
+ puertitas:["Ancho y alto del hueco bajo la parrilla, en mm","¿Una o dos puertitas?","Foto de frente del hueco"],
  soldadura:["Foto de lo que hay que soldar (de cerca y de lejos)","¿Se puede llevar al taller o es en tu casa?","¿Hay un enchufe cerca?"],
  bacha:["Foto de la bacha y de abajo de la mesada","¿Qué pasa? ¿Pierde, está tapada o la querés cambiar?","¿La canilla o bacha nueva ya la tenés?"],
  inodoro:["Foto del inodoro y del depósito (abierto si se puede)","¿Qué pasa? ¿Pierde, no carga o no corta?","¿El repuesto o el inodoro nuevo ya lo tenés?"],
@@ -1418,6 +1817,7 @@ function rango(total,cfg){ const p=cfg.redondeo||1; return [Math.floor(total*0.9
 function clientMessage(res, cfg, opts){
   const L=[], o1=opts.opcion1, iva=cfg.iva?" (IVA incluido)":"";
   const esDirecto = opts.usarComision === false;
+  if(res.estimated) L.push("ESTIMACIÓN PROVISORIA · falta confirmar precios o detalles del trabajo.");
   L.push(`¡Hola! Te paso el presupuesto${cfg.nombre?" de "+cfg.nombre:""}:`);
   if(o1){
     L.push("",`1️⃣ ${o1.desc}: ${ars(o1.total)}${iva}`,`2️⃣ ${res.desc}: ${ars(res.total)}${iva}`);
@@ -1436,8 +1836,8 @@ function clientMessage(res, cfg, opts){
   else if(opts.rango){ const [lo,hi]=rango(res.total,cfg);
     L.push("",`💰 Precio estimado: entre ${ars(lo)} y ${ars(hi)}${iva}`,`El precio final te lo confirmo cuando vea el trabajo.${cfg.visita?` La visita sale ${ars(cfg.visita)} y se descuenta si lo hacemos.`:""}`); }
   else {
-    L.push("",`💰 Total: ${ars(res.total)}${iva}`);
-    if(esDirecto){
+    L.push("",`💰 ${res.estimated?"Total estimado":"Total"}: ${ars(res.total)}${iva}`);
+    if(esDirecto&&!res.estimated){
       if(cfg.sena_modo==="50"){
         const p=cfg.redondeo||1000, sena=Math.round((res.total*0.5)/p)*p;
         L.push(`Seña para arrancar (50%): ${ars(sena)}, y el resto al terminar.`);
@@ -1446,6 +1846,7 @@ function clientMessage(res, cfg, opts){
       }
     }
   }
+  if(res.estimated) L.push("El importe final se confirma al revisar los materiales y detalles pendientes.");
   if(esDirecto && cfg.alias) L.push(`Alias para la seña: ${cfg.alias}`);
   L.push(`Precio válido por ${cfg.validez} días.`);
   if(cfg.garantia) L.push(`Garantía: ${cfg.garantia}.`);
@@ -1453,7 +1854,7 @@ function clientMessage(res, cfg, opts){
 }
 
 function shoppingList(res){
-  return ["Lista de materiales:",...res.mats.filter(m=>m.qty>0).map(m=>`• ${fmtQ(m.qty)} ${m.unit} — ${m.name}`)].join("\n");
+  return [...(res.pendingStandards||[]).map(w=>"PENDIENTE: "+w),"Lista de materiales:",...res.mats.filter(m=>m.qty>0).map(m=>`• ${fmtQ(m.qty)} ${m.unit} — ${m.name}${m.est?" · sin ref. segura":""}`)].join("\n");
 }
 
 /* ===== LECTURA INTELIGENTE DE PEDIDOS DE CLICKIE / WHATSAPP ===== */
@@ -1561,8 +1962,10 @@ function parseClickieOrder(rawText){
   const esPared = /\b(revoque|revocar|agujero en la pared|tapar agujero|arreglo de pared|pared rota|picar pared|parche de cemento|albanil|albanileria)\b/.test(norm) && !/\b(pintar todo|pintar departamento|pintar casa)\b/.test(norm);
   const esPintura = !esReja && !esSoldadura && (esPintarReja || /\b(pintar|pintura|latex|enduido|cielorraso|pintor)\b/.test(norm));
 
+  const esPuertitas = /\b(bajo (la )?parrilla|puertitas?)\b/.test(norm);
   let jobId = "otro";
   if(esMosquitero) jobId = "mosquitero";
+  else if(esPuertitas) jobId = "puertitas";
   else if(esSoldadura) jobId = "soldadura";
   else if(esReja) jobId = "reja";
   else if(esInodoro) jobId = "inodoro";
@@ -1587,9 +1990,10 @@ function parseClickieOrder(rawText){
   if(jobId === "reja"){
     const matGlobal = /\b(metal desplegado|malla)\b/.test(norm) ? "metal_desp"
       : /\b(chapa ciega|chapa 18|chapa)\b/.test(norm) ? "chapa_18"
-      : /\b(9\/16|redondo grueso|14\s*mm)\b/.test(norm) ? "redondo_916"
-      : /\b(redondo 12|hierro 12|macizo|redondo|barrote macizo)\b/.test(norm) ? "hierro_12"
-      : "cano_2020";
+      : /\bcuadrad[oa]s?\b/.test(norm) ? "cua_916"
+      : /\b(redondo 12|hierro 12)\b/.test(norm) ? "red_12"
+      : /\b(cano|tubo|tubular|20 ?x ?20)\b/.test(norm) ? "cano_2020"
+      : "redondo_916";
     const pintGlobal = /\b(convertidor|3 en 1|tres en uno)\b/.test(norm) ? "convertidor"
       : /\b(solo antioxido|sin esmalte|sin pintar)\b/.test(norm) ? "antioxido"
       : "pintada";
@@ -1607,37 +2011,42 @@ function parseClickieOrder(rawText){
         : "batiente";
       const defW = uso==="porton" ? 240 : uso==="puerta" ? 90 : 120;
       const defH = uso==="porton" ? 200 : uso==="puerta" ? 200 : 100;
-      const ancho = clamp("ancho", dmObj ? dmObj.ancho : defW);
-      const alto = clamp("alto", dmObj ? dmObj.alto : defH);
+      const ancho = clamp("ancho", (dmObj ? dmObj.ancho : defW)*10);
+      const alto = clamp("alto", (dmObj ? dmObj.alto : defH)*10);
+      const hojasPta = uso==="puerta" && /\b(2 hojas|dos hojas|doble hoja)\b/.test(ctx) ? "2" : "1";
       let cant = dmObj ? dmObj.qty : 1;
       if(!dmObj){
         const qm = norm.match(/\b(\d+|dos|tres|cuatro|cinco|seis)\s*(?:rejas?|ventanas?|puertas?|portones?)\b/);
         if(qm){ const qv=parseWordOrNum(qm[1]); if(qv>=1&&qv<=20) cant=qv; }
       }
       const cerradura = uso!=="ventana" && (/\b(cerradura|llave|doble paleta)\b/.test(ctx) || !/\b(sin cerradura|solo pasador)\b/.test(norm));
-      return {...defaults(job), uso, apertura, material:matGlobal, ancho, alto, cant, pintura:pintGlobal, cerradura, colocar:colocarGlobal};
+      return {...defaults(job), ...(REJA_STD[uso]||{}), uso, apertura, hojasPta, material:matGlobal, ancho, alto, cant, pintura:pintGlobal, cerradura, colocar:colocarGlobal};
     };
 
     if(dimMatches.length >= 2){
       const all = dimMatches.map(buildRejaItem);
       inputs = all[all.length - 1];
       extraItems = all.slice(0, all.length - 1);
-      details.push(`${all.length} aberturas cargadas (${all.map(x=>`${x.cant>1?x.cant+"× ":""}${x.ancho}×${x.alto} cm`).join(" + ")})`);
+      details.push(`${all.length} aberturas cargadas (${all.map(x=>`${x.cant>1?x.cant+"× ":""}${x.ancho}×${x.alto} mm`).join(" + ")})`);
     } else if(dimMatches.length === 1){
       inputs = buildRejaItem(dimMatches[0]);
-      details.push(`${inputs.cant>1?inputs.cant+"× ":""}${inputs.ancho}×${inputs.alto} cm`);
+      details.push(`${inputs.cant>1?inputs.cant+"× ":""}${inputs.ancho}×${inputs.alto} mm`);
     } else {
       inputs = buildRejaItem(null);
       missing.push("medidas de ancho y alto (cargué estándar)");
     }
+  } else if(jobId === "puertitas"){
+    if(dimMatches.length){ inputs.ancho=clamp("ancho",dimMatches[0].ancho*10); inputs.alto=clamp("alto",dimMatches[0].alto*10); details.push(`${inputs.ancho}×${inputs.alto} mm`); }
+    else missing.push("medidas del hueco (cargué 800×600 mm)");
+    if(/\b(una puertita|una hoja|1 hoja)\b/.test(norm)) inputs.hojas="1";
   } else if(jobId === "mosquitero"){
     const buildMosqItem = (dmObj) => {
       const ctx = dmObj ? dmObj.fullCtx : norm;
       const tipo = /\b(enrollables?)\b/.test(ctx) || /\b(enrollables?)\b/.test(norm) ? "enrollable"
         : /\b(corrediz[oa]s?|puerta|balcon)\b/.test(ctx) || /\b(corrediz[oa]s?)\b/.test(norm) ? "corredizo"
         : "fijo";
-      const ancho = clamp("ancho", dmObj ? dmObj.ancho : 120);
-      const alto = clamp("alto", dmObj ? dmObj.alto : 100);
+      const ancho = clamp("ancho", (dmObj ? dmObj.ancho : 120)*10);
+      const alto = clamp("alto", (dmObj ? dmObj.alto : 100)*10);
       let cant = dmObj ? dmObj.qty : 1;
       if(!dmObj){
         const qm = norm.match(/\b(\d+|dos|tres|cuatro|cinco|seis)\s*mosquiteros?\b/);
@@ -1652,10 +2061,10 @@ function parseClickieOrder(rawText){
       details.push(`${all.length} medidas de mosquitero cargadas`);
     } else if(dimMatches.length === 1){
       inputs = buildMosqItem(dimMatches[0]);
-      details.push(`${inputs.cant>1?inputs.cant+"× ":""}${inputs.ancho}×${inputs.alto} cm (${inputs.tipo})`);
+      details.push(`${inputs.cant>1?inputs.cant+"× ":""}${inputs.ancho}×${inputs.alto} mm (${inputs.tipo})`);
     } else {
       inputs = buildMosqItem(null);
-      missing.push("medidas de la ventana (cargué 120×100 cm)");
+      missing.push("medidas de la ventana (cargué 1200×1000 mm)");
     }
   } else if(jobId === "soldadura"){
     const mh = norm.match(/(\d+(?:[.,]\d+)?)\s*(?:hs?|horas?)\b/);
@@ -1793,9 +2202,86 @@ function parseClickieOrder(rawText){
   };
 }
 
+/* Validación de copias: sólo datos JSON, nunca HTML ni código ejecutable. */
+function validateBackup(raw){
+  const plain=v=>!!v&&typeof v==="object"&&!Array.isArray(v);
+  const fail=()=>{throw new Error("La copia contiene datos inválidos o incompletos. No se reemplazó nada.");};
+  let nodes=0;
+  function walk(v,depth=0){
+    if(++nodes>100000||depth>24) fail();
+    if(typeof v==="number"&&!Number.isFinite(v)) fail();
+    if(typeof v==="string"&&v.length>100000) fail();
+    if(v&&typeof v==="object") Object.entries(v).forEach(([k,x])=>{if(["__proto__","constructor","prototype"].includes(k)) fail();if(["id","workId","fromWork","histId"].includes(k)&&x!==null&&x!==""&&(typeof x!=="string"||!/^[A-Za-z0-9_.:-]{1,160}$/.test(x)))fail();walk(x,depth+1);});
+    else if(!["string","number","boolean"].includes(typeof v)&&v!==null) fail();
+  }
+  walk(raw);
+  if(!plain(raw)) fail();
+  let data=raw;
+  if(raw.format!==undefined){
+    if(raw.format!=="padilla-backup"||raw.version!==1||!plain(raw.data)) fail();
+    data=raw.data;
+  }
+  if(!plain(data.cfg)) fail();
+  const finite=(v,max=1e12)=>typeof v==="number"&&Number.isFinite(v)&&v>=0&&v<=max;
+  const text=v=>typeof v==="string"&&v.length<=20000;
+  function map(v,check){if(!plain(v))fail();Object.values(v).forEach(x=>{if(!check(x))fail();});}
+  for(const [k,v] of Object.entries(data.cfg)){
+    const def=DEFAULT_CONFIG[k];
+    if(def!==undefined&&(typeof v!==typeof def||typeof v==="number"&&!finite(v)))fail();
+  }
+  if(data.cfg.comision!==undefined&&data.cfg.comision>60)fail();
+  if(data.prices!==undefined)map(data.prices,finite);
+  if(data.customMats!==undefined)map(data.customMats,c=>plain(c)&&text(c.n)&&text(c.u)&&finite(c.p)&&(c.q===undefined||text(c.q))&&(c.cat===undefined||text(c.cat)));
+  function list(v,check){if(!Array.isArray(v)||v.length>10000)fail();v.forEach(x=>{if(!check(x))fail();});}
+  function cuts(v,retazos=false){let count=0;list(v,c=>{if(!plain(c)||!text(c.perfil)||!finite(c.len,1000000)||c.len<=0)return false;if(!retazos){if(!Number.isInteger(c.qty)||c.qty<=0||c.qty>10000)return false;count+=c.qty;}return count<=10000;});}
+  function quoted(q){
+    if(!plain(q)||!text(q.jobId)||!plain(q.inputs))fail();
+    const j=JOBS.find(j=>j.id===q.jobId);if(!j)fail();
+    function fields(i){
+      if(!plain(i))fail();
+      j.fields.forEach(f=>{const v=i[f.id];if(v===undefined)return;
+        if(f.type==="num"&&!finite(v,1e9))fail();
+        if(f.type==="yesno"&&typeof v!=="boolean")fail();
+        if(["choice","perfil","text"].includes(f.type)&&!text(v))fail();
+        if(f.type==="choice"&&!f.options.some(([key])=>key===v))fail();
+        if(f.type==="perfil"&&!Object.prototype.hasOwnProperty.call(CATALOG,v)&&!Object.prototype.hasOwnProperty.call(data.customMats||{},v))fail();
+        if(f.type==="multi"&&(!Array.isArray(v)||v.some(x=>!text(x))))fail();
+      });
+    }
+    fields(q.inputs);if(q.extraItems!==undefined)list(q.extraItems,i=>{fields(i);return true;});
+    for(const key of ["hoursOv","qtyOv"])if(q[key]!==undefined)map(q[key],finite);
+    if(q.extraMats!==undefined)list(q.extraMats,m=>plain(m)&&finite(m.qty)&&((text(m.key))||(text(m.name)&&finite(m.price)))&&(m.unit===undefined||text(m.unit)));
+    if(q.cliente!==undefined&&!text(q.cliente))fail();
+    if(q.opts!==undefined){
+      if(!plain(q.opts))fail();
+      for(const k of ["usarComision","clienteCompra","urgente","rango","sinMinimo","usarRetazos"])if(q.opts[k]!==undefined&&typeof q.opts[k]!=="boolean")fail();
+      if(q.opts.cutRetazos!==undefined)cuts(q.opts.cutRetazos,true);
+      if(q.opts.opcion1!==undefined&&q.opts.opcion1!==null){const o=q.opts.opcion1;if(!plain(o)||!text(o.desc)||!finite(o.total)||!Array.isArray(o.incluye)||o.incluye.some(x=>!text(x)))fail();}
+      for(const k of ["viaje","cutDisco"])if(q.opts[k]!==undefined&&q.opts[k]!==null&&!finite(q.opts[k]))fail();
+    }
+  }
+  for(const key of ["favs","hist"])if(data[key]!==undefined)list(data[key],q=>{quoted(q);if(q.name!==undefined&&!text(q.name))fail();return true;});
+  if(data.draft!==undefined&&data.draft!==null)quoted(data.draft);
+  if(data.taller!==undefined){
+    const t=data.taller;if(!plain(t))fail();
+    if(t.cuts!==undefined)cuts(t.cuts);if(t.retazos!==undefined)cuts(t.retazos,true);
+    if(t.obras!==undefined)list(t.obras,o=>{if(!plain(o)||!text(o.obra))return false;cuts(o.cuts||[]);if(o.sourceQuote)quoted(o.sourceQuote);return true;});
+    if(t.models!==undefined)list(t.models,plain);
+    if(t.lastFinish!==undefined&&t.lastFinish!==null){if(!plain(t.lastFinish))fail();cuts(t.lastFinish.usedRets||[],true);}
+    for(const key of ["model","form","done","recetas"])if(t[key]!==undefined&&!plain(t[key]))fail();
+    for(const key of ["barra","disco","minSob"])if(t[key]!==undefined&&!finite(t[key],1000000))fail();
+    if(t.barra!==undefined&&t.barra<1000)fail();
+    if(t.disco!==undefined&&t.disco>10)fail();
+    if(t.form?.txt!==undefined&&!text(t.form.txt))fail();
+    if(t.obra!==undefined&&!text(t.obra))fail();
+    if(t.sourceQuote)quoted(t.sourceQuote);
+  }
+  return JSON.parse(JSON.stringify(data));
+}
+
 if(typeof module!=="undefined") module.exports={
   refMercado,MERCADO_REJA,PRECIOS_FECHA,pedirMessage,rango,REF,computeObra,obraMessage,rejaCuts,rejaCutsAll,
-  JOBS,CATALOG,CATS,DEFAULT_CONFIG,compute,defaults,clientMessage,shoppingList,ars,mlUrl,getAllCatalog,parseClickieOrder
+  validateBackup,jobCuts,barPurchases,pendingStandards,puertitasCuts,JOBS,CATALOG,CATS,DEFAULT_CONFIG,compute,defaults,clientMessage,shoppingList,ars,mlUrl,getAllCatalog,parseClickieOrder
 };
 </script>
 
@@ -1829,14 +2315,20 @@ const ICONS={
  search:'<circle cx="21" cy="21" r="13"/><path d="M31 31l10 10"/>',
  box:'<path d="M8 16l16-8 16 8v16l-16 8-16-8z"/><path d="M8 16l16 8 16-8M24 24v16"/>',
  ext:'<path d="M28 10h10v10M38 10L22 26"/><path d="M34 26v12H10V14h12"/>',
+ puertita:'<rect x="6" y="10" width="36" height="28" rx="1"/><path d="M24 10v28M19 22v4M29 22v4"/>',
   regla:'<rect x="4" y="15" width="40" height="18" rx="2.5"/><path d="M11 15v7M18 15v10M25 15v7M32 15v10M39 15v7"/>'
 };
 const svg=(k,extra="")=>`<svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" ${extra}>${ICONS[k]}</svg>`;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 
+function storageWarning(message){
+  const el=document.getElementById("storage-error");
+  if(el){el.hidden=false;el.textContent=message||"No se pudieron guardar los cambios en este celular. Descargá una copia desde Ajustes antes de cerrar la app.";}
+}
+let restoreRecovery=null;
 const LS={
-  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}},
-  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+  get(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){storageWarning();return d;}},
+  set(k,v){try{localStorage.setItem(k,JSON.stringify(v));return true;}catch(e){storageWarning();return false;}}
 };
 
 let cfg={...DEFAULT_CONFIG,...LS.get("presu_cfg",{})};
@@ -1847,8 +2339,7 @@ let hist=LS.get("presu_hist",[]);
 
 function applyTheme(){
   const r=document.documentElement;
-  if(cfg.theme==="dark"||cfg.theme==="light") r.setAttribute("data-theme",cfg.theme);
-  else r.removeAttribute("data-theme");
+  r.setAttribute("data-theme","light"); /* Siempre clara: se lee mejor al sol (pedido de Padilla) */
 }
 applyTheme();
 
@@ -1911,6 +2402,7 @@ if(dlg){
 }
 
 function toast(t){
+  if(!document.getElementById("storage-error").hidden&&/guardad|recuperad|listo|subí/i.test(t))t="Cambios en esta sesión · descargá una copia";
   const el=document.getElementById("toast");
   el.textContent=t; el.classList.add("on");
   clearTimeout(toast._t);
@@ -1924,8 +2416,10 @@ function go(screen){ S.screen=screen; S.errs={}; render(); window.scrollTo(0,0);
 function openJob(id, inputs, extraMats, initialStep, extraItems){
   S.job=JOBS.find(j=>j.id===id)||JOBS[0];
   S.step=initialStep||1;
-  S.inputs={...defaults(S.job),...(inputs||{})};
-  S.extraItems=Array.isArray(extraItems) ? JSON.parse(JSON.stringify(extraItems)) : [];
+  /* Presupuestos viejos guardados en cm: se pasan a mm una sola vez. */
+  const fixMm=x=>{ if(!S.job.mm||!x||x._mm) return x; const y={...x,_mm:true}; if(y.ancho) y.ancho=Math.round(y.ancho*10); if(y.alto) y.alto=Math.round(y.alto*10); if(y.sep) y.sep=Math.round(y.sep*10); return y; };
+  S.inputs={...defaults(S.job),...(fixMm(inputs)||{})};
+  S.extraItems=Array.isArray(extraItems) ? JSON.parse(JSON.stringify(extraItems)).map(fixMm) : [];
   S.hoursOv={};
   S.qtyOv={};
   S.extraMats=extraMats ? JSON.parse(JSON.stringify(extraMats)) : [];
@@ -1936,7 +2430,7 @@ function openJob(id, inputs, extraMats, initialStep, extraItems){
   S.pickerOpen=false;
   S.pickerQuery="";
   S.errs={};
-  S.open={materiales:true};
+  S.open={materiales:true,dibujo:true};
   go("job");
 }
 
@@ -1965,7 +2459,7 @@ function renderNav(){
   renderCartBar();
   if(S.screen==="job"){ nav.classList.add("hidden"); return; }
   nav.classList.remove("hidden");
-  const cur = S.screen==="obra" ? "repuestos" : S.screen;
+  const cur = S.screen==="obra" ? "repuestos" : S.screen==="selector"?"home":S.screen;
   const tabs=[
     ["home","Presupuestar","llave"],
     ["taller","Taller","regla"],
@@ -1986,8 +2480,8 @@ function preciosSubTabs(){
 }
 
 /* ---------- HOME (PRESUPUESTAR) ---------- */
-const ORDER=["reja","soldadura","pintura","mosquitero","bacha","inodoro","luz","colgar","pared","otro"];
-const HERR_ORDER=["reja","soldadura","pintura","otro"];
+const ORDER=["reja","puertitas","soldadura","pintura","mosquitero","bacha","inodoro","luz","colgar","pared","otro"];
+const HERR_ORDER=["reja","puertitas","soldadura","pintura","otro"];
 function renderHome(){
   const propios=Object.keys(prices).length + Object.keys(customMats).length;
   const draft=LS.get("presu_draft",null);
@@ -1995,69 +2489,41 @@ function renderHome(){
   bar.classList.add("hidden");
   renderNav();
 
+  const cOpen=S.clickieOpen||!!S.clickieText||!!S.errs.clickie;
   app.innerHTML=`
   <div class="top">
     <div>
-      <h1>Padilla · Presupuestos</h1>
-      <p class="top-sub" style="margin:2px 0 0">1. Elegí el trabajo → 2. Materiales y horas → 3. Precio y envío</p>
+      <h1>Padilla</h1>
+      <p class="top-sub" style="margin:2px 0 0">¿Qué trabajo vas a presupuestar?</p>
     </div>
-    <button type="button" class="chipbtn" data-go="precios" aria-label="Cambiar mi valor hora en Ajustes">${svg("gear")} ${ars(cfg.valor_hora)}/h</button>
   </div>
 
-  ${S.installPrompt?`<button type="button" class="btn primary sm" data-act="installapp" style="width:100%">${svg("box")} Instalar app Padilla en este celular</button>`:""}
-
-  <div class="steps g2" role="group" aria-label="Filtrar trabajos por rubro">
-    <button type="button" class="stepbtn" data-soloherr="0" aria-selected="${!cfg.solo_herreria}">Todos los rubros (10)</button>
-    <button type="button" class="stepbtn" data-soloherr="1" aria-selected="${!!cfg.solo_herreria}">Solo herrería (4)</button>
-  </div>
-
-  ${(()=>{ const cOpen=S.clickieOpen||!!S.clickieText||!!S.errs.clickie; return `
-  <section class="clickie-box ${cOpen?"open":""}" aria-label="Pegar necesidad de Clickie">
-    <div class="clickie-hd">
-      <button type="button" class="clickie-toggle" data-act="clickietoggle" aria-expanded="${cOpen}">
-        ${svg("sparkle",'class="ico" style="color:var(--accent)"')}
-        <span>Pegar pedido de Clickie</span>
-        <span class="cbadge">Auto</span>
-        ${svg("chev",'class="chev"')}
-      </button>
-      <button type="button" class="clickie-paste" data-act="clickiepaste" aria-label="Pegar pedido desde el portapapeles">${svg("copy")} Pegar</button>
-    </div>
-    ${cOpen?`<textarea id="clickietxt" aria-label="Pegá acá lo que necesita el cliente en Clickie" placeholder="Pegá acá lo que pide el cliente en Clickie o WhatsApp (ej: 'Necesito 2 rejas ventana de 1,20 x 1,00 y puerta reja de 0,90 x 2,00' o 'Cambiar 3 enchufes y colocar 2 lámparas')">${esc(S.clickieText)}</textarea>
-    ${S.errs.clickie?`<p class="field-err" role="alert">${esc(S.errs.clickie)}</p>`:""}
-    <div class="clickie-acts">
-      <button type="button" class="btn primary sm" style="flex:1" data-act="clickieload">Armar presupuesto automático →</button>
-      ${S.clickieText?`<button type="button" class="btn ghost sm" data-act="clickieclear" aria-label="Limpiar texto">${svg("x")}</button>`:""}
-    </div>`:""}
-  </section>`; })()}
+  ${S.installPrompt?`<button type="button" class="btn primary sm" data-act="installapp" style="width:100%">${svg("box")} Instalar en este celular</button>`:""}
 
   ${draft&&JOBS.find(j=>j.id===draft.jobId)?`<div class="draft">
     <button type="button" class="item cont" data-act="draft">
       <span class="t1">Seguir: ${esc(draft.cliente?draft.cliente+" · ":"")}${esc(draft.desc)}</span>
-      <span class="t2">Quedó sin terminar · tocá para continuar</span>
+      <span class="t2">Quedó sin terminar</span>
       <span class="t3">${ars(draft.total)}</span>
     </button>
     <button type="button" class="x" data-act="nodraft" aria-label="Descartar borrador">${svg("x")}</button>
   </div>`:""}
 
-  ${favs.length?`<h2>${svg("star",'class="ico" style="color:var(--accent)"')} Mis frecuentes</h2>
+  <button type="button" class="btn primary new-quote" data-go="selector">${svg("plus")} Nuevo presupuesto</button>
+  ${!hist.length&&!draft?`<p class="small muted">Elegí un trabajo, cargá las medidas y revisá el precio antes de compartir.</p>`:""}
+
+  ${favs.length?`<h2>Mis frecuentes</h2>
   <ul class="list">${favs.map((f,k)=>`<li class="draft">
     <button type="button" class="item" data-fav="${k}">
       <span class="t1">${esc(f.name)}</span>
-      <span class="t2">${esc((JOBS.find(j=>j.id===f.jobId)||JOBS[0]).name)} · tocá para presupuestar</span>
+      <span class="t2">${esc((JOBS.find(j=>j.id===f.jobId)||JOBS[0]).name)}</span>
       <span class="t3">${svg("resume",'class="ico" style="color:var(--accent)"')}</span>
     </button>
     <button type="button" class="x" data-delfav="${k}" aria-label="Borrar frecuente ${esc(f.name)}">${svg("x")}</button>
   </li>`).join("")}</ul>`:""}
 
-  <h2 class="sr-only">Lista de trabajos</h2>
-  <ul class="grid">
-    ${jobIds.map(id=>JOBS.find(j=>j.id===id)).map(j=>`<li>
-      <button type="button" class="job" data-job="${j.id}">${svg(j.icon)}<span>${esc(j.name)}</span><small>${esc(j.hint)}</small></button>
-    </li>`).join("")}
-  </ul>
-
-  ${hist.length?`<h2>Últimos presupuestos</h2>${histStats()}
-  <ul class="list">${hist.slice(0,8).map((x,k)=>`<li class="hist">
+  ${hist.length?`<h2>Últimos presupuestos</h2>
+  <ul class="list">${hist.slice(0,5).map((x,k)=>`<li class="hist">
     <button type="button" class="item" data-hist="${k}">
       <span class="t1">${esc(x.cliente?x.cliente+" · ":"")}${esc(x.desc)}</span>
       <span class="t2">${new Date(x.date).toLocaleDateString("es-AR",{day:"numeric",month:"short"})}
@@ -2068,6 +2534,35 @@ function renderHome(){
     <button type="button" class="mk ok" data-mk="${k}" data-v="si" aria-pressed="${x.estado==="si"}" aria-label="Marcar como aceptado">${svg("check")}</button>
     <button type="button" class="mk no" data-mk="${k}" data-v="no" aria-pressed="${x.estado==="no"}" aria-label="Marcar como rechazado">${svg("x")}</button>
   </li>`).join("")}</ul>`:""}`;
+}
+
+function renderSelector(){
+  bar.classList.add("hidden"); renderNav();
+  const cOpen=S.clickieOpen||!!S.clickieText||!!S.errs.clickie;
+  app.innerHTML=`<div class="top"><div class="top-left"><button type="button" class="back" data-go="home" aria-label="Volver al inicio">${svg("back")}</button><h1>Nuevo presupuesto</h1></div></div><p>¿Qué trabajo vas a hacer?</p>
+  <ul class="jobs" aria-label="Trabajos">
+    ${["reja","puertitas","soldadura","pintura"].map(id=>JOBS.find(j=>j.id===id)).map(j=>`<li><button type="button" class="jrow" data-job="${j.id}">${svg(j.icon)}<span class="jt"><b>${esc(j.name)}</b><small>${esc(j.hint)}</small></span>${svg("chev",'class="jchev"')}</button></li>`).join("")}
+  </ul>
+
+  <details class="card"><summary>Otros trabajos</summary><ul class="jobs" aria-label="Otros trabajos">${ORDER.filter(id=>!["reja","puertitas","soldadura","pintura"].includes(id)).map(id=>JOBS.find(j=>j.id===id)).map(j=>`<li><button type="button" class="jrow" data-job="${j.id}">${svg(j.icon)}<span class="jt"><b>${esc(j.name)}</b><small>${esc(j.hint)}</small></span>${svg("chev",'class="jchev"')}</button></li>`).join("")}</ul></details>
+  <section class="clickie-box ${cOpen?"open":""}" aria-label="Pegar pedido de Clickie">
+    <div class="clickie-hd">
+      <button type="button" class="clickie-toggle" data-act="clickietoggle" aria-expanded="${cOpen}">
+        ${svg("copy",'class="ico" style="color:var(--accent)"')}
+        <span>Pegar pedido de Clickie</span>
+        ${svg("chev",'class="chev"')}
+      </button>
+      ${cOpen?`<button type="button" class="clickie-paste" data-act="clickiepaste" aria-label="Pegar pedido desde el portapapeles">Pegar</button>`:""}
+    </div>
+    ${cOpen?`<textarea id="clickietxt" aria-label="Pedido del cliente" placeholder="Ej: 2 rejas de ventana de 1,20 x 1,00 y una puerta reja de 0,90 x 2,00">${esc(S.clickieText)}</textarea>
+    ${S.errs.clickie?`<p class="field-err" role="alert">${esc(S.errs.clickie)}</p>`:""}
+    <div class="clickie-acts">
+      <button type="button" class="btn primary sm" style="flex:1" data-act="clickieload">Armar presupuesto →</button>
+      ${S.clickieText?`<button type="button" class="btn ghost sm" data-act="clickieclear" aria-label="Limpiar texto">${svg("x")}</button>`:""}
+    </div>`:""}
+  </section>
+
+`;
 }
 
 /* ---------- PRECIOS: 1. MATERIALES Y REPUESTOS ---------- */
@@ -2157,7 +2652,7 @@ function renderRepuestos(){
             <div class="rep-name">${esc(c.n)}</div>
             <div class="rep-meta">
               <span>${esc(/^por\s/i.test(c.u)?c.u:"por "+c.u)}</span>
-              <span class="${own?"tag-own":"tag-ex"}">${own?"Tu precio":"Referencia"}</span>
+              <span class="${own?"tag-own":c.est?"estmark":"tag-ex"}">${own?"Tu precio":c.est?"Estimado · sin ref. segura":"Referencia"}</span>
             </div>
           </div>
           ${c.customDef?`<button type="button" style="border:none;background:none;color:var(--muted);padding:6px;min-width:36px;min-height:36px;display:inline-flex;align-items:center;justify-content:center" data-delcustom="${k}" aria-label="Eliminar ${esc(c.n)}">${svg("x",'class="ico"')}</button>`:""}
@@ -2165,7 +2660,7 @@ function renderRepuestos(){
         <div class="rep-bot">
           <div class="left">
             <span class="small muted" aria-hidden="true">$</span>
-            <input id="rp_${k}" class="pricein ${own?"":"example"} num" data-price="${k}" inputmode="numeric" value="${fmtN(p)}" aria-label="Precio de ${esc(c.n)}">
+            <input id="rp_${k}" class="pricein ${own?"":c.est?"est":"example"} num" data-price="${k}" inputmode="numeric" value="${fmtN(p)}" aria-label="Precio de ${esc(c.n)}">
           </div>
           <div class="right">
             ${mlLink(c.q||c.n, c.n)}
@@ -2186,10 +2681,10 @@ function renderRepuestos(){
 /* ---------- JOB (COTIZADOR) ---------- */
 function fieldHTML(f){
   if(f.show && !f.show(S.inputs)) return "";
-  const v=S.inputs[f.id];
+  const v=f.type==="num"&&f.unit==="m"?S.inputs[f.id]*1000:S.inputs[f.id];
   if(f.type==="num") return `<div class="field"><label for="f_${f.id}">${esc(f.label)}</label>
     <div class="stepper">
-      <div class="val"><input id="f_${f.id}" data-num="${f.id}" inputmode="decimal" enterkeyhint="done" value="${String(v).replace(".",",")}">${f.unit?`<span class="unit">${esc(f.unit)}</span>`:""}</div>
+      <div class="val"><input id="f_${f.id}" data-num="${f.id}" inputmode="decimal" enterkeyhint="done" value="${String(v).replace(".",",")}">${f.unit?`<span class="unit">${esc(f.unit==="m"?"mm":f.unit)}</span>`:""}</div>
       <div class="stepper-btns">
         <button type="button" class="st-minus" data-step="${f.id}" data-d="-1" aria-label="Disminuir ${esc(f.label)}">−</button>
         <button type="button" class="st-plus" data-step="${f.id}" data-d="1" aria-label="Aumentar ${esc(f.label)}">+</button>
@@ -2203,7 +2698,19 @@ function fieldHTML(f){
   if(f.type==="multi") return `<div class="field"><span class="flabel">${esc(f.label)} <span class="muted small">(podés marcar varias)</span></span><div class="opts" role="group" aria-label="${esc(f.label)}">
     ${f.options.map(([k,l])=>{const on=v.includes(k);return `<button type="button" class="opt" data-multi="${f.id}" data-v="${k}" aria-pressed="${on}">${svg(on?"check":"plus",'class="ico"')}${esc(l)}</button>`;}).join("")}</div></div>`;
   if(f.type==="yesno") return `<button type="button" class="swrow inline" data-yes="${f.id}" data-v="${v?"0":"1"}" aria-pressed="${v===true}">
-    <span class="swlbl">${esc(f.label)}</span><span class="sw" aria-hidden="true"></span></button>`;
+    <span class="swlbl">${esc(f.label)}${f.id==="rielAuto"?`<span class="swsub">${rejaRiel(S.inputs,rejaReparto(S.inputs).Ao).len} mm por portón · podés cambiar el perfil y el largo</span>`:""}</span><span class="sw" aria-hidden="true"></span></button>`;
+  if(f.type==="perfil"){
+    const all=getAllCatalog(customMats), meta=k=>PERF_META[k]||[(all[k]||{}).n||k,""];
+    const c=meta(v), tipos=[...new Set(f.options.map(k=>meta(k)[0]))];
+    const st=(S.job.std?S.job.std(S.inputs):{})[f.id]??f.def, sm=meta(st);
+    const enTipo=f.options.filter(k=>meta(k)[0]===c[0]);
+    const est=all[v]&&all[v].est&&!(v in prices);
+    return `<div class="field"><span class="flabel">${esc(f.label)}: <span style="color:var(--accent)">${esc((c[0]+" "+c[1]).trim())}</span>${est?' <span class="estmark">precio sin ref. segura</span>':""}</span>
+      ${tipos.length>1?`<div class="opts" role="group" aria-label="Tipo de ${esc(f.label)}">${tipos.map(t=>`<button type="button" class="opt sm" data-ptipo="${f.id}" data-v="${esc(t)}" aria-pressed="${c[0]===t}">${esc(t)}</button>`).join("")}</div>`:""}
+      ${enTipo.length>1?`<div class="opts" role="group" aria-label="Medida de ${esc(f.label)}">${enTipo.map(k=>`<button type="button" class="opt sm" data-perfil="${f.id}" data-v="${k}" aria-pressed="${v===k}">${esc(meta(k)[1])}</button>`).join("")}</div>`:""}
+      ${v!==st?`<button type="button" class="ov" data-pdef="${f.id}">Cambiado solo en este presupuesto · volver al estándar (${esc((sm[0]+" "+sm[1]).trim())})</button>`:""}
+    </div>`;
+  }
   if(f.type==="text") return `<div class="field"><label for="f_${f.id}">${esc(f.label)}</label><input class="txt" id="f_${f.id}" data-text="${f.id}" value="${esc(v)}"></div>`;
 }
 
@@ -2223,20 +2730,29 @@ function fieldsHTML(fields){
   return out;
 }
 
-function drawing(){
-  const j=S.job,i=S.inputs; if(!j.drawing) return "";
-  const W=360,H=210,pad=34, A=i.ancho, B=i.alto, s=Math.min((W-2*pad)/A,(H-2*pad)/B);
+function drawing(j=S.job,i=S.inputs){
+  if(!j.drawing) return "";
+  const W=380,H=270,pad=48, A=i.ancho, B=i.alto, s=Math.min((W-2*pad)/A,(H-2*pad)/B);
   const w=A*s,h=B*s,x=(W-w)/2,y=(H-h)/2+4;
-  let inner="", summaryTxt=`${A} × ${B} cm`;
+  let inner="", summaryTxt=`${A} × ${B} mm`;
   if(j.drawing==="mosq"){ const g=Math.max(6,Math.min(w,h)/10); let p="";
     for(let k=x+g;k<x+w;k+=g)p+=`M${k} ${y}V${y+h}`; for(let k=y+g;k<y+h;k+=g)p+=`M${x} ${k}H${x+w}`;
     inner=`<path d="${p}" stroke="var(--muted)" stroke-width=".8" opacity=".6"/>`;
     if(i.tipo==="corredizo") inner+=`<path d="M${x} ${y+h+6}H${x+w}" stroke="var(--ink)" stroke-width="3"/>`;
     if(i.tipo==="enrollable") inner+=`<rect x="${x-4}" y="${y-12}" width="${w+8}" height="12" rx="3" fill="var(--ink)"/>`;
     summaryTxt+=` · ${i.tipo}`;
+  } else if(j.drawing==="puertitas"){
+    const hn=+i.hojas||1, hw=w/hn;
+    for(let k=0;k<hn;k++){
+      inner+=`<rect x="${x+k*hw+5}" y="${y+5}" width="${hw-10}" height="${h-10}" fill="var(--line)" stroke="var(--ink)" stroke-width="2"/>`;
+      const hx=k===0?x+7:x+(k+1)*hw-7;
+      inner+=`<rect x="${hx-2}" y="${y+h*0.2}" width="4" height="10" fill="var(--accent)"/><rect x="${hx-2}" y="${y+h*0.8-10}" width="4" height="10" fill="var(--accent)"/>`;
+    }
+    inner+=`<text x="${W/2}" y="${H-2}" text-anchor="middle" font-size="12" fill="var(--muted)" font-weight="700">${hn} hoja${hn>1?"s":""} de ${Math.round(A/hn)} × ${B} mm · chapa 1,6 mm</text>`;
+    summaryTxt+=` · ${hn} hoja${hn>1?"s":""}`;
   } else {
-    const mat=i.material||"cano_2020";
-    const doble=i.uso==="porton"&&i.apertura==="doble", corredizo=i.uso==="porton"&&i.apertura==="corredizo";
+    const mat=i.material||"redondo_916";
+    const doble=rejaHojas(i)===2, corredizo=i.uso==="porton"&&i.apertura==="corredizo";
     let foot="";
     if(mat==="chapa_18"){
       inner=`<rect x="${x+2}" y="${y+2}" width="${w-4}" height="${h-4}" fill="var(--line)" opacity=".45"/>`;
@@ -2252,11 +2768,11 @@ function drawing(){
       inner=`<path d="${p}" stroke="var(--muted)" stroke-width="1" opacity=".65"/>`;
       foot="Metal desplegado";
     } else {
-      const n=Math.max(0,Math.ceil(A/i.sep)-1); let p="";
-      for(let k=1;k<=n;k++){const xx=x+w*k/(n+1);p+=`M${xx} ${y}V${y+h}`;}
+      const g=rejaReparto(i), px=w/g.Ao, n=g.n*g.hojas; let p="";
+      for(let hj=0;hj<g.hojas;hj++) g.marcas.forEach(mk=>{const xx=x+px*(hj*g.hA+g.fr+mk+g.t/2);p+=`M${xx.toFixed(1)} ${y}V${y+h}`;});
       const tv=i.uso==="ventana"?2:3; for(let k=1;k<=tv;k++){const yy=y+h*k/(tv+1);p+=`M${x} ${yy}H${x+w}`;}
       inner=`<path d="${p}" stroke="var(--ink)" stroke-width="${mat==="hierro_12"||mat==="redondo_916"?"1.9":"2.4"}"/>`;
-      foot=`${n} barrotes c/ ${i.sep} cm`;
+      foot=`${n} barrotes · luz ${Math.round(g.luz)} mm`;
     }
     if(doble){
       inner+=`<path d="M${x+w/2} ${y}V${y+h}" stroke="var(--ink)" stroke-width="4"/>`;
@@ -2265,7 +2781,8 @@ function drawing(){
     if(corredizo){
       inner+=`<path d="M${x-10} ${y+h+7}H${x+w+10}" stroke="var(--ink)" stroke-width="3"/>`;
       inner+=`<circle cx="${x+14}" cy="${y+h+4}" r="3.5" fill="var(--accent)"/><circle cx="${x+w-14}" cy="${y+h+4}" r="3.5" fill="var(--accent)"/>`;
-      foot+=" · corredizo";
+      inner+=`<rect x="${x}" y="${y+h-h*120/B}" width="${w}" height="${Math.max(6,h*120/B)}" fill="var(--accent)"/>`;
+      foot+=" · zócalo 120×40";
     }
     if(i.uso!=="ventana"||i.cerradura){
       const cx=doble?(x+w/2-9):(x+w-8);
@@ -2276,11 +2793,11 @@ function drawing(){
   }
   return `<details class="draw-det" data-sec="dibujo" ${S.open.dibujo?"open":""}>
     <summary><span><b>${esc(summaryTxt)}</b></span><span style="display:inline-flex;align-items:center;gap:4px;color:var(--accent)">Dibujo ${svg("chev",'class="chev"')}</span></summary>
-    <div class="drawing"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Dibujo ${A} por ${B} centímetros">
+    <div class="drawing"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Dibujo ${A} por ${B} milímetros">
       <rect x="${x}" y="${y}" width="${w}" height="${h}" fill="var(--card)" stroke="var(--ink)" stroke-width="4" rx="2"/>${inner}
-      <g fill="var(--accent)" font-weight="800" font-size="15" font-family="system-ui, sans-serif">
-      <text x="${W/2}" y="${y-(j.drawing==="mosq"&&i.tipo==="enrollable"?18:8)}" text-anchor="middle">${A} cm</text>
-      <text x="${x-8}" y="${y+h/2}" text-anchor="end" dominant-baseline="middle">${B} cm</text></g></svg></div>
+      <g fill="var(--accent)" font-weight="800" font-size="15" font-family="Archivo, sans-serif">
+      <text x="${W/2}" y="${y-(j.drawing==="mosq"&&i.tipo==="enrollable"?18:8)}" text-anchor="middle">${A} mm</text>
+      <text x="${x-8}" y="${y+h/2}" text-anchor="end" dominant-baseline="middle">${B} mm</text></g></svg></div>
   </details>`;
 }
 
@@ -2323,6 +2840,8 @@ function pickerHTML(){
 function renderJob(){
   renderNav();
   const j=S.job;
+  S.opts.cutDisco=S.opts.usarRetazos?T.disco:3;
+  S.opts.cutRetazos=S.opts.usarRetazos?tActiveRets():[];
   const res=compute(j,S.inputs,cfg,prices,S.hoursOv,S.opts,S.extraMats,S.qtyOv,customMats,S.extraItems);
   S.res=res;
   const mk=refMercado(j,S.inputs,res.total,S.extraItems);
@@ -2349,7 +2868,7 @@ function renderJob(){
   const matRows = res.mats.length ? `<ul class="rows">${res.mats.map(m=>{
     const isOpen = S.openMat === m.id;
     const priceInput = m.key
-      ? `<input id="mp_${m.key}" class="pricein ${m.example?"example":""} num" data-price="${m.key}" inputmode="numeric" value="${fmtN(m.price)}" aria-label="Precio de ${esc(m.name)}">`
+      ? `<input id="mp_${m.key}" class="pricein ${m.est?"est":m.example?"example":""} num" data-price="${m.key}" inputmode="numeric" value="${fmtN(m.price)}" aria-label="Precio de ${esc(m.name)}">`
       : m.extraIdx!==undefined
         ? `<input id="ep_${m.extraIdx}" class="pricein num" data-exprice="${m.extraIdx}" inputmode="numeric" value="${fmtN(m.price)}" aria-label="Precio de ${esc(m.name)}">`
         : `<b class="num">${ars(m.price)}</b>`;
@@ -2358,8 +2877,8 @@ function renderJob(){
         <button type="button" class="mrow-info" data-mopen="${esc(m.id)}" aria-expanded="${isOpen}">
           <span class="mrow-name">${esc(m.name)}</span>
           <span class="mrow-meta">
-            ${m.example?'<span class="refdot" title="Precio de referencia"></span>':""}
-            <span class="num" style="flex:none;${m.example?"color:var(--warn);font-weight:600":""}">${ars(m.price)}</span>
+            ${m.est?'<span class="estmark">sin ref. segura</span>':m.example?'<span class="refdot" title="Precio de referencia"></span>':""}
+            <span class="num" style="flex:none;${m.est?"color:var(--err);font-weight:700":m.example?"color:var(--warn);font-weight:600":""}">${ars(m.price)}</span>
             <span style="flex:none">·</span>
             <span style="min-width:0;overflow:hidden;text-overflow:ellipsis">${esc(m.unit)}${m.nota?" · "+esc(m.nota):""}</span>
           </span>
@@ -2398,7 +2917,7 @@ function renderJob(){
     let multiCard = "";
     if(j.multiItem && S.extraItems.length){
       const allIt=[...S.extraItems, S.inputs];
-      const totM2=allIt.reduce((a,x)=>a+(x.ancho||0)*(x.alto||0)/10000*(x.cant||1),0);
+      const totM2=allIt.reduce((a,x)=>a+(x.ancho||0)*(x.alto||0)/1e6*(x.cant||1),0);
       const totU=allIt.reduce((a,x)=>a+(x.cant||1),0);
       multiCard=`<section class="card flush" aria-label="${esc(j.multiPlural)} en este presupuesto">
         <div class="card-hd">
@@ -2427,8 +2946,10 @@ function renderJob(){
       <h2 class="sr-only">Medidas y detalles</h2>
       ${j.multiItem && S.extraItems.length ? `<div class="aedit-hd"><span class="albl">${esc(j.multiSingular)} #${S.extraItems.length+1} (editando ahora)</span><button type="button" class="adrop" data-act="dropcurr">Quitar ${j.id==="reja"?"esta":"este"}</button></div>` : ""}
       ${j.presets?`<div class="presets" role="group" aria-label="Medidas rápidas">${j.presets.map((p,idx)=>`<button type="button" class="preset" data-preset="${idx}" aria-pressed="${isPresetOn(p)}">${esc(p.label)}</button>`).join("")}</div>`:""}
-      ${fieldsHTML(j.fields)}
+      ${fieldsHTML(j.fields.filter(f=>["uso","apertura","hojasPta","ancho","alto","cant"].includes(f.id)))}
       ${drawing()}
+      ${j.fields.some(f=>f.type==="perfil")?`<details class="profile-details" data-sec="perfiles" ${S.open.perfiles?"open":""}><summary>Cambiar perfiles</summary><p class="small muted">${j.fields.filter(f=>f.type==="perfil"&&(!f.show||f.show(S.inputs))).map(f=>esc(f.label)+": "+esc(CATALOG[S.inputs[f.id]]?.n||S.inputs[f.id])).join(" · ")}</p>${fieldsHTML(j.fields.filter(f=>f.type==="perfil"))}</details>`:""}
+      ${fieldsHTML(j.fields.filter(f=>f.type!=="perfil"&&!["uso","apertura","hojasPta","ancho","alto","cant"].includes(f.id)))}
     </section>
     ${j.multiItem?`<button type="button" class="btn ghost sm" data-act="additem">${svg("plus")} Sumar ${esc(j.multiWord)} a este presupuesto</button>`:""}`;
   } else if(st === 2){
@@ -2445,14 +2966,16 @@ function renderJob(){
       ${matRows}
       <div class="card-ft">
         ${nEj?`<span class="small muted" style="line-height:1.3">Tocá cualquier ítem para editar su precio o abrir <b>ML</b>.</span>`:""}
+        ${res.mats.some(m=>m.est&&m.qty>0)?`<span class="small" style="line-height:1.3;color:var(--err);font-weight:700">Los que dicen "sin ref. segura" son valores orientativos: confirmalos con tu proveedor y cargá el precio real.</span>`:""}
         ${S.pickerOpen ? pickerHTML() : `<div class="two">
           <button type="button" class="btn ghost sm" data-act="openpicker" aria-expanded="false" aria-controls="mat-picker">${svg("plus")} Agregar</button>
           ${res.mats.some(m=>m.qty>0)?`<button type="button" class="btn ghost sm" data-act="lista">${svg("cart")} Copiar lista</button>`:`<span></span>`}
         </div>`}
-        ${j.id==="reja"?`<button type="button" class="btn ghost sm" style="color:var(--accent);border-color:var(--accent)" data-act="rejataller">${svg("regla")} Optimizar cortes${S.extraItems.length?` (${[...S.extraItems,S.inputs].reduce((a,x)=>a+(x.cant||1),0)} aberturas)`:""} en Taller →</button>`:""}
+        ${["reja","puertitas"].includes(j.id)?`<button type="button" class="btn ghost sm" style="color:var(--accent);border-color:var(--accent)" data-act="rejataller">${svg("regla")} Optimizar cortes${S.extraItems.length?` (${[...S.extraItems,S.inputs].reduce((a,x)=>a+(x.cant||1),0)} aberturas)`:""} en Taller →</button>`:""}
       </div>
     </section>
 
+    ${["reja","puertitas"].includes(j.id)?`<button type="button" class="swrow" data-opt="usarRetazos" aria-pressed="${!!S.opts.usarRetazos}"><span class="swlbl">Usar retazos disponibles del Taller<span class="swsub">Compra por cortes: barras de 6000 mm, disco ${S.opts.cutDisco} mm. ${S.opts.usarRetazos?"Los retazos se descuentan de la compra.":"Sin descontar retazos."}</span></span><span class="sw" aria-hidden="true"></span></button>`:""}
     <section class="card" aria-label="Horas y viaje">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
         <span class="sec-lbl">Horas de trabajo y viaje</span>
@@ -2479,12 +3002,13 @@ function renderJob(){
 
       <div class="pocket">
         <div>
-          <span>Te queda limpio</span>
+          <span>Para vos · te queda limpio</span>
           <small>${fmtQ(res.horas)} h · ~${ars(res.porHora)}/h${res.viaje?` (más viaje)`:""}</small>
         </div>
         <span class="v">${ars(res.bolsillo)}</span>
       </div>
 
+      <details class="tdet"><summary>Cómo se arma el precio</summary>
       <div class="desglose">
         <span class="dl">Mano de obra (${fmtQ(res.horas)} h)</span><span class="dv">${ars(res.mo)}</span>
         ${res.matCost>0?`<span class="dl">Materiales${S.opts.clienteCompra?" (paga cliente)":""}</span><span class="dv">${S.opts.clienteCompra?"$ 0":ars(res.matCobrado)}</span>`:""}
@@ -2495,26 +3019,18 @@ function renderJob(){
 
       ${mk?`<div class="kg">Mercado (reja ventana, ${PRECIOS_FECHA}): ${ars(mk.lo)} a ${ars(mk.hi)} · ${mk.estado==="ok"?"estás en precio":mk.estado==="bajo"?"estás barato: revisá no regalar trabajo":"estás por arriba del promedio"}</div>`:""}
       ${res.kg?`<div class="kg">≈ ${fmtQ(Math.round(res.kg*10)/10)} kg de hierro · por kilo serían ${ars(Math.ceil(res.kg*cfg.precio_kg/(cfg.redondeo||1))*(cfg.redondeo||1))}${kgPropio()?"":" (ref.)"}</div>`:""}
+      </details>
     </section>
 
     ${res.warns.map(w=>`<div class="banner warn">${svg("alert")}<div>${esc(w)}</div></div>`).join("")}
 
     <section class="card" id="mensaje">
       <div style="display:flex;justify-content:space-between;align-items:center;gap:8px">
-        <h2>Mensaje listo</h2>
+        <h2>Para el cliente</h2>
         <span class="pill-badge ${esClickie?"clk":"dir"}">${esClickie?"Para Clickie":"Particular"}</span>
       </div>
       <div class="msg" id="msgtxt">${esc(msg)}</div>
-      <div class="actions">
-        ${esClickie
-          ? `<button type="button" class="btn primary" data-act="copiar">${svg("copy")} Copiar para pegar en Clickie</button>
-             <div class="two">
-               <button type="button" class="btn ghost" data-act="copiarnum">${svg("copy")} Solo el monto</button>
-               <a class="btn wa" data-act="wa" target="_blank" rel="noopener" href="${wa}">${svg("wa")} WhatsApp</a>
-             </div>`
-          : `<a class="btn wa" data-act="wa" target="_blank" rel="noopener" href="${wa}">${svg("wa")} Mandar por WhatsApp</a>
-             <button type="button" class="btn primary" data-act="copiar">${svg("copy")} Copiar presupuesto</button>`}
-      </div>
+      ${esClickie?`<button type="button" class="btn ghost sm" data-act="copiarnum">${svg("copy")} Copiar solo el monto</button>`:""}
     </section>
 
     <section class="card">
@@ -2533,18 +3049,24 @@ function renderJob(){
       <h1 style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(j.name)}</h1>
     </div>
     ${st===1
-      ? `<a class="askpill" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(pedirMessage(j,cfg))}">${svg("wa")} Pedir medidas</a>`
-      : `<span class="small muted num">${fmtQ(res.horas)} h · ${res.mats.filter(m=>m.qty>0).length} mat.</span>`}
+      ? `<a class="askpill" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(pedirMessage(j,cfg))}">${svg("wa")} Pedir medidas</a>`:""}
   </div>
 
   <div class="steps" role="tablist" aria-label="Pasos del presupuesto">
     <button type="button" class="stepbtn" role="tab" data-stepgo="1" aria-selected="${st===1}"><span class="snum">1.</span>Medidas${S.extraItems.length?` (${S.extraItems.length+1})`:""}</button>
-    <button type="button" class="stepbtn" role="tab" data-stepgo="2" aria-selected="${st===2}"><span class="snum">2.</span>Materiales y horas${nEj?'<span class="sdot" title="Hay precios de referencia"></span>':""}</button>
-    <button type="button" class="stepbtn" role="tab" data-stepgo="3" aria-selected="${st===3}"><span class="snum">3.</span>Precio y envío</button>
+    <button type="button" class="stepbtn" role="tab" data-stepgo="2" aria-selected="${st===2}"><span class="snum">2.</span>Materiales${nEj?'<span class="sdot" title="Hay precios de referencia"></span>':""}</button>
+    <button type="button" class="stepbtn" role="tab" data-stepgo="3" aria-selected="${st===3}"><span class="snum">3.</span>Precio</button>
   </div>
 
-  ${S.note?`<div class="banner good">${svg("sparkle")}<div>${esc(S.note)}</div></div>`:""}
-  ${bodyHTML}`;
+  ${S.note&&st===1?`<div class="banner good">${svg("sparkle")}<div>${esc(S.note)}</div></div>`:""}
+  <section class="quote-status ${res.estimated?"pending":"checked"}" data-pending-summary aria-label="Estado del presupuesto">
+    <b>${res.estimated?"Presupuesto estimado":"Precios cargados"}</b>
+    ${res.mats.some(m=>m.est&&m.qty>0)?`<p>Faltan confirmar ${res.mats.filter(m=>m.est&&m.qty>0).length} precios${res.mats.some(m=>m.est&&m.qty>0&&m.price===0)?"; hay materiales sin importe. El total es parcial.":"."}</p><button type="button" class="btn ghost sm" data-act="pendingprices">Revisar precios pendientes</button>`:""}
+    ${res.pendingStandards.length?`<details><summary>Detalles por confirmar (${res.pendingStandards.length})</summary><ul>${res.pendingStandards.map(w=>`<li>${esc(w)}</li>`).join("")}</ul></details>`:""}
+  </section>
+  ${Object.keys(S.qtyOv).length?`<p class="field-err">Cantidades modificadas a mano: el plan de cortes conserva las medidas. Revisá la compra antes de enviar.</p>`:""}
+  ${bodyHTML}
+  ${["reja","puertitas"].includes(j.id)&&st!==2?`<button type="button" class="btn ghost" style="color:var(--accent);border-color:var(--accent)" data-act="rejataller">${svg("regla")} Ver cortes y compra en Taller${S.extraItems.length?` (${[...S.extraItems,S.inputs].reduce((a,x)=>a+(x.cant||1),0)} aberturas)`:""} →</button>`:""}`;
 
   bar.classList.remove("hidden");
   bar.innerHTML=`<div class="in">
@@ -2552,12 +3074,12 @@ function renderJob(){
       <button type="button" class="modepill ${esClickie?"clk":"dir"}" data-act="flipcom" aria-label="Cambiar entre Clickie y Directo sin comisión">
         ${esClickie?`Clickie +${cfg.comision}% ⇄`:"Directo 0% ⇄"}
       </button>
-      <div class="t">${ars(res.total)}</div>
+      <div class="t">${res.estimated?'<small class="estimate-label">Estimado · </small>':""}${ars(res.total)}</div>
       <div class="bol">Te quedan ${ars(res.bolsillo)}</div>
     </div>
     <div class="acts">
       ${st < 3
-        ? `<button type="button" class="btn primary" data-stepgo="${st+1}">${st===1?"Materiales y horas →":"Precio y envío →"}</button>`
+        ? `<button type="button" class="btn primary" data-stepgo="${st+1}">${st===1?"Materiales →":"Precio →"}</button>`
         : esClickie
           ? `<a class="iconbtn" data-act="wa" target="_blank" rel="noopener" href="${wa}" aria-label="Mandar por WhatsApp">${svg("wa")}</a>
              <button type="button" class="btn primary" data-act="copiar">${svg("copy")} Copiar</button>`
@@ -2646,9 +3168,9 @@ function renderObra(){
   <section class="card">
     <h2>Materiales estimados</h2>
     ${res.mats.length?`<ul class="rows">${res.mats.map(m=>`<li class="row">
-      <span class="name">${fmtQ(m.qty)} × ${esc(m.name)}</span>
+      <span class="name">${fmtQ(m.qty)} × ${esc(m.name)}${m.est?' <span class="estmark">sin ref. segura</span>':""}</span>
       <span class="amt">${ars(m.cost)}</span>
-      <span class="sub">${esc(m.unit)} · $ <input id="op_${m.key}" class="pricein ${m.example?"example":""} num" data-price="${m.key}" inputmode="numeric" value="${fmtN(m.price)}" aria-label="Precio de ${esc(m.name)}">
+      <span class="sub">${esc(m.unit)} · $ <input id="op_${m.key}" class="pricein ${m.est?"est":m.example?"example":""} num" data-price="${m.key}" inputmode="numeric" value="${fmtN(m.price)}" aria-label="Precio de ${esc(m.name)}">
         ${mlLink(m.q||m.name, m.name)}
       </span>
     </li>`).join("")}</ul>
@@ -2678,12 +3200,51 @@ function renderObra(){
 
 /* ---------- AJUSTES Y MI TARIFA ---------- */
 const BASIC_CFG = ["valor_hora","viaje","minimo"];
+function backupData(){
+  return JSON.parse(JSON.stringify({cfg,prices,customMats,favs,hist,taller:T,draft:restoreRecovery?restoreRecovery.draft:LS.get("presu_draft",null)}));
+}
+function downloadBackup(){
+  const stamp=new Date().toISOString();
+  const envelope={format:"padilla-backup",version:1,savedAt:stamp,data:backupData()};
+  const url=URL.createObjectURL(new Blob([JSON.stringify(envelope,null,2)],{type:"application/json"}));
+  const a=document.createElement("a");a.href=url;a.download="Padilla-copia-"+stamp.slice(0,10)+".json";document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  LS.set("presu_last_backup",stamp);toast("Copia preparada para descargar");if(S.screen==="precios")renderPrecios();
+}
+function restoreBackup(raw){
+  const data=validateBackup(raw);
+  const old=backupData();
+  const next={cfg:{...DEFAULT_CONFIG,...data.cfg},prices:data.prices||{},customMats:data.customMats||{},favs:data.favs||[],hist:data.hist||[],taller:data.taller?tNormalizeT(data.taller):T};
+  const slots={presu_cfg:next.cfg,presu_prices:next.prices,presu_custom_mats:next.customMats,presu_favs:next.favs,presu_hist:next.hist,presu_taller:next.taller};
+  if(Object.prototype.hasOwnProperty.call(data,"draft")) slots.presu_draft=data.draft;
+  const previous={};
+  try{Object.keys(slots).forEach(k=>previous[k]=localStorage.getItem(k));}
+  catch(e){storageWarning();return false;}
+  try{
+    Object.entries(slots).forEach(([k,v])=>{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,JSON.stringify(v));});
+  }catch(e){
+    let failed=false;
+    Object.entries(previous).forEach(([k,v])=>{try{if(v===null)localStorage.removeItem(k);else localStorage.setItem(k,v);}catch(err){failed=true;}});
+    restoreRecovery=failed?old:null;
+    storageWarning(failed?"La recuperación no pudo completarse ni revertirse en el almacenamiento. Tus datos anteriores siguen en esta sesión: descargá una copia desde Ajustes antes de cerrar.":"No se pudo guardar la copia. Se conservaron los datos anteriores. Descargá un respaldo desde Ajustes.");
+    return false;
+  }
+  cfg=next.cfg;prices=next.prices;customMats=next.customMats;favs=next.favs;hist=next.hist;T=next.taller;
+  restoreRecovery=null;document.getElementById("storage-error").hidden=true;
+  S.errs.restore="";applyTheme();go("home");toast("Datos recuperados");return true;
+}
+function requestRestore(raw,trigger){
+  let data;
+  try{data=validateBackup(raw);}catch(e){S.errs.restore=e.message;renderPrecios();return;}
+  askConfirm("¿Reemplazar los datos de este celular?","Se reemplazan tus tarifas, precios, historial y datos incluidos en la copia. Cancelar conserva tus datos actuales.","Recuperar",trigger,()=>restoreBackup(data));
+}
+
 function renderPrecios(){
   bar.classList.add("hidden");
   renderNav();
   const advKeys = Object.keys(CONFIG_HINTS).filter(k=>!BASIC_CFG.includes(k));
   const val=k=>MONEY_KEYS.includes(k)?fmtN(cfg[k]):String(cfg[k]).replace(".",",");
-  const backupStr = "PRESU:"+btoa(unescape(encodeURIComponent(JSON.stringify({cfg,prices,customMats,favs,hist,taller:T}))));
+  const backupStr = "PRESU:"+btoa(unescape(encodeURIComponent(JSON.stringify(backupData()))));
+  const lastBackup=LS.get("presu_last_backup",null);
   const rowCfg=k=>`<div class="setrow"><label for="c_${k}">${CONFIG_HINTS[k][0]}<span class="hint">${CONFIG_HINTS[k][1]}</span></label>
     <input id="c_${k}" data-cfg="${k}" inputmode="decimal" class="num" value="${val(k)}"></div>`;
 
@@ -2727,14 +3288,6 @@ function renderPrecios(){
           <button type="button" class="opt sm" data-soloherr="1" aria-pressed="${!!cfg.solo_herreria}">Solo herrería</button>
         </div>
       </div>
-      <div class="setrow full">
-        <span>Colores de pantalla</span>
-        <div class="opts g3" role="group" aria-label="Tema de pantalla">
-          <button type="button" class="opt sm" data-theme="auto" aria-pressed="${cfg.theme==="auto"}">Auto</button>
-          <button type="button" class="opt sm" data-theme="light" aria-pressed="${cfg.theme==="light"}">Claro</button>
-          <button type="button" class="opt sm" data-theme="dark" aria-pressed="${cfg.theme==="dark"}">Oscuro</button>
-        </div>
-      </div>
     </div>
   </section>
 
@@ -2754,7 +3307,12 @@ function renderPrecios(){
   </section>
 
   <section class="card"><h2>Copia de seguridad</h2>
-    <p class="small muted" style="margin:0">Si cambiás de celular, mandá esta copia a tu propio chat de WhatsApp para no perder tus precios.</p>
+    <p class="small muted">Incluye precios, tarifas, historial, obras del Taller y borrador. Guardá el archivo en un lugar que puedas recuperar si cambiás de celular.</p>
+    <p class="small">Última descarga: ${lastBackup&&Number.isFinite(Date.parse(lastBackup))?esc(new Date(lastBackup).toLocaleString("es-AR")):"todavía no hiciste una copia"}.</p>
+    <button type="button" class="btn primary" data-act="downloadbackup">Descargar copia</button>
+    <label class="flabel" for="backupfile">Importar una copia guardada</label>
+    <input id="backupfile" type="file" accept=".json,application/json" aria-describedby="restore_err">
+    <p class="small muted">Importar pide confirmación antes de reemplazar los datos.</p>
     <div class="actions">
       <a class="btn wa sm" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(backupStr)}">${svg("wa")} Guardar copia en mi WhatsApp</a>
       <button type="button" class="btn ghost sm" data-act="backup">${svg("copy")} Copiar texto de seguridad</button>
@@ -2812,6 +3370,7 @@ function reopen(x){
 
 function render(){
   if(S.screen==="home") renderHome();
+  else if(S.screen==="selector") renderSelector();
   else if(S.screen==="repuestos") renderRepuestos();
   else if(S.screen==="job") renderJob();
   else if(S.screen==="obra") renderObra();
@@ -2861,7 +3420,7 @@ function loadFromClickie(rawText){
   S.clickieText=txt;
   if(!txt){
     S.errs.clickie="Pegá primero el pedido o necesidad del cliente.";
-    renderHome();
+    renderSelector();
     const ta=document.getElementById("clickietxt");
     if(ta) ta.focus();
     return;
@@ -2907,18 +3466,18 @@ app.addEventListener("click",e=>{
   const d=b.dataset;
 
   if(d.go) return go(d.go);
-  if(d.act==="installapp"&&S.installPrompt){ const ev=S.installPrompt; S.installPrompt=null; ev.prompt(); ev.userChoice.finally(()=>{ if(S.screen==="home") renderHome(); }); return; }
-  if(d.act==="clickietoggle"){ S.clickieOpen=!S.clickieOpen; renderHome(); if(S.clickieOpen){ const ta=document.getElementById("clickietxt"); if(ta) ta.focus(); } return; }
+  if(d.act==="installapp"&&S.installPrompt){ const ev=S.installPrompt; S.installPrompt=null; ev.prompt(); ev.userChoice.finally(()=>{ if(S.screen==="home") renderSelector(); }); return; }
+  if(d.act==="clickietoggle"){ S.clickieOpen=!S.clickieOpen; renderSelector(); if(S.clickieOpen){ const ta=document.getElementById("clickietxt"); if(ta) ta.focus(); } return; }
   if(d.act==="clickieload") return loadFromClickie();
-  if(d.act==="clickieclear"){ S.clickieText=""; S.errs.clickie=""; S.clickieOpen=false; return renderHome(); }
+  if(d.act==="clickieclear"){ S.clickieText=""; S.errs.clickie=""; S.clickieOpen=false; return renderSelector(); }
   if(d.act==="clickiepaste"){
     (async()=>{
       try{
         const t=(await navigator.clipboard.readText()||"").trim();
         if(t){ S.clickieText=t; S.errs.clickie=""; loadFromClickie(t); }
-        else { S.clickieOpen=true; renderHome(); toast("El portapapeles está vacío. Pegalo en el cuadro"); const ta=document.getElementById("clickietxt"); if(ta) ta.focus(); }
+        else { S.clickieOpen=true; renderSelector(); toast("El portapapeles está vacío. Pegalo en el cuadro"); const ta=document.getElementById("clickietxt"); if(ta) ta.focus(); }
       }catch(err){
-        S.clickieOpen=true; renderHome();
+        S.clickieOpen=true; renderSelector();
         toast("Mantené apretado el cuadro de texto y tocá Pegar");
         const ta=document.getElementById("clickietxt"); if(ta) ta.focus();
       }
@@ -2981,6 +3540,7 @@ app.addEventListener("click",e=>{
   /* Job actions */
   if(d.preset!==undefined){
     const pr=S.job.presets[+d.preset];
+    if(pr.vals.uso&&S.job.std&&pr.vals.uso!==S.inputs.uso) Object.assign(S.inputs,S.job.std({uso:pr.vals.uso}));
     Object.assign(S.inputs,pr.vals);
     toast("Medidas cargadas: "+pr.label);
     return rerenderJobKeepFocus();
@@ -3052,33 +3612,14 @@ app.addEventListener("click",e=>{
     });
   }
 
-  /* Backup (con diálogo y error inline) */
-  if(d.act==="backup"){ const s=btoa(unescape(encodeURIComponent(JSON.stringify({cfg,prices,customMats,favs,hist,taller:T})))); return copy("PRESU:"+s,"Copia de seguridad copiada",b); }
+  /* Copias por archivo y compatibilidad con el texto PRESU anterior. */
+  if(d.act==="downloadbackup")return downloadBackup();
+  if(d.act==="backup"){const encoded=btoa(unescape(encodeURIComponent(JSON.stringify(backupData()))));return copy("PRESU:"+encoded,"Copia de seguridad copiada",b);}
   if(d.act==="restore"){
     const raw=(document.getElementById("restoretxt").value||"").trim();
-    if(!raw){ S.errs.restore="Pegá primero el texto de tu copia de seguridad."; renderPrecios(); const el=document.getElementById("restoretxt"); if(el) el.focus(); return; }
-    let parsed=null;
-    try{
-      parsed=JSON.parse(decodeURIComponent(escape(atob(raw.replace(/^PRESU:/,"")))));
-    }catch(err){
-      S.errs.restore="Ese texto no es una copia válida. Copiala entera desde PRESU: y probá de nuevo.";
-      renderPrecios();
-      const el=document.getElementById("restoretxt"); if(el){ el.value=raw; el.focus(); }
-      return;
-    }
-    return askConfirm("¿Reemplazar los datos de este celular?","Esta acción reemplaza tus tarifas, repuestos e historial actuales por los de la copia.","Recuperar",b,()=>{
-      cfg={...DEFAULT_CONFIG,...parsed.cfg}; prices=parsed.prices||{}; customMats=parsed.customMats||{}; favs=parsed.favs||[]; hist=parsed.hist||[];
-      if(parsed.taller){
-        T={...T_DEF,...parsed.taller,form:{...T_DEF.form,...(parsed.taller.form||{})},model:{...T_MODEL_DEF,...(parsed.taller.model||{})}};
-        if(!Array.isArray(T.cuts)) T.cuts=[];
-        if(!Array.isArray(T.retazos)) T.retazos=[];
-        if(!Array.isArray(T.obras)) T.obras=[];
-        if(!T.done||typeof T.done!=="object") T.done={};
-        saveT();
-      }
-      LS.set("presu_cfg",cfg); LS.set("presu_prices",prices); LS.set("presu_custom_mats",customMats); LS.set("presu_favs",favs); LS.set("presu_hist",hist);
-      S.errs.restore=""; applyTheme(); toast("¡Datos recuperados!"); go("home");
-    });
+    if(!raw){S.errs.restore="Pegá primero el texto de tu copia de seguridad.";renderPrecios();return;}
+    try{return requestRestore(JSON.parse(decodeURIComponent(escape(atob(raw.replace(/^PRESU:/,""))))),b);}
+    catch(e){S.errs.restore="Ese texto no es una copia válida. Copiala entera desde PRESU: y probá de nuevo.";renderPrecios();document.getElementById("restoretxt").value=raw;return;}
   }
 
   if(d.act==="home") return go("home");
@@ -3134,49 +3675,23 @@ app.addEventListener("click",e=>{
     }
     return rerenderJobKeepFocus();
   }
-  if(d.act==="rejataller"){
-    const allList=[...S.extraItems,S.inputs];
-    const totU=allList.reduce((a,x)=>a+(x.cant||1),0);
-    const cuts=rejaCutsAll(allList);
-    const load=()=>{
-      const toModel=(ref,idx)=>{
-        const mat=ref.material||"cano_2020", esHoja=mat==="chapa_18"||mat==="metal_desp";
-        const ventana=ref.uso==="ventana", porton=ref.uso==="porton";
-        const pfx=({ventana:"V",puerta:"PTA",porton:"POR"})[ref.uso]||"R";
-        const cant=Math.max(1,ref.cant||1);
-        return {
-          ...T_MODEL_DEF,
-          type: ventana ? "reja" : "porton",
-          label: `${pfx}${idx+1} ${ref.ancho}×${ref.alto}${cant>1?` (×${cant})`:""}`,
-          cant,
-          ancho: Math.round((ref.ancho||120)*10),
-          alto: Math.round((ref.alto||100)*10),
-          sep: Math.round((ref.sep||12)*10),
-          travesanos: ventana ? 2 : 3,
-          hojas: porton && ref.apertura==="doble" ? 2 : 1,
-          corredizo: porton && ref.apertura==="corredizo",
-          ang: ventana && !esHoja ? "90" : "45",
-          pMarco: ventana ? (esHoja ? "cano_3030" : "cano_2020") : "cano_4040",
-          pInt: esHoja ? "cano_2020" : mat,
-          pExtra: "planchuela"
-        };
-      };
-      T.workId=tId();
-      T.cuts=cuts.map(c=>({...c,id:tId()}));
-      T.obra=(S.cliente?S.cliente+" — ":"")+S.res.desc;
-      T.done={};
-      T.models=allList.map(toModel);
-      T.modelIdx=0;
-      T.model={...T.models[0]};
-      T.modelActive=true;
-      S.tSel=null;
-      T.step=2;
-      saveT();
-      toast(allList.length>1?`Cortes y planos de ${totU} aberturas listos en Taller`:"Cortes y plano listos en Taller");
-      go("taller");
-    };
-    return T.cuts.length ? askConfirm(allList.length>1?`¿Cargar estas ${totU} aberturas en Taller?`:"¿Cargar esta reja en Taller?","Si ya tenés cortes cargados en Taller, se van a reemplazar (podés guardar tu obra actual antes desde Taller).","Cargar en Taller",b,load) : load();
+  if(d.act==="pendingprices"){
+    const first=S.res.mats.find(m=>m.est&&m.qty>0);
+    if(first){ S.step=2; S.openMat=first.id; renderJob(); const el=document.getElementById("mp_"+first.key)||document.getElementById("ep_"+first.extraIdx); if(el){el.focus();el.scrollIntoView({block:"center"});} }
+    return;
   }
+  if(d.act==="rejataller"){
+    const cuts=jobCuts(S.job.id,S.inputs,S.extraItems);
+    const source=JSON.parse(JSON.stringify({jobId:S.job.id,inputs:S.inputs,extraItems:S.extraItems,extraMats:S.extraMats,hoursOv:S.hoursOv,qtyOv:S.qtyOv,cliente:S.cliente,opts:S.opts}));
+    const load=()=>{
+      T.workId=tId();T.cuts=cuts.map(c=>({...c,id:tId()}));T.obra=(S.cliente?S.cliente+" — ":"")+S.res.desc;
+      T.done={};T.models=[];T.model={...T_MODEL_DEF};T.modelActive=false;T.sourceQuote=source;
+      T.barra=6000;T.disco=S.opts.cutDisco??3;T.usarRetazos=!!S.opts.usarRetazos;T.lastFinish=null;
+      S.tSel=null;T.step=2;saveT();go("taller");toast("Cortes y compra del presupuesto cargados");
+    };
+    return T.cuts.length?askConfirm("¿Cargar el presupuesto en Taller?","Reemplaza los cortes actuales. Podés guardar la obra antes de continuar.","Cargar en Taller",b,load):load();
+  }
+  if(d.act==="edit-source"&&T.sourceQuote){ const q=T.sourceQuote;reopen(q);S.step=1;return renderJob(); }
 
   if(d.mopen!==undefined){ S.openMat = S.openMat===d.mopen ? null : d.mopen; return rerenderJobKeepFocus(); }
   if(d.step){
@@ -3186,9 +3701,23 @@ app.addEventListener("click",e=>{
     S.inputs[f.id]=Math.min(f.max,Math.max(f.min,v));
     return rerenderJobKeepFocus();
   }
-  if(d.choice){ S.inputs[d.choice]=d.v; return rerenderJobKeepFocus(); }
+  if(d.choice){ if(d.choice==="uso"&&S.job.std&&S.inputs.uso!==d.v) Object.assign(S.inputs,S.job.std({uso:d.v})); S.inputs[d.choice]=d.v; return rerenderJobKeepFocus(); }
   if(d.multi){ const a=S.inputs[d.multi]; const k=a.indexOf(d.v); k<0?a.push(d.v):a.splice(k,1); return rerenderJobKeepFocus(); }
-  if(d.yes){ S.inputs[d.yes]=d.v==="1"; return rerenderJobKeepFocus(); }
+  if(d.yes){
+    if(d.yes==="rielAuto"&&d.v==="0") S.inputs.largoRiel=rejaRiel(S.inputs,rejaReparto(S.inputs).Ao).len;
+    S.inputs[d.yes]=d.v==="1"; return rerenderJobKeepFocus();
+  }
+  if(d.perfil||d.ptipo){
+    const fid=d.perfil||d.ptipo, f=S.job.fields.find(x=>x.id===fid);
+    let nk=d.perfil?d.v:null;
+    if(d.ptipo){ const cur=PERF_META[S.inputs[fid]]||["",""], ks=f.options.filter(k=>(PERF_META[k]||[])[0]===d.v); nk=ks.find(k=>PERF_META[k][1]===cur[1])||ks[0]; }
+    if(nk){
+      S.inputs[fid]=nk;
+      if(S.job.id==="reja"&&fid==="material"&&esHojaMat(nk)&&S.inputs.uso==="ventana"&&(PERF_META[S.inputs.pMarco]||[])[0]==="Planchuela") S.inputs.pMarco="cano_3030";
+    }
+    return rerenderJobKeepFocus();
+  }
+  if(d.pdef){ const st=S.job.std?S.job.std(S.inputs):{}, f=S.job.fields.find(x=>x.id===d.pdef); S.inputs[d.pdef]=st[d.pdef]??f.def; return rerenderJobKeepFocus(); }
   if(d.h!==undefined){ const t=S.res.tasks[+d.h]; const v=Math.max(0.25,t.hours+(+d.d)); if(v===t.auto) delete S.hoursOv[t.name]; else S.hoursOv[t.name]=v; return rerenderJobKeepFocus(); }
   if(d.opt){ S.opts[d.opt]=!S.opts[d.opt]; return rerenderJobKeepFocus(); }
   if(d.iva){ cfg.iva=d.iva==="1"; LS.set("presu_cfg",cfg); return renderPrecios(); }
@@ -3240,9 +3769,16 @@ app.addEventListener("input",e=>{
 
 app.addEventListener("change",e=>{
   const el=e.target, d=el.dataset;
+  if(el.id==="backupfile"){
+    const file=el.files[0];if(!file)return;
+    if(file.size>5*1024*1024){S.errs.restore="La copia supera 5 MB. Elegí un archivo de respaldo de Padilla.";renderPrecios();return;}
+    file.text().then(text=>{try{requestRestore(JSON.parse(text),el);}catch(err){S.errs.restore="Ese archivo no es una copia JSON válida de Padilla. No se reemplazó nada.";renderPrecios();}}).catch(()=>{S.errs.restore="No se pudo leer el archivo. Volvé a elegirlo.";renderPrecios();});
+    el.value="";return;
+  }
   if(d.num){
     const f=S.job.fields.find(x=>x.id===d.num);
-    const v=f.unit==="$"?num(el.value):numDec(el.value);
+    const raw=f.unit==="$"?num(el.value):numDec(el.value);
+    const v=raw===null?null:f.unit==="m"?raw/1000:raw;
     if(v!==null){
       if(v>f.max||v<f.min) toast(v>f.max?`Máximo ${fmtQ(f.max)} ${f.unit}`:`Mínimo ${fmtQ(f.min)} ${f.unit}`);
       S.inputs[f.id]=Math.min(f.max,Math.max(f.min,v));
@@ -3300,29 +3836,38 @@ app.addEventListener("focusin",e=>{
 
 /* ---------- TALLER: cortes de barras + modelo visual 2D (3 pasos: 1. Cargar cortes -> 2. Plan y compra -> 3. Retazos) ---------- */
 const tId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-const T_MODEL_DEF={type:"reja",label:"",cant:1,ancho:1200,alto:1000,prof:600,sep:120,travesanos:2,hojas:1,corredizo:false,ang:"45",pMarco:"cano_4040",pInt:"cano_2020",pExtra:"planchuela"};
-const T_DEF={workId:"",obra:"",step:1,barra:6000,disco:3,minSob:300,cuts:[],done:{},retazos:[],obras:[],usarRetazos:true,modelActive:false,model:{...T_MODEL_DEF},models:[],modelIdx:0,form:{perfil:"cano_4040",parte:"",ang:"90",u:"mm",txt:""}};
-let T={...T_DEF,...LS.get("presu_taller",{})};
-T.form={...T_DEF.form,...(T.form||{})};
-T.model={...T_MODEL_DEF,...(T.model||{})};
-if(!Array.isArray(T.models)) T.models=[];
-if(!T.workId) T.workId=tId();
-if(![1,2,3].includes(T.step)) T.step=1;
-if(!Array.isArray(T.cuts)) T.cuts=[];
-if(!Array.isArray(T.retazos)) T.retazos=[];
-if(!Array.isArray(T.obras)) T.obras=[];
-if(!T.done||typeof T.done!=="object") T.done={};
+const T_MODEL_DEF={type:"reja",label:"",cant:1,ancho:1200,alto:1000,prof:600,sep:120,travesanos:2,hojas:1,corredizo:false,pRiel:"angulo",rielAuto:true,largoRiel:6000,ang:"45",pMarco:"cano_4040",pInt:"cano_2020",pExtra:"planchuela"};
+const T_DEF={workId:"",obra:"",step:1,barra:6000,disco:3,minSob:300,cuts:[],done:{},retazos:[],obras:[],recetas:{},lastFinish:null,usarRetazos:true,modelActive:false,model:{...T_MODEL_DEF},models:[],modelIdx:0,form:{perfil:"cano_4040",parte:"",ang:"90",u:"mm",txt:""}};
+/* Arma un T válido desde datos guardados o de un backup (completa lo que falte, arregla lo roto). */
+function tNormalizeT(raw){
+  const t={...T_DEF,...((raw&&typeof raw==="object"&&!Array.isArray(raw))?raw:{})};
+  t.form={...T_DEF.form,...(t.form||{})};
+  if(t.form.u==="cm") t.form.txt=tParse(t.form.txt,"cm").map(c=>`${c.len}x${c.qty}`).join(" ");
+  t.form.u="mm";
+  t.model={...T_MODEL_DEF,...(t.model||{})};
+  if(!Array.isArray(t.models)) t.models=[];
+  if(!t.workId) t.workId=tId();
+  if(![1,2,3].includes(t.step)) t.step=1;
+  if(!Array.isArray(t.cuts)) t.cuts=[];
+  if(!Array.isArray(t.retazos)) t.retazos=[];
+  if(!Array.isArray(t.obras)) t.obras=[];
+  if(!t.done||typeof t.done!=="object") t.done={};
+  t.recetas=(t.recetas&&typeof t.recetas==="object"&&!Array.isArray(t.recetas))?{...t.recetas}:{};
+  if(!t.lastFinish||typeof t.lastFinish!=="object"||!Array.isArray(t.lastFinish.usedRets)) t.lastFinish=null;
+  return t;
+}
+let T=tNormalizeT(LS.get("presu_taller",{}));
 const saveT=()=>LS.set("presu_taller",T);
 
-/* Convierte un número escrito a mm según unidad ('mm' o 'cm'). En 'mm', <20 se toma como metros (2,64 → 2640). */
+/* Convierte un número escrito a mm según unidad ('mm' o 'cm'). La entrada visible siempre usa mm; cm sólo se conserva para migrar datos viejos. */
 function tToMm(v,u){
   if(v===null||isNaN(v)||v<=0) return null;
   if(u==="cm") return Math.round(v*10);
-  return Math.round(v<20?v*1000:v);
+  return Math.round(v);
 }
 const tLen=s=>tToMm(numDec(String(s).trim()),"mm");
 
-/* Lee "2640x2 1530x3" (también acepta "2x2640", "2,40 x 4", "120x4" en cm). Sin cantidad = 1. */
+/* Lee "2640x2 1530x3" (también acepta "2x2640"; cm sólo para migraciones). Sin cantidad = 1. */
 function tParse(txt,u){
   const unit=u||"mm", out=[], re=/(\d+(?:[.,]\d+)?)\s*(?:(?:x|×|\*|por)\s*(\d+))?/gi;
   let m;
@@ -3353,64 +3898,20 @@ function tParse(txt,u){
 function tPerfiles(){
   const all=getAllCatalog(customMats);
   return Object.entries(all).filter(([,c])=>/barra/i.test(c.u))
-    .map(([k,c])=>({key:k,n:c.n,q:c.q,kgm:c.kgm||0,price:prices[k]??c.p??0,example:prices[k]===undefined&&!c.customDef}));
+    .map(([k,c])=>({key:k,n:c.n,q:c.q,kgm:c.kgm||0,price:prices[k]??c.p??0,est:!!c.est&&!(k in prices),example:prices[k]===undefined&&!c.customDef}));
 }
 
 /* Llena cada barra (o retazo disponible) con DP en décimas de mm (enteros: soporta disco decimal ej. 1,6 mm sin colgarse). */
-function tPackOne(rem,barLen,disco){
-  const S=10, B=Math.round(barLen*S), D=Math.round(disco*S), cap=B+D;
-  if(cap<=0) return null;
-  const reach=new Int32Array(cap+1).fill(-1); reach[0]=-2;
-  let best=0;
-  for(let i=0;i<rem.length&&best<cap;i++){
-    const w=Math.round(rem[i].len*S)+D;
-    if(w<=0||w>cap) continue;
-    for(let c=cap;c>=w;c--) if(reach[c]===-1&&reach[c-w]!==-1){ reach[c]=i; if(c>best) best=c; }
-  }
-  if(best===0) return null;
-  const take=new Set(); let c=best;
-  while(c>0){ const i=reach[c]; if(i<0) break; take.add(i); c-=Math.round(rem[i].len*S)+D; }
-  if(!take.size) return null;
-  const pieces=rem.filter((_,i)=>take.has(i));
-  const nextRem=rem.filter((_,i)=>!take.has(i));
-  const used=pieces.reduce((s,p)=>s+p.len,0)+disco*pieces.length;
-  const sobra=Math.max(0,Math.round((barLen-used)*10)/10);
-  return {pieces,sobra,len:barLen,nextRem};
-}
-
-function tPack(pcs,barra,disco,retazos){
-  const largas=pcs.filter(p=>p.len>barra);
-  let rem=pcs.filter(p=>p.len<=barra).sort((a,b)=>b.len-a.len);
-  const bars=[];
-  /* Primero intentar ubicar cortes en retazos guardados del taller (de menor a mayor para cuidar los largos) */
-  const rets=[...(retazos||[])].filter(r=>r>0&&r<=barra).sort((a,b)=>a-b);
-  for(const rLen of rets){
-    if(!rem.length) break;
-    const fit=tPackOne(rem,rLen,disco);
-    if(fit){
-      bars.push({pieces:fit.pieces,sobra:fit.sobra,len:rLen,retazo:true});
-      rem=fit.nextRem;
-    }
-  }
-  while(rem.length){
-    const fit=tPackOne(rem,barra,disco);
-    if(!fit) break;
-    bars.push({pieces:fit.pieces,sobra:fit.sobra,len:barra,retazo:false});
-    rem=fit.nextRem;
-  }
-  return {bars,largas};
-}
-
 function tPlan(cuts,barra,disco,retazosList){
   const by={}, retBy={};
-  (retazosList||[]).forEach(r=>{ (retBy[r.perfil]=retBy[r.perfil]||[]).push(r.len); });
+  (retazosList||[]).forEach(r=>{ (retBy[r.perfil]=retBy[r.perfil]||[]).push({id:r.id,len:r.len}); });
   cuts.forEach(c=>{ const a=(by[c.perfil]=by[c.perfil]||[]); for(let i=0;i<c.qty;i++) a.push({len:c.len,parte:c.parte,ang:c.ang}); });
   return Object.entries(by).map(([perfil,pcs])=>{
     const rets=retBy[perfil]||[];
     const r=tPack(pcs,barra,disco,rets);
     const newBars=r.bars.filter(b=>!b.retazo);
     const retUsed=r.bars.filter(b=>b.retazo);
-    const empBars=r.largas.length?Math.ceil(r.largas.reduce((s,p)=>s+p.len,0)/barra):0;
+    const empBars=r.largas.reduce((n,p)=>n+Math.ceil(p.len/barra),0);
     return {perfil,...r,newBars,retUsed,empBars,buyBars:newBars.length+empBars,tips:tTips(pcs,r.bars,barra,disco,rets)};
   });
 }
@@ -3446,15 +3947,134 @@ function tGroupBars(bars){
   return out;
 }
 
+/* ---------- Stock de retazos que se actualiza solo ---------- */
+/* Retazos que el plan puede usar: los del taller (menos los que salieron de esta misma obra) + los que esta obra ya gastó al terminar. */
+function tActiveRets(){
+  if(!T.usarRetazos) return [];
+  const own=T.retazos.filter(r=>!r.fromWork||r.fromWork!==T.workId);
+  const lf=T.lastFinish&&T.lastFinish.workId===T.workId?T.lastFinish.usedRets:[];
+  return [...own,...lf];
+}
+const tTerminada=()=>!!(T.lastFinish&&T.lastFinish.workId===T.workId);
+
+/* Sobrantes de barras nuevas que valen la pena guardar, agrupados por perfil y largo. */
+function tLeftovers(plan,minSob){
+  const map=new Map();
+  plan.forEach(g=>g.newBars.forEach(b=>{
+    const len=Math.floor(b.sobra);
+    if(b.sobra<minSob||len<=0) return;
+    const k=g.perfil+"|"+len, it=map.get(k);
+    if(it) it.n++; else map.set(k,{perfil:g.perfil,len,n:1});
+  }));
+  return [...map.values()].sort((a,b)=>b.len-a.len);
+}
+
+/* "Terminé de cortar": descuenta del stock los retazos usados, guarda los sobrantes elegidos y la obra. Una sola vez por obra. */
+function tFinishCutting(plan,keep){
+  if(tTerminada()) return {usados:0,guardados:0};
+  const usedRets=[];
+  plan.forEach(g=>g.retUsed.forEach(b=>{
+    const r=b.retId&&T.retazos.find(x=>x.id===b.retId);
+    if(r) usedRets.push({id:r.id,perfil:r.perfil,len:r.len});
+  }));
+  const ids=new Set(usedRets.map(r=>r.id));
+  T.retazos=T.retazos.filter(r=>!ids.has(r.id));
+  let guardados=0;
+  (keep||[]).forEach(k=>{
+    const len=Math.floor(+k.len), n=Math.floor(+k.n);
+    if(!(len>0)||!(n>0)||typeof k.perfil!=="string") return;
+    for(let i=0;i<n;i++){ T.retazos.push({id:tId(),perfil:k.perfil,len,fromWork:T.workId}); guardados++; }
+  });
+  plan.forEach(g=>tGroupBars(g.bars).forEach((x,gi)=>{ T.done[g.perfil+"|"+gi+"|"+x.sig]=true; }));
+  if(T.cuts.length){
+    const name=(T.obra||"").trim()||("Obra "+new Date().toLocaleDateString("es-AR",{day:"numeric",month:"short"}));
+    if(!T.obras.some(x=>String(x.obra||"").toLowerCase()===name.toLowerCase())){
+      T.obras.unshift(tObraEntry(name)); T.obras=T.obras.slice(0,15);
+    }
+    T.obra=name;
+  }
+  T.lastFinish={workId:T.workId,usedRets};
+  saveT();
+  return {usados:usedRets.length,guardados};
+}
+
+/* Texto del aviso "Usás N retazos que ya tenés: …" ('' si el plan no usa ninguno). */
+function tRetUsedText(plan,pmap){
+  const items=[];
+  plan.forEach(g=>g.retUsed.forEach(b=>items.push(`${pmap[g.perfil]?.n||g.perfil} de ${Math.round(b.len)} mm`)));
+  if(!items.length) return "";
+  return `Usás ${items.length} retazo${items.length>1?"s":""} que ya tenés: ${items.join(" · ")}`;
+}
+
+/* Ficha técnica de un perfil del plan: kilos de las barras a comprar (lo que se carga), plata en barras a comprar, mm que sobran de barras nuevas. */
+function tSpec(g,pmap){
+  const p=pmap[g.perfil]||{}, n=p.n||g.perfil, m=n.match(/^(.*?)\s*\(([^)]*)\)\s*$/);
+  const x=t=>t.replace(/(\d)\s*x\s*(\d)/gi,"$1×$2");
+  const nombre=x(m?m[1]:n), meta=[m?m[2]:"",p.price?"$ "+fmtN(p.price)+" c/u":""].filter(Boolean).join(" · ");
+  return {nombre,meta,kg:p.kgm?Math.round(g.buyBars*T.barra/1000*p.kgm*10)/10:0,pesos:g.buyBars*(p.price||0),sobra:g.newBars.reduce((s,b)=>s+b.sobra,0)};
+}
+
+function tObraEntry(name){
+  return {id:tId(),obra:name,date:Date.now(),barra:T.barra,disco:T.disco,minSob:T.minSob,model:{...T.model},modelActive:!!T.modelActive,sourceQuote:T.sourceQuote?JSON.parse(JSON.stringify(T.sourceQuote)):null,cuts:JSON.parse(JSON.stringify(T.cuts))};
+}
+
 /* ---------- Modelo visual paramétrico 2D para Taller ---------- */
 const T_MODELS=[
-  {id:"reja",label:"Reja",def:{ancho:1200,alto:1000,sep:120,travesanos:2,ang:"90",pMarco:"cano_2020",pInt:"hierro_12",pExtra:"planchuela"}},
+  {id:"reja",label:"Reja",def:{ancho:1200,alto:1000,sep:120,travesanos:2,ang:"90",pMarco:"planchuela",pInt:"redondo_916",pExtra:"planchuela"}},
   {id:"porton",label:"Portón",def:{ancho:2400,alto:2000,sep:120,travesanos:3,hojas:2,corredizo:false,ang:"45",pMarco:"cano_4040",pInt:"cano_2020",pExtra:"planchuela"}},
   {id:"marco",label:"Marco",def:{ancho:1800,alto:2100,hojas:2,travesanos:3,ang:"45",pMarco:"cano_8040",pInt:"cano_4020",pExtra:"cano_4020"}},
+  {id:"pano",label:"Paño fijo",def:{ancho:1200,alto:1500,hojas:1,travesanos:1,ang:"45",pMarco:"cano_8040",pInt:"cano_4020",pExtra:"planchuela"}},
+  {id:"puerta",label:"Puerta",def:{ancho:900,alto:2000,sep:300,travesanos:2,ang:"45",pMarco:"cano_8040",pInt:"cano_4020",pExtra:"planchuela"}},
+  {id:"puertareja",label:"Puerta reja",def:{ancho:900,alto:2000,sep:120,travesanos:2,ang:"45",pMarco:"cano_4040",pInt:"redondo_916",pExtra:"planchuela"}},
   {id:"mesa",label:"Mesa",def:{ancho:1600,alto:750,prof:800,travesanos:1,ang:"90",pMarco:"cano_4040",pInt:"cano_4020",pExtra:"cano_2020"}},
   {id:"rack",label:"Rack",def:{ancho:1200,alto:1800,prof:400,travesanos:4,ang:"90",pMarco:"cano_3030",pInt:"cano_2020",pExtra:"cano_2020"}}
 ];
 const tClamp=(v,lo,hi)=>Math.max(lo,Math.min(hi,Math.round(v)));
+const T_ROLES=["pMarco","pInt","pExtra"];
+const tIsPuerta=t=>t==="puerta"||t==="puertareja";
+
+/* Valores de arranque de un tipo: los del tipo, pisados por "mi receta" si existe y sus perfiles todavía están en el catálogo. */
+function tTypeDef(id){
+  const tpl=T_MODELS.find(x=>x.id===id)||T_MODELS[0];
+  const def={...T_MODEL_DEF,...tpl.def,type:tpl.id};
+  const rec=T.recetas&&T.recetas[tpl.id];
+  if(rec&&typeof rec==="object"){
+    const ok=new Set(tPerfiles().map(p=>p.key));
+    T_ROLES.forEach(k=>{ if(typeof rec[k]==="string"&&ok.has(rec[k])) def[k]=rec[k]; });
+  }
+  return def;
+}
+/* ¿Los perfiles del modelo son distintos a los de arranque de su tipo? (para ofrecer guardar receta) */
+function tRecetaDiffiere(m){
+  const base=tTypeDef(m.type);
+  return T_ROLES.some(k=>m[k]!==base[k]);
+}
+
+/* Geometría del reparto de un modelo: medidas exteriores, espacio libre por hoja y marcas de barrotes (o de estantes en el rack). */
+function tMarcas(m){
+  const A=tClamp(m.ancho||1200,200,6000), B=tClamp(m.alto||1000,200,4500), sep=tClamp(m.sep||120,50,400);
+  const pM=m.pMarco||"cano_4040", pI=m.pInt||"cano_2020";
+  if(m.type==="rack"){
+    const est=tClamp(m.travesanos||4,2,7), t=espVisto(pI), g=(B-est*t)/est, marcas=[];
+    for(let k=1;k<=est;k++) marcas.push(Math.round(k*(g+t)));
+    return {rack:true,n:est,t,luz:g,marcas,A,B};
+  }
+  const fr=espVisto(pM), t=espVisto(pI), int=!!m.medInt;
+  const Ao=int?A+2*fr:A, Bo=int?B+2*fr:B;
+  const doble=m.type==="porton"&&(m.hojas||1)===2, hojas=doble?2:1;
+  const hA=doble?Math.round(Ao/2):Ao, W=Math.round((hA-2*fr)*100)/100;
+  const r=repartoLuz(W,sep,t);
+  return {...r,t,fr,W,Ao:Math.round(Ao),Bo:Math.round(Bo),hA,hojas,lBar:Math.max(100,Math.round(Bo-fr-(m.corredizo?espVisto(m.pZocalo||"cano_12040"):fr))),sep};
+}
+
+/* Texto de marcas para el taller ('' si el modelo no reparte barrotes ni estantes). */
+function tMarcasTxt(m){
+  if(!(m.type==="reja"||m.type==="porton"||tIsPuerta(m.type)||m.type==="rack")) return "";
+  const g=tMarcas(m), luz=fmtQ(Math.round(g.luz*10)/10);
+  if(g.rack) return `${g.n} estantes, ${luz} mm libres entre cada uno. Desde el piso (cara de arriba): ${g.marcas.join(" · ")} mm`;
+  if(!g.n) return `Sin barrotes: el espacio libre (${fmtQ(g.W)} mm) ya es menor que la luz máxima`;
+  return `${g.n*g.hojas} barrotes${g.hojas>1?` (${g.n} por hoja)`:""}, luz ${luz} mm. Desde el filo interior del marco${g.hojas>1?", en cada hoja":""}: ${g.marcas.join(" · ")} mm`;
+}
 
 function tModelPieces(m){
   const A=tClamp(m.ancho||1200,200,6000), B=tClamp(m.alto||1000,200,4500), P=tClamp(m.prof||600,150,2500);
@@ -3463,25 +4083,37 @@ function tModelPieces(m){
   const pM=m.pMarco||"cano_4040", pI=m.pInt||"cano_2020", pE=m.pExtra||"planchuela";
   const out=[];
   if(m.type==="reja"){
-    const nBar=Math.max(0,Math.ceil(A/sep)-1), lBar=Math.max(100,B-40);
-    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:A,qty:2*n,ang,role:"marco"});
-    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:2*n,ang,role:"marco"});
-    if(nBar>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:lBar,qty:nBar*n,ang:"90",role:"int"});
-    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:A,qty:tv*n,ang:"90",role:"extra"});
+    const g=tMarcas(m);
+    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:g.Ao,qty:2*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:g.Bo,qty:2*n,ang,role:"marco"});
+    if(g.n>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:g.lBar,qty:g.n*n,ang:"90",role:"int"});
+    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:g.Ao,qty:tv*n,ang:"90",role:"extra"});
   } else if(m.type==="porton"){
-    const doble=(m.hojas||1)===2, hA=doble?Math.round(A/2):A;
-    const nBar=Math.max(0,Math.ceil(A/sep)-1), lBar=Math.max(100,B-80);
-    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:hA,qty:(doble?4:2)*n,ang,role:"marco"});
-    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:(doble?4:2)*n,ang,role:"marco"});
-    if(nBar>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:lBar,qty:nBar*n,ang:"90",role:"int"});
-    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:A,qty:tv*n,ang:"90",role:"extra"});
-    if(m.corredizo) out.push({key:"riel",label:"Riel",parte:"RIEL",perfil:"riel_porton",len:Math.min(6000,A*2),qty:n,ang:"90",role:"extra"});
+    if(m.corredizo) return rejaCuts({...m,uso:"porton",apertura:"corredizo",pBast:m.pMarco,material:m.pInt,pTrav:m.pExtra}).map((c,idx)=>({...c,key:c.parte.endsWith(" riel")?"riel":c.parte.includes("barrote")?"barrote":c.parte.includes("travesaño")?"trav":c.parte.includes("zócalo")?"zocalo":c.parte.includes("superior")?"marco_h":"marco_v",label:c.parte,role:c.parte.includes("barrote")?"int":"marco"}));
+    const g=tMarcas(m), doble=g.hojas===2;
+    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:g.hA,qty:(doble?4:2)*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:g.Bo,qty:(doble?4:2)*n,ang,role:"marco"});
+    if(g.n>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:g.lBar,qty:g.n*g.hojas*n,ang:"90",role:"int"});
+    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:g.Ao,qty:tv*n,ang:"90",role:"extra"});
+    if(m.corredizo) out.push(...rejaRielTramos(m,g.Ao).map((c,idx)=>({...c,key:idx?"riel_resto":"riel",label:"Riel (tramo)",parte:"RIEL",ang:"90",role:"extra"})));
   } else if(m.type==="marco"){
     const cols=tClamp(m.hojas||2,1,5), rows=tClamp(m.travesanos||2,1,5);
     out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:A,qty:2*n,ang,role:"marco"});
     out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:2*n,ang,role:"marco"});
     if(cols>1) out.push({key:"par",label:"Parantes",parte:"PAR",perfil:pI,len:Math.max(100,B-80),qty:(cols-1)*n,ang:"90",role:"int"});
     if(rows>1) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pI,len:Math.max(100,A-80),qty:(rows-1)*n,ang:"90",role:"int"});
+  } else if(m.type==="pano"){
+    const cols=tClamp(m.hojas||1,1,5), rows=tClamp(m.travesanos||1,1,5);
+    out.push({key:"marco_h",label:"Marco H",parte:"MAR H",perfil:pM,len:A,qty:2*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Marco V",parte:"MAR V",perfil:pM,len:B,qty:2*n,ang,role:"marco"});
+    if(cols>1) out.push({key:"par",label:"Parantes",parte:"PAR",perfil:pI,len:Math.max(100,B-80),qty:(cols-1)*n,ang:"90",role:"int"});
+    if(rows>1) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pI,len:Math.max(100,A-80),qty:(rows-1)*n,ang:"90",role:"int"});
+  } else if(tIsPuerta(m.type)){
+    const g=tMarcas(m);
+    out.push({key:"marco_h",label:"Bastidor H",parte:"BAS H",perfil:pM,len:g.Ao,qty:2*n,ang,role:"marco"});
+    out.push({key:"marco_v",label:"Bastidor V",parte:"BAS V",perfil:pM,len:g.Bo,qty:2*n,ang,role:"marco"});
+    if(g.n>0) out.push({key:"barrote",label:"Barrotes",parte:"BAR",perfil:pI,len:g.lBar,qty:g.n*n,ang:"90",role:"int"});
+    if(tv>0) out.push({key:"trav",label:"Travesaños",parte:"TRAV",perfil:pE,len:Math.max(100,Math.round(g.Ao-2*g.fr)),qty:tv*n,ang:"90",role:"extra"});
   } else if(m.type==="mesa"){
     out.push({key:"pata",label:"Patas",parte:"PATA",perfil:pM,len:B,qty:4*n,ang:"90",role:"marco"});
     out.push({key:"larg",label:"Largueros",parte:"LARG",perfil:pI,len:Math.max(100,A-80),qty:2*n,ang:"90",role:"int"});
@@ -3593,8 +4225,9 @@ function tModelSVG(m,pmap,sel,opts){
       const pD=`M${x1+3} ${y}V${y+h}M${x1+w1-3} ${y}V${y+h}M${x2+3} ${y}V${y+h}M${x2+w2-3} ${y}V${y+h}`;
       body+=grp("pata",`<path d="${pD}" class="tm-marco" stroke-width="4.5"/>`,pD,[x1+w1,y+h*0.55]);
       let lD="", cD="";
+      const gm=tMarcas(m);
       for(let k=0;k<est;k++){
-        const yy=est===1?y+h/2:y+4+(h-10)*k/(est-1);
+        const yy=y+h-h*(gm.marcas[k]-gm.t/2)/B;
         lD+=`M${x1+5} ${yy}H${x1+w1-5}`;
         cD+=`M${x2+5} ${yy}H${x2+w2-5}`;
       }
@@ -3606,14 +4239,14 @@ function tModelSVG(m,pmap,sel,opts){
     body+=dimV(x1-12,y,y+h,`${B}`);
   } else {
     /* Vista frontal 2D: Reja, Portón, Marco con cortes anotados sobre cada zona */
-    const padL=62, padR=46, padT=34, padB=m.type==="porton"&&m.corredizo?44:34;
+    const padL=76, padR=46, padT=34, padB=m.type==="porton"&&m.corredizo?44:34;
     const sc=Math.min((W-padL-padR)/A,(H-padT-padB)/B);
     const w=A*sc, h=B*sc, x=padL+(W-padL-padR-w)/2, y=padT+(H-padT-padB-h)/2;
 
     body+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="var(--card)" opacity="${print?"0":"0.7"}"/>`;
 
-    if(m.type==="marco"){
-      const cols=tClamp(m.hojas||2,1,5), rows=tClamp(m.travesanos||2,1,5);
+    if(m.type==="marco"||m.type==="pano"){
+      const cols=tClamp(m.hojas||(m.type==="pano"?1:2),1,5), rows=tClamp(m.travesanos||(m.type==="pano"?1:2),1,5);
       if(cols>1){
         let d=""; for(let k=1;k<cols;k++){ const xx=x+w*k/cols; d+=`M${xx} ${y+3}V${y+h-3}`; }
         body+=grp("par",`<path d="${d}" class="tm-int" stroke-width="3.2"/>`,d,[x+w*0.36,y+h*0.30]);
@@ -3624,10 +4257,11 @@ function tModelSVG(m,pmap,sel,opts){
       }
       body+=`<text x="${x+w/2}" y="${H-6}" text-anchor="middle" class="tm-sub-t">${cols}×${rows} paños · cortes en mm${(m.cant||1)>1?` · ×${m.cant} u.`:""}</text>`;
     } else {
-      const sep=tClamp(m.sep||120,50,400), nBar=Math.max(0,Math.ceil(A/sep)-1);
+      const g=tMarcas(m), nBar=g.n;
       const tv=tClamp(m.travesanos??2,0,8);
       if(nBar>0){
-        let d=""; for(let k=1;k<=nBar;k++){ const xx=x+w*k/(nBar+1); d+=`M${xx} ${y+3}V${y+h-3}`; }
+        let d=""; const px=w/g.Ao;
+        for(let hj=0;hj<g.hojas;hj++) g.marcas.forEach(mk=>{ const xx=x+px*(hj*g.hA+g.fr+mk+g.t/2); d+=`M${xx.toFixed(1)} ${y+3}V${y+h-3}`; });
         body+=grp("barrote",`<path d="${d}" class="tm-int" stroke-width="2.2"/>`,d,[x+w*0.34,y+h*0.30]);
       }
       if(tv>0){
@@ -3639,8 +4273,7 @@ function tModelSVG(m,pmap,sel,opts){
         const rD=`M${x-14} ${y+h+10}H${x+w+14}`;
         body+=grp("riel",`<path d="${rD}" class="tm-extra" stroke-width="3.5"/><circle cx="${x+16}" cy="${y+h+6}" r="3.5" fill="var(--accent)"/><circle cx="${x+w-16}" cy="${y+h+6}" r="3.5" fill="var(--accent)"/>`,rD,[x+w/2,y+h+24]);
       }
-      const luz=nBar>0?Math.round(A/(nBar+1)):A;
-      body+=`<text x="${x+w/2}" y="${H-5}" text-anchor="middle" class="tm-sub-t">${nBar} barrotes c/ ${luz} mm${m.type==="porton"&&m.hojas===2?" · 2 hojas":""}${(m.cant||1)>1?` · ×${m.cant} u.`:""}</text>`;
+      body+=`<text x="${x+w/2}" y="${H-5}" text-anchor="middle" class="tm-sub-t">${nBar*g.hojas} barrotes · luz ${fmtQ(Math.round(g.luz*10)/10)} mm${m.type==="porton"&&m.hojas===2?" · 2 hojas":""}${(m.cant||1)>1?` · ×${m.cant} u.`:""}</text>`;
     }
 
     const mhD=`M${x} ${y}H${x+w}M${x} ${y+h}H${x+w}`;
@@ -3697,7 +4330,9 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
   const hasInt=pieces.some(p=>p.role==="int"), hasExtra=pieces.some(p=>p.role==="extra");
   const pname=k=>pmap[k]?.n||k;
   const isProf=m.type==="mesa"||m.type==="rack";
-  const isReja=m.type==="reja"||m.type==="porton";
+  const isReja=m.type==="reja"||m.type==="porton"||tIsPuerta(m.type);
+  const isGrid=m.type==="marco"||m.type==="pano";
+  const tipoLbl=T_MODELS.find(x=>x.id===m.type)?.label||"modelo";
 
   const multiTabs=T.models.length>1?`<div class="presets" role="group" aria-label="Aberturas del pedido">
     ${T.models.map((mo,idx)=>`<button type="button" class="preset" data-tmidx="${idx}" aria-pressed="${idx===T.modelIdx}">${esc(mo.label||`Pieza ${idx+1}`)}</button>`).join("")}
@@ -3706,27 +4341,22 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
   const selBar=sel?`<div class="tmod-sel">
     <div><b>${esc(selLabel)}</b>${barHits.length?`<div class="small" style="margin-top:2px">Sale en: <b>${esc(barHits.join(" · "))}</b></div>`:(T.cuts.length?`<div class="small muted" style="margin-top:2px">No coincide con cortes cargados todavía</div>`:"")}</div>
     <button type="button" class="tmod-clr" data-tselclr aria-label="Quitar selección">✕</button>
-  </div>`:`<div class="small muted" style="padding:0 2px">Cada etiqueta sobre el plano muestra <b>cant. × largo (mm)</b>. Tocá una pieza${compact?" o una barra":""} para cruzarlas.</div>`;
+  </div>`:"";
 
-  const chips=`<div class="tmod-chips">${pieces.map(p=>{
-    const hl=sel&&tMatchSel(p,p.perfil,sel);
-    const payload=esc(JSON.stringify({key:p.key,label:p.label,parte:p.parte,perfil:p.perfil,len:p.len,qty:p.qty,ang:p.ang}));
-    return `<button type="button" class="tmod-chip ${hl?"hl":""}" data-tsel="${payload}">${esc(p.parte)} <span>${p.len}</span><span class="q">×${p.qty}</span></button>`;
-  }).join("")}</div>`;
 
   const legend=`<div class="tmod-leg">
     <span><i class="l-m"></i>${esc(pname(m.pMarco))}</span>
     ${hasInt?`<span><i class="l-i"></i>${esc(pname(m.pInt))}</span>`:""}
-    ${hasExtra?`<span><i class="l-e"></i>${esc(pname(m.type==="porton"&&m.corredizo&&!pieces.some(p=>p.key==="trav")?"riel_porton":m.pExtra))}</span>`:""}
+    ${hasExtra?`<span><i class="l-e"></i>${esc(pname(m.type==="porton"&&m.corredizo&&!pieces.some(p=>p.key==="trav")?(m.pRiel||"angulo"):m.pExtra))}</span>`:""}
   </div>`;
 
   if(compact){
-    return `<details class="card" data-sec="tmodel2" ${S.open.tmodel2!==false?"open":""}>
+    return `<details class="card" data-sec="tmodel2" ${S.open.tmodel2?"open":""}>
       <summary><h2>Plano y cortes del pedido</h2><span class="sumv mono">${m.ancho}×${m.alto}${isProf?`×${m.prof}`:""} mm</span>${svg("chev",'class="chev"')}</summary>
       <div class="inner">
         ${multiTabs}
         <div class="tmod-stage">${tModelSVG(m,pmap,sel,{plan})}${legend}</div>
-        ${chips}
+        ${tMarcasTxt(m)?`<p class="tmarcas"><b>Marcas:</b> ${esc(tMarcasTxt(m))}</p>`:""}
         ${selBar}
       </div>
     </details>`;
@@ -3742,25 +4372,27 @@ function tModelCardHTML(m,perf,pmap,plan,compact){
       ${T_MODELS.map(x=>`<button type="button" class="preset" data-tmtype="${x.id}" aria-pressed="${m.type===x.id}">${x.label}</button>`).join("")}
     </div>
     <div class="tmod-stage">${tModelSVG(m,pmap,sel,{plan})}${legend}</div>
-    ${chips}
+    ${tMarcasTxt(m)?`<p class="tmarcas"><b>Marcas:</b> ${esc(tMarcasTxt(m))}</p>`:""}
     ${selBar}
     <div class="tmod-fields ${isProf||isReja?"g3":""}">
       <div class="field"><label for="tm_a">Ancho (mm)</label><input id="tm_a" class="txt mono" inputmode="numeric" data-tmf="ancho" value="${m.ancho}"></div>
       <div class="field"><label for="tm_b">Alto (mm)</label><input id="tm_b" class="txt mono" inputmode="numeric" data-tmf="alto" value="${m.alto}"></div>
       ${isProf?`<div class="field"><label for="tm_p">Prof. (mm)</label><input id="tm_p" class="txt mono" inputmode="numeric" data-tmf="prof" value="${m.prof}"></div>`:""}
-      ${isReja?`<div class="field"><label for="tm_sep">Barrotes c/ (mm)</label><input id="tm_sep" class="txt mono" inputmode="numeric" data-tmf="sep" value="${m.sep}"></div>`:""}
-      ${m.type==="marco"?`<div class="field"><label for="tm_h">Paños ancho</label><input id="tm_h" class="txt mono" inputmode="numeric" data-tmf="hojas" value="${m.hojas}"></div>`:""}
-      <div class="field"><label for="tm_tv">${m.type==="rack"?"Estantes":m.type==="marco"?"Paños alto":m.type==="mesa"?"Refuerzos":"Travesaños"}</label><input id="tm_tv" class="txt mono" inputmode="numeric" data-tmf="travesanos" value="${m.travesanos}"></div>
+      ${isReja?`<div class="field"><label for="tm_sep">Luz máx. (mm)</label><input id="tm_sep" class="txt mono" inputmode="numeric" data-tmf="sep" value="${m.sep}"></div>`:""}
+      ${isGrid?`<div class="field"><label for="tm_h">Paños ancho</label><input id="tm_h" class="txt mono" inputmode="numeric" data-tmf="hojas" value="${m.hojas}"></div>`:""}
+      <div class="field"><label for="tm_tv">${m.type==="rack"?"Estantes":isGrid?"Paños alto":m.type==="mesa"?"Refuerzos":"Travesaños"}</label><input id="tm_tv" class="txt mono" inputmode="numeric" data-tmf="travesanos" value="${m.travesanos}"></div>
       ${m.type==="porton"?`<div class="field"><span class="flabel">Hojas</span><div class="opts g2"><button type="button" class="opt sm" data-tmhojas="1" aria-pressed="${m.hojas!==2}">1</button><button type="button" class="opt sm" data-tmhojas="2" aria-pressed="${m.hojas===2}">2</button></div></div>`:""}
       ${!isProf?`<div class="field"><span class="flabel">Esquinas</span><div class="opts g2"><button type="button" class="opt sm" data-tmang="90" aria-pressed="${m.ang==="90"}">90°</button><button type="button" class="opt sm" data-tmang="45" aria-pressed="${m.ang==="45"}">45°</button></div></div>`:""}
     </div>
+    ${isReja?`<button type="button" class="swrow inline" data-tact="tmint" aria-pressed="${!!m.medInt}"><span class="swlbl">La medida es interior<span class="swsub">Ancho y alto sin el marco; el marco se corta más largo</span></span><span class="sw" aria-hidden="true"></span></button>`:""}
     ${m.type==="porton"?`<button type="button" class="swrow inline" data-tact="tmcorr" aria-pressed="${!!m.corredizo}"><span class="swlbl">Portón corredizo<span class="swsub">Suma riel inferior en el plano y cortes</span></span><span class="sw" aria-hidden="true"></span></button>`:""}
-    <details class="tnew" ${S.open.tmperfs?"open":""} data-sec="tmperfs"><summary>Perfiles del modelo (${esc(pname(m.pMarco))}${hasInt?" / "+esc(pname(m.pInt)):""})</summary>
+    <details class="tnew" ${S.open.tmperfs?"open":""} data-sec="tmperfs"><summary>Cambiar perfiles</summary>
       <div class="tmod-fields" style="margin-top:8px">
         <div class="field"><label for="tm_pm">${isProf?"Patas / parantes":"Marco"}</label><select id="tm_pm" class="txt" data-tmf="pMarco">${perf.map(p=>`<option value="${esc(p.key)}" ${p.key===m.pMarco?"selected":""}>${esc(p.n)}</option>`).join("")}</select></div>
         <div class="field"><label for="tm_pi">${isProf?"Largueros":"Interior / barrotes"}</label><select id="tm_pi" class="txt" data-tmf="pInt">${perf.map(p=>`<option value="${esc(p.key)}" ${p.key===m.pInt?"selected":""}>${esc(p.n)}</option>`).join("")}</select></div>
         ${hasExtra?`<div class="field"><label for="tm_pe">${m.type==="rack"?"Lateral est.":"Travesaños / ref."}</label><select id="tm_pe" class="txt" data-tmf="pExtra">${perf.map(p=>`<option value="${esc(p.key)}" ${p.key===m.pExtra?"selected":""}>${esc(p.n)}</option>`).join("")}</select></div>`:""}
       </div>
+      ${tRecetaDiffiere(m)?`<button type="button" class="btn ghost sm" style="margin-top:8px;width:100%" data-tact="saverec">Guardar como mi receta para ${esc(tipoLbl)}</button>`:(T.recetas&&T.recetas[m.type]?`<p class="small muted" style="margin:8px 0 0">Estos son los perfiles de tu receta de ${esc(tipoLbl)}.</p>`:"")}
     </details>
     <div class="two">
       <button type="button" class="btn primary sm" data-tact="tmgen">Cargar cortes (${pieces.reduce((s,p)=>s+p.qty,0)} pzas)</button>
@@ -3798,10 +4430,27 @@ function tBarSVG(b,barra,disco,minSob,perfil,sel){
 const tCutTxt=p=>`${p.len}${p.ang==="45"?" (45°)":""}${p.parte?" "+p.parte:""}`;
 const tRango=g=>g.bar.retazo?`Retazo ${g.bar.len} mm${g.n>1?` (×${g.n})`:""}`:(g.n>1?`Barras ${g.from} a ${g.from+g.n-1}`:`Barra ${g.from}`);
 
+function tSourceNotes(){
+  const q=T.sourceQuote;
+  const notes=q?pendingStandards(q.jobId,[...(q.extraItems||[]),q.inputs]):[];
+  const all=getAllCatalog(customMats);
+  if(q){
+    const r=compute(JOBS.find(j=>j.id===q.jobId),q.inputs,cfg,prices,q.hoursOv||{},q.opts||{},q.extraMats||[],q.qtyOv||{},customMats,q.extraItems||[]);
+    const pending=r.mats.filter(m=>m.est&&m.qty>0);
+    if(pending.length)notes.unshift("PRECIOS SIN REF. SEGURA: "+pending.map(m=>m.name).join("; "));
+  }
+  if(T.cuts.some(c=>all[c.perfil]?.est&&!(c.perfil in prices))) notes.unshift("ESTIMADO: hay perfiles sin ref. segura; confirmar precios.");
+  if(T.cuts.some(c=>c.len>T.barra)) notes.push("Hay cortes más largos que la barra: requiere revisar o empalmar; compra estimada.");
+  return notes;
+}
 function tPlanillaText(plan,pmap){
-  const L=[`PLANILLA DE CORTE${T.obra?" — "+T.obra:""}`,`Barras de ${fmtQ(T.barra/1000)} m · disco ${fmtQ(T.disco)} mm · medidas en mm`,""];
+  const L=[...tSourceNotes(),`PLANILLA DE CORTE${T.obra?" — "+T.obra:""}`,`Barras de ${fmtQ(T.barra/1000)} m · disco ${fmtQ(T.disco)} mm · medidas en mm`,""];
+  if(T.modelActive){
+    (T.models.length>1?T.models:[T.model]).forEach((mo,i)=>{ const t=tMarcasTxt(mo); if(t) L.push(`▸ Marcas ${mo.label||(T_MODELS.find(x=>x.id===mo.type)?.label||"")+" "+mo.ancho+"×"+mo.alto}: ${t}`); });
+    if(L.length>3) L.push("");
+  }
   plan.forEach(g=>{
-    const name=(pmap[g.perfil]?.n||g.perfil).toUpperCase();
+    const name=pmap[g.perfil]?.n||g.perfil;
     const extra=g.retUsed.length?` (+ ${g.retUsed.length} retazo${g.retUsed.length>1?"s":""})`:"";
     L.push(`▸ ${name} — ${g.newBars.length} barra${g.newBars.length!==1?"s":""} nueva${g.newBars.length!==1?"s":""}${extra}`);
     tGroupBars(g.bars).forEach(x=>{
@@ -3815,7 +4464,7 @@ function tPlanillaText(plan,pmap){
 }
 
 function tCorralonText(plan,pmap){
-  const L=[`Pedido de hierros${T.obra?" — "+T.obra:""} (barras de ${fmtQ(T.barra/1000)} m):`];
+  const L=[...tSourceNotes(),`Pedido de hierros${T.obra?" — "+T.obra:""} (barras de ${fmtQ(T.barra/1000)} m):`];
   plan.forEach(g=>{
     if(g.buyBars<=0) return;
     L.push(`• ${g.buyBars} barra${g.buyBars>1?"s":""} — ${pmap[g.perfil]?.n||g.perfil}${g.empBars?` (incluye ${g.empBars} para empalmes)`:""}`);
@@ -3829,7 +4478,7 @@ function tPrintHTML(plan,pmap){
   T.cuts.forEach(c=>{ const k=[c.parte||"",c.perfil,c.len,c.ang].join("|"); piezas[k]=(piezas[k]||0)+c.qty; });
   const printList=T.modelActive?(T.models.length>1?T.models:[T.model]):[];
   const modBlock=printList.map(mo=>`<div class="pmodel">${mo.label?`<div style="font-weight:700;font-size:11pt;margin-bottom:2mm">${esc(mo.label)}</div>`:""}${tModelSVG(mo,pmap,null,{forPrint:true})}</div>`).join("");
-  return `<h1>Planilla de corte${T.obra?" — "+esc(T.obra):""}</h1>
+  return `${tSourceNotes().map(w=>`<p><b>${esc(w)}</b></p>`).join("")}<h1>Planilla de corte${T.obra?" — "+esc(T.obra):""}</h1>
   <div class="meta">${esc(fecha)} · Barras de ${fmtQ(T.barra/1000)} m · disco ${fmtQ(T.disco)} mm · medidas en mm · cortar primero los largos</div>
   ${modBlock}
   ${plan.map(g=>`<h2>${esc(pmap[g.perfil]?.n||g.perfil)} — ${g.newBars.length} barra${g.newBars.length!==1?"s":""}${g.retUsed.length?` (+ ${g.retUsed.length} retazo${g.retUsed.length>1?"s":""})`:""}</h2>
@@ -3855,13 +4504,29 @@ const T_EJEMPLO=[
   {perfil:"cano_4020",parte:"PTA2",ang:"90",len:850,qty:4}
 ];
 
+/* Tarjeta "Terminé de cortar": botón, lista de sobrantes con tildes, o aviso de obra ya terminada. */
+function tFinishCardHTML(plan,pmap){
+  if(tTerminada()) return `<section class="card" aria-label="Obra terminada"><div class="banner good">${svg("check")}<div>Obra terminada: el stock de retazos ya está al día.</div></div></section>`;
+  if(!S.tFin) return "";
+  const left=tLeftovers(plan,T.minSob), nUsed=plan.reduce((s,g)=>s+g.retUsed.length,0);
+  const keyOf=k=>k.perfil+"|"+k.len;
+  return `<section class="card" aria-labelledby="t_finh">
+    <h2 id="t_finh">Terminé de cortar</h2>
+    <p class="small muted" style="margin:0">${nUsed?`Saco del stock ${nUsed} retazo${nUsed>1?"s":""} que usaste. `:""}${left.length?"Tildá los sobrantes que querés guardar para próximas obras:":"No sobró nada que valga la pena guardar."}</p>
+    ${left.length?`<ul class="rows">${left.map(k=>`<li class="row"><label style="display:flex;gap:8px;align-items:center;flex:1"><input type="checkbox" data-tfinck="${esc(keyOf(k))}" ${S.tFin.off&&S.tFin.off[keyOf(k)]?"":"checked"}> <span>${esc(pmap[k.perfil]?.n||k.perfil)} · <b class="num">${k.len} mm</b>${k.n>1?` <b>×${k.n}</b>`:""}</span></label></li>`).join("")}</ul>`:""}
+    <div class="two">
+      <button type="button" class="btn primary sm" data-tact="finishok">Listo, guardar</button>
+      <button type="button" class="btn ghost sm" data-tact="finishno">Cancelar</button>
+    </div>
+  </section>`;
+}
+
 function renderTaller(){
   bar.classList.add("hidden");
   renderNav();
   const perf=tPerfiles(), pmap=Object.fromEntries(perf.map(p=>[p.key,p]));
   if(!pmap[T.form.perfil]) T.form.perfil=(pmap.cano_4040||perf[0]).key;
-  const activeRets=T.usarRetazos?T.retazos.filter(r=>!r.fromWork||r.fromWork!==T.workId):[];
-  const plan=tPlan(T.cuts,T.barra,T.disco,activeRets);
+  const plan=tPlan(T.cuts,T.barra,T.disco,tActiveRets());
   S.tPlan=plan; S.tPmap=pmap;
   const totBuy=plan.reduce((s,g)=>s+g.buyBars,0);
   const totRetUsed=plan.reduce((s,g)=>s+g.retUsed.length,0);
@@ -3872,6 +4537,11 @@ function renderTaller(){
   const perfUsados=[...new Set(T.cuts.map(c=>c.perfil))];
   const planilla=T.cuts.length?tPlanillaText(plan,pmap):"";
   const tst=T.step||1;
+  const source=T.sourceQuote;
+  const sourceWarnings=source?pendingStandards(source.jobId,[...(source.extraItems||[]),source.inputs]):[];
+  const sourceBlock=source?`<section class="card"><h2>Referencia del presupuesto</h2><p class="small muted">Este dibujo conserva las medidas originales. Si editás cortes manualmente, revisá las diferencias.</p>${[...(source.extraItems||[]),source.inputs].map(i=>drawing(JOBS.find(j=>j.id===source.jobId),i)).join("")}<button type="button" class="btn ghost sm" data-act="edit-source">Editar medidas en el presupuesto</button>${source.jobId==="puertitas"?`<p class="small">Chapa: ${esc(source.inputs.hojas)} pieza(s) de ${Math.round(source.inputs.ancho/(+source.inputs.hojas||1))} × ${source.inputs.alto} mm por hueco. El plan de barras incluye los ángulos.</p>`:""}${sourceWarnings.map(w=>`<p class="field-err">${esc(w)}</p>`).join("")}</section>`:"";
+  const retUsedTxt=tRetUsedText(plan,pmap);
+  const retUsedBanner=retUsedTxt?`<div class="banner good">${svg("sparkle")}<div>${esc(retUsedTxt)}</div></div>`:"";
 
   /* Estadísticas de aprovechamiento y peso estimado */
   let totMatMm=0, totCutMm=0, totGuardMm=0, totKg=0;
@@ -3882,9 +4552,8 @@ function renderTaller(){
       const cm=b.pieces.reduce((s,p)=>s+p.len,0);
       totCutMm+=cm;
       if(b.sobra>=T.minSob) totGuardMm+=b.sobra;
-      if(kgm) totKg+=(cm/1000)*kgm;
     });
-    g.largas.forEach(p=>{ if(kgm) totKg+=(p.len/1000)*kgm; });
+    if(kgm) totKg+=g.buyBars*T.barra/1000*kgm;
   });
   const aprovPct=totMatMm?Math.round(totCutMm/totMatMm*100):0;
   const uForm=T.form.u||"mm";
@@ -3914,8 +4583,9 @@ function renderTaller(){
 
     ${tModelCardHTML(T.model,perf,pmap,plan,false)}
 
-    <section class="card" aria-labelledby="t_addh">
-      <h2 id="t_addh">Agregar cortes manuales</h2>
+    <details class="card" data-sec="taddman" ${S.open.taddman||!T.cuts.length&&!T.modelActive?"open":""}>
+      <summary><h2 id="t_addh">Agregar cortes a mano</h2><span class="sumv"></span>${svg("chev",'class="chev"')}</summary>
+      <div class="inner">
       <div class="field"><label for="t_perfil">Perfil</label>
         <select id="t_perfil" class="txt">${perf.map(p=>`<option value="${esc(p.key)}" ${p.key===T.form.perfil?"selected":""}>${esc(p.n)}</option>`).join("")}</select>
         <details class="tnew"><summary>${svg("plus",'class="ico"')} ¿No está tu perfil? Agregalo</summary>
@@ -3937,7 +4607,7 @@ function renderTaller(){
         <div class="field"><span class="flabel" id="t_ul">Unidad</span>
           <div class="opts g2" role="group" aria-labelledby="t_ul">
             <button type="button" class="opt sm" data-tu="mm" aria-pressed="${uForm==="mm"}">mm</button>
-            <button type="button" class="opt sm" data-tu="cm" aria-pressed="${uForm==="cm"}">cm</button>
+
           </div>
         </div>
       </div>
@@ -3955,7 +4625,8 @@ function renderTaller(){
           :"Ej: <b>2640x2 1530x3</b> (también <b>2x2640</b> o <b>2,64</b> en m)."}</p>
         ${S.errs.t?`<p class="field-err" role="alert">${esc(S.errs.t)}</p>`:""}
       </div>
-    </section>
+      </div>
+    </details>
 
     ${T.cuts.length?`
     <section class="card" aria-labelledby="t_listh">
@@ -3976,6 +4647,7 @@ function renderTaller(){
           </div>
         </li>`; }).join("")}</ul></div>`).join("")}
     </section>
+    ${retUsedBanner}
     <button type="button" class="btn primary" data-tstep="2">2. Ver plan de corte y compra (${totBuy} barra${totBuy!==1?"s":""}) →</button>
     `:`<div class="banner good">${svg("sparkle")}<div>Elegí un modelo arriba y tocá <b>Cargar cortes</b>, o escribí las medidas manuales (<b>2640x2 1530x3</b>) y tocá <b>+</b>.</div></div>`}`;
   } else if(tst===2){
@@ -3984,6 +4656,7 @@ function renderTaller(){
       <button type="button" class="tmod-clr" data-tselclr aria-label="Quitar selección">✕</button>
     </div>`:"";
     tBody = T.cuts.length ? `
+    ${sourceBlock}
     <section class="card total-card" aria-label="Qué comprar">
       <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px">
         <div>
@@ -3997,22 +4670,18 @@ function renderTaller(){
       </div>
       <div>${plan.map(g=>{ const p=pmap[g.perfil]; return `<div class="tbuy">
         <span class="n">${g.buyBars}</span>
-        <span><b style="font-size:13px">${esc(pname(g.perfil))}</b><br><span class="small muted">${p?ars(p.price)+" c/u":"sin precio"}${g.retUsed.length?` · +${g.retUsed.length} retazo${g.retUsed.length>1?"s":""}`:""}${g.empBars?` · +${g.empBars} empalme`:""}</span></span>
-        ${p?`<input id="tp_${esc(g.perfil)}" class="pricein num ${p.example?"example":""}" data-price="${esc(g.perfil)}" inputmode="numeric" value="${fmtN(p.price)}" aria-label="Precio por barra de ${esc(p.n)}">`:""}
+        <span><b style="font-size:13px">${esc(pname(g.perfil))}</b><br><span class="small muted">${p?ars(p.price)+" c/u":"sin precio"}${p?.est?'<span class="estmark"> · sin ref. segura</span>':""}${g.retUsed.length?` · +${g.retUsed.length} retazo${g.retUsed.length>1?"s":""}`:""}${g.empBars?` · +${g.empBars} empalme`:""}</span></span>
+        ${p?`<input id="tp_${esc(g.perfil)}" class="pricein num ${p.est?"est":p.example?"example":""}" data-price="${esc(g.perfil)}" inputmode="numeric" value="${fmtN(p.price)}" aria-label="Precio por barra de ${esc(p.n)}">`:""}
       </div>`; }).join("")}</div>
-      <div class="tstat">
-        <span>Aprovechamiento: ${aprovPct}%</span>
-        ${totGuardMm>0?`<span>Retazos: ${fmtQ(totGuardMm/1000)} m</span>`:""}
-        ${totKg>0?`<span>≈ ${fmtQ(Math.round(totKg*10)/10)} kg</span>`:""}
-      </div>
       <div class="two">
         ${totBuy>0?`<button type="button" class="btn ghost sm" style="background:rgba(255,255,255,.1);color:var(--on-slab);border-color:rgba(255,255,255,.22)" data-tact="corralon">${svg("cart")} Corralón</button>`:`<span></span>`}
         <button type="button" class="btn primary sm" data-tact="presu">Presupuestar →</button>
       </div>
-      ${perf.some(p=>p.example&&perfUsados.includes(p.key))?`<span class="small" style="opacity:.78">Los precios en amarillo son de referencia.</span>`:""}
+      ${perf.some(p=>p.example&&perfUsados.includes(p.key))?`<span class="small" style="opacity:.78">Hay precios de referencia: cargá los tuyos en Precios.</span>`:""}
     </section>
 
-    ${T.modelActive?tModelCardHTML(T.model,perf,pmap,plan,true):`<details class="card" data-sec="tmodel2" ${S.open.tmodel2!==false?"open":""}>
+    ${retUsedBanner}
+    ${T.modelActive?tModelCardHTML(T.model,perf,pmap,plan,true):`<details class="card" data-sec="tmodel2" ${S.open.tmodel2?"open":""}>
       <summary><h2>Gráfico de cortes del pedido</h2><span class="sumv mono">${nPzas} pieza${nPzas>1?"s":""}</span>${svg("chev",'class="chev"')}</summary>
       <div class="inner">
         <div class="tmod-stage">${tOrderCutsSVG(T.cuts,pmap,S.tSel)}</div>
@@ -4023,8 +4692,14 @@ function renderTaller(){
     <section class="card" aria-labelledby="t_planh">
       <div class="tgh"><h2 id="t_planh">Plan de corte</h2><span class="small muted">Barras ${fmtQ(T.barra/1000)} m</span></div>
       ${barSelInfo}
-      ${plan.map(g=>`<div>
-        <div class="tgh"><h3>${esc(pname(g.perfil))}</h3><span class="muted small">${g.newBars.length} barra${g.newBars.length!==1?"s":""}${g.retUsed.length?` + ${g.retUsed.length} retazo${g.retUsed.length>1?"s":""}`:""}</span></div>
+      ${plan.map(g=>{ const sp=tSpec(g,pmap); return `<div>
+        <div class="tlabh"><h3>${esc(sp.nombre)}</h3><span>${esc(sp.meta)}</span></div>
+        <div class="tspec" role="group" aria-label="Ficha de ${esc(pname(g.perfil))}">
+          <div><small>Barras</small><b>${g.buyBars}${g.retUsed.length?`<span class="small muted"> +${g.retUsed.length}R</span>`:""}</b></div>
+          <div><small>Kilos</small><b>${sp.kg?fmtQ(sp.kg):"—"}</b></div>
+          <div><small>Pesos</small><b>${sp.pesos?fmtN(sp.pesos):"—"}</b></div>
+          <div class="hot"><small>Sobra</small><b>${fmtQ(Math.round(sp.sobra/100)/10)} m</b></div>
+        </div>
         ${g.tips.map(t=>`<div class="banner good" style="margin-top:6px">${svg("sparkle")}<div>Si cortás las de <b>${t.L}</b> a <b>${t.L2} mm</b> entra una más por barra y ${t.ahorro?`te ahorrás <b>${t.ahorro} barra${t.ahorro>1?"s":""}</b>`:`te queda un sobrante entero de <b>${fmtQ(t.sobra)} mm</b>`}. <button type="button" class="ov" style="color:inherit;text-decoration:underline;margin-left:4px" data-tapply="${esc(g.perfil)}" data-from="${t.L}" data-to="${t.L2}">Cambiar a ${t.L2} mm</button></div></div>`).join("")}
         ${g.largas.length?`<div class="banner warn" style="margin-top:6px">${svg("alert")}<div>${g.largas.length} corte${g.largas.length>1?"s":""} más largo${g.largas.length>1?"s":""} que la barra (${[...new Set(g.largas.map(p=>p.len))].join(", ")} mm): hay que empalmar.</div></div>`:""}
         ${tGroupBars(g.bars).map((x,gi)=>{
@@ -4036,24 +4711,27 @@ function renderTaller(){
               <button type="button" class="barck" data-tdone="${esc(dk)}" aria-pressed="${isDone}">${svg("check")} ${isDone?"Cortado":"Tildar"}</button>
             </div>
             ${tBarSVG(x.bar,T.barra,T.disco,T.minSob,g.perfil,S.tSel)}
-            <div class="bc"><span>${x.bar.pieces.map(p=>esc(tCutTxt(p))).join(" · ")} → sobra ${fmtQ(x.bar.sobra)} mm</span>${x.bar.sobra>=T.minSob?`<button type="button" class="tsavbtn" data-tsaveret="${esc(g.perfil)}" data-rlen="${Math.round(x.bar.sobra)}">+ Retazo</button>`:""}</div>
+            <div class="bc"><span>Sobra ${fmtQ(x.bar.sobra)} mm</span>${x.bar.sobra>=T.minSob?`<button type="button" class="tsavbtn" data-tsaveret="${esc(g.perfil)}" data-rlen="${Math.round(x.bar.sobra)}">+ Retazo</button>`:""}</div>
           </div>`;
         }).join("")}
-      </div>`).join("")}
+      </div>`; }).join("")}
     </section>
+
+    ${tFinishCardHTML(plan,pmap)}
 
     <section class="card" aria-labelledby="t_planillah">
       <h2 id="t_planillah">Planilla para el que corta</h2>
-      <div class="msg">${esc(planilla)}</div>
-      <div class="actions">
-        <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(planilla)}">${svg("wa")} Mandar por WhatsApp</a>
-        <div class="two">
+      <a class="btn wa" target="_blank" rel="noopener" href="https://wa.me/?text=${encodeURIComponent(planilla)}">${svg("wa")} Mandar por WhatsApp</a>
+      <details class="tnew"><summary>Ver planilla, copiar o imprimir</summary>
+        <div class="msg" style="margin-top:6px">${esc(planilla)}</div>
+        <div class="two" style="margin-top:8px">
           <button type="button" class="btn ghost" data-tact="copiar">${svg("copy")} Copiar</button>
           <button type="button" class="btn ghost" data-tact="print">${svg("layers")} Imprimir / PDF</button>
         </div>
-      </div>
+      </details>
     </section>
-    <button type="button" class="btn ghost sm" data-tstep="1">← Volver a 1. Cargar o editar cortes</button>
+    <div class="tfix-sp" aria-hidden="true"></div>
+    <div class="tfix"><div class="in"><div><small>${totBuy} barra${totBuy!==1?"s":""}</small><b>${ars(totCost)}</b></div>${tTerminada()?`<span class="done">${svg("check")} Obra terminada</span>`:`<button type="button" class="btn primary" data-tact="finish">${svg("check")} Terminé de cortar</button>`}</div></div>
     ` : `<section class="card">
       <h2>Todavía no cargaste cortes</h2>
       <p class="small muted" style="margin:0">Primero cargá las medidas en el paso 1 (o probá con el ejemplo del cuaderno) para ver cuántas barras comprar y el plan de corte.</p>
@@ -4094,8 +4772,8 @@ function renderTaller(){
   app.innerHTML=`
   <div class="top">
     <div>
-      <h1>Taller: cortes de barras</h1>
-      <p class="top-sub" style="margin:2px 0 0">1. Modelo y cortes → 2. Plan y compra → 3. Retazos</p>
+      <h1>Taller</h1>
+      <p class="top-sub" style="margin:2px 0 0">${T.obra?esc(T.obra)+" — ":""}barras ${fmtQ(T.barra/1000)} m · disco ${fmtQ(T.disco)} mm</p>
     </div>
   </div>
 
@@ -4167,7 +4845,7 @@ app.addEventListener("click",e=>{
   }
   if(d.tmtype){
     const tpl=T_MODELS.find(x=>x.id===d.tmtype);
-    if(tpl){ T.model={...T_MODEL_DEF,...tpl.def,type:tpl.id}; T.models=[]; T.modelIdx=0; S.tSel=null; saveT(); }
+    if(tpl){ T.sourceQuote=null; T.model=tTypeDef(tpl.id); T.models=[]; T.modelIdx=0; S.tSel=null; saveT(); }
     return rerenderTaller();
   }
   if(d.tmang){ T.model.ang=d.tmang; saveT(); return rerenderTaller(); }
@@ -4196,7 +4874,7 @@ app.addEventListener("click",e=>{
   if(d.tload!==undefined){
     const o=T.obras[+d.tload];
     if(o){
-      T.workId=tId(); T.obra=o.obra; T.cuts=JSON.parse(JSON.stringify(o.cuts));
+      T.workId=tId(); T.sourceQuote=o.sourceQuote?JSON.parse(JSON.stringify(o.sourceQuote)):null; T.obra=o.obra; T.cuts=JSON.parse(JSON.stringify(o.cuts));
       T.barra=o.barra||6000; T.disco=o.disco??3; T.minSob=o.minSob??300; T.done={};
       T.model={...T_MODEL_DEF,...(o.model||{})}; T.modelActive=!!o.modelActive; S.tSel=null;
       saveT(); toast("Obra cargada"); rerenderTaller();
@@ -4212,12 +4890,27 @@ app.addEventListener("click",e=>{
   if(d.tq){ const c=T.cuts.find(x=>x.id===d.tq); if(c){ c.qty=Math.max(1,Math.min(500,c.qty+(+d.d))); saveT(); } return rerenderTaller(); }
   if(d.tdel){ T.cuts=T.cuts.filter(x=>x.id!==d.tdel); saveT(); toast("Corte borrado"); return rerenderTaller(); }
   const a=d.tact;
+  if(a==="finish"){ S.tFin={off:{}}; rerenderTaller(); const h=document.getElementById("t_finh"); if(h) h.scrollIntoView({block:"center"}); return; }
+  if(a==="finishno"){ S.tFin=null; return rerenderTaller(); }
+  if(a==="finishok"){
+    const plan=S.tPlan||[], off=(S.tFin&&S.tFin.off)||{};
+    const keep=tLeftovers(plan,T.minSob).filter(k=>!off[k.perfil+"|"+k.len]);
+    const r=tFinishCutting(plan,keep); S.tFin=null;
+    toast(r.usados||r.guardados?`Listo: ${r.usados?`quité ${r.usados} retazo${r.usados>1?"s":""} usado${r.usados>1?"s":""}`:"stock al día"}${r.guardados?` y guardé ${r.guardados} sobrante${r.guardados>1?"s":""}`:""}`:"Obra terminada");
+    return rerenderTaller();
+  }
+  if(a==="saverec"){
+    const ty=T.model.type, lbl=T_MODELS.find(x=>x.id===ty)?.label||ty;
+    T.recetas[ty]={pMarco:T.model.pMarco,pInt:T.model.pInt,pExtra:T.model.pExtra};
+    saveT(); toast(`Receta guardada: los próximos ${lbl} arrancan así`); return rerenderTaller();
+  }
+  if(a==="tmint"){ T.model.medInt=!T.model.medInt; S.tSel=null; saveT(); return rerenderTaller(); }
   if(a==="tmcorr"){ T.model.corredizo=!T.model.corredizo; saveT(); return rerenderTaller(); }
   if(a==="tmgen"||a==="tmadd"){
     const pcs=tModelPieces(T.model);
     const lbl=(T_MODELS.find(x=>x.id===T.model.type)?.label||"Modelo")+` ${T.model.ancho}×${T.model.alto}`;
     const apply=(replace)=>{
-      if(replace){ T.workId=tId(); T.cuts=[]; T.done={}; if(!T.obra) T.obra=lbl; }
+      if(replace){ T.workId=tId(); T.sourceQuote=null; T.cuts=[]; T.done={}; if(!T.obra) T.obra=lbl; }
       pcs.forEach(p=>T.cuts.push({id:tId(),perfil:p.perfil,parte:p.parte,ang:p.ang,len:p.len,qty:p.qty}));
       tMergeCuts();
       T.modelActive=true; S.tSel=null; saveT();
@@ -4238,17 +4931,17 @@ app.addEventListener("click",e=>{
   }
   if(a==="saveobra"){
     const name=(T.obra||"").trim()||("Obra "+new Date().toLocaleDateString("es-AR",{day:"numeric",month:"short"}));
-    const entry={id:tId(),obra:name,date:Date.now(),barra:T.barra,disco:T.disco,minSob:T.minSob,model:{...T.model},modelActive:!!T.modelActive,cuts:JSON.parse(JSON.stringify(T.cuts))};
+    const entry=tObraEntry(name);
     const idx=T.obras.findIndex(x=>x.obra.toLowerCase()===name.toLowerCase());
     if(idx>=0) T.obras[idx]=entry; else T.obras.unshift(entry);
     T.obras=T.obras.slice(0,15);
     T.obra=name; saveT(); toast(`Obra "${name}" guardada`); return rerenderTaller();
   }
   if(a==="ejemplo"){
-    const load=()=>{ T.workId=tId(); T.cuts=T_EJEMPLO.map(c=>({...c,id:tId()})); T.done={}; T.modelActive=false; S.tSel=null; if(!T.obra) T.obra="Ejemplo del cuaderno"; saveT(); toast("Ejemplo cargado"); rerenderTaller(); };
+    const load=()=>{ T.workId=tId(); T.sourceQuote=null; T.cuts=T_EJEMPLO.map(c=>({...c,id:tId()})); T.done={}; T.modelActive=false; S.tSel=null; if(!T.obra) T.obra="Ejemplo del cuaderno"; saveT(); toast("Ejemplo cargado"); rerenderTaller(); };
     return T.cuts.length?askConfirm("¿Reemplazar los cortes?","Se van a borrar los cortes cargados y se carga el ejemplo del cuaderno.","Reemplazar",b,load):load();
   }
-  if(a==="limpiar") return askConfirm("¿Empezar de cero?","Se borran todos los cortes cargados de esta obra.","Borrar todo",b,()=>{ T.workId=tId(); T.cuts=[]; T.obra=""; T.done={}; T.modelActive=false; S.tSel=null; T.step=1; saveT(); toast("Listo, obra nueva"); rerenderTaller(); });
+  if(a==="limpiar") return askConfirm("¿Empezar de cero?","Se borran todos los cortes cargados de esta obra.","Borrar todo",b,()=>{ T.workId=tId(); T.sourceQuote=null; T.cuts=[]; T.obra=""; T.done={}; T.modelActive=false; S.tSel=null; T.step=1; saveT(); toast("Listo, obra nueva"); rerenderTaller(); });
   if(a==="newperfil"){
     const n=(document.getElementById("t_np_n").value||"").trim();
     const p=num(document.getElementById("t_np_p").value)||0;
@@ -4297,6 +4990,7 @@ app.addEventListener("change",e=>{
   if(S.screen!=="taller") return;
   const el=e.target, d=el.dataset;
   if(el.id==="t_perfil"){ T.form.perfil=el.value; saveT(); return; }
+  if(d.tfinck!==undefined){ S.tFin=S.tFin||{off:{}}; S.tFin.off[d.tfinck]=!el.checked; return; }
   if(d.tmf){
     const k=d.tmf;
     if(k==="pMarco"||k==="pInt"||k==="pExtra"){ T.model[k]=el.value; S.tSel=null; saveT(); return rerenderTaller(); }
@@ -4321,6 +5015,7 @@ app.addEventListener("change",e=>{
 });
 
 render();
+if("serviceWorker" in navigator&&location.protocol!=="file:"){navigator.serviceWorker.register("./sw.js").catch(()=>toast("No se pudo preparar el uso sin conexión. Podés seguir usando la app con conexión."));}
 window.addEventListener("beforeinstallprompt",e=>{
   e.preventDefault();
   S.installPrompt=e;
@@ -4331,9 +5026,6 @@ window.addEventListener("appinstalled",()=>{
   toast("App Padilla instalada en tu celular");
   if(S.screen==="home") renderHome();
 });
-if("serviceWorker" in navigator){
-  window.addEventListener("load",()=>{ navigator.serviceWorker.register("./sw.js").catch(()=>{}); });
-}
 </script>
-</body>
-</html>
+
+</body></html>
