@@ -1,4 +1,4 @@
-const CACHE = "padilla-taller-v4";
+const CACHE = "padilla-taller-v5";
 const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png", "./archivo.woff2"];
 
 self.addEventListener("install", e => {

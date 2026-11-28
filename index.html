@@ -676,6 +676,7 @@ details.card > summary .sumv{white-space:nowrap}
 
 /* Inicio operativo: datos del navegador y accesos al trabajo diario. */
 .dashboard-overview{background:var(--card);border-radius:12px;overflow:hidden;margin:4px 0 24px;padding:16px}
+.dashboard-overview-empty{padding:12px 16px;margin:4px 0 20px}.dashboard-overview-empty h2{margin:0 0 4px}.dashboard-overview-empty p{margin:0;color:var(--muted);font-size:14px;line-height:1.5}
 .dashboard-overview h2,.dashboard-tools h2,.dashboard-history h2{font-size:17px;margin:0 0 12px}
 .dashboard-counts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border-block:1px solid var(--line)}
 .dashboard-counts button{min-height:94px;padding:12px 4px;border:0;background:transparent;color:var(--ink);display:flex;flex-direction:column;align-items:flex-start;gap:6px;cursor:pointer;text-align:left}
@@ -2563,7 +2564,10 @@ function renderHome(){
     <button type="button" class="item cont" data-act="draft"><span class="t1">Continuar: ${esc(draft.cliente?draft.cliente+" · ":"")}${esc(draft.desc||"Presupuesto")}</span><span class="t2">Borrador sin terminar</span><span class="t3">${Number.isFinite(draft.total)?ars(draft.total):"Abrir"}</span></button>
     <button type="button" class="x" data-act="nodraft" aria-label="Descartar borrador">${svg("x")}</button>
   </div>`:""}
-  <section class="dashboard-overview" data-dashboard aria-labelledby="dashboard-title">
+  ${!stats.total?`<section class="dashboard-overview dashboard-overview-empty" data-dashboard data-dashboard-empty aria-labelledby="dashboard-title">
+    <h2 id="dashboard-title">Mis presupuestos</h2>
+    <p>Todavía no hay ninguno. Cuando copies o compartas un presupuesto, aparece acá para seguir si lo aceptaron.</p>
+  </section>`:`<section class="dashboard-overview" data-dashboard aria-labelledby="dashboard-title">
     <h2 id="dashboard-title">Mis presupuestos</h2>
     <div class="dashboard-counts" role="group" aria-label="Filtrar presupuestos por respuesta">
       <button type="button" data-home-filter="all" aria-pressed="${filter==="all"}"><span>Guardados</span><b>${stats.total}</b></button>
@@ -2571,7 +2575,7 @@ function renderHome(){
       <button type="button" data-home-filter="si" aria-pressed="${filter==="si"}"><span>Aceptados</span><b>${stats.accepted}</b></button>
     </div>
     <div class="dashboard-caption"><span>En este navegador · hasta 30 registros</span><button type="button" data-home-filter="no" aria-pressed="${filter==="no"}">Rechazados: ${stats.rejected}</button></div>
-  </section>
+  </section>`}
   <section class="dashboard-tools" aria-labelledby="dashboard-tools-title"><h2 id="dashboard-tools-title">El taller a mano</h2>
     <ul class="dashboard-links">
       ${quick("taller","regla","Taller y cortes",pieces?pieces+" pieza"+(pieces!==1?"s":"")+" en el plan actual":"Prepará tu próximo plan de cortes","Abrir Taller")}
@@ -2580,13 +2584,13 @@ function renderHome(){
     </ul>
   </section>
   ${favs.length?`<section><h2>Mis frecuentes</h2><ul class="list">${favs.map((f,k)=>`<li class="draft"><button type="button" class="item" data-fav="${k}"><span class="t1">${esc(f.name)}</span><span class="t2">${esc((JOBS.find(j=>j.id===f.jobId)||JOBS[0]).name)}</span><span class="t3">${svg("resume",'class="ico"')}</span></button><button type="button" class="x" data-delfav="${k}" aria-label="Borrar frecuente ${esc(f.name)}">${svg("x")}</button></li>`).join("")}</ul></section>`:""}
-  <section class="dashboard-history" aria-labelledby="dashboard-history-title"><h2 id="dashboard-history-title">${title}</h2>
+  ${stats.total||visible.length?`<section class="dashboard-history" aria-labelledby="dashboard-history-title"><h2 id="dashboard-history-title">${title}</h2>
   ${visible.length?`<ul class="list">${visible.map(({entry:x,index:k})=>{
     const d=new Date(x.date), date=Number.isFinite(d.getTime())?d.toLocaleDateString("es-AR",{day:"numeric",month:"short"}):"Sin fecha";
     const state=x.estado==="si"?"Aceptado":x.estado==="no"?"Rechazado":"Sin respuesta";
     return `<li class="hist"><button type="button" class="item" data-hist="${k}"><span class="t1">${esc(x.cliente?x.cliente+" · ":"")}${esc(x.desc||"Presupuesto")}</span><span class="t2">${esc(date)} · ${state}</span><span class="t3">${Number.isFinite(x.total)?ars(x.total):"Sin importe"}</span></button><button type="button" class="mk ok" data-mk="${k}" data-v="si" aria-pressed="${x.estado==="si"}" aria-label="Marcar como aceptado">${svg("check")}</button><button type="button" class="mk no" data-mk="${k}" data-v="no" aria-pressed="${x.estado==="no"}" aria-label="Marcar como rechazado">${svg("x")}</button></li>`;
   }).join("")}</ul>${selected.length>5?`<button type="button" class="btn ghost sm dashboard-more" data-home-all>${S.homeAll?"Mostrar los últimos 5":"Ver todos ("+selected.length+")"}</button>`:""}`:`<p class="dashboard-empty">${stats.total?"No hay presupuestos con este estado. Podés cambiar el filtro de arriba.":"Todavía no guardaste presupuestos. Cuando copies o compartas uno, aparecerá acá para seguir su respuesta."}</p>`}
-  </section>`;
+  </section>`:""}`;
 }
 
 function renderSelector(){
