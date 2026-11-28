@@ -1,7 +1,15 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
-.new-quote{width:100%;min-height:64px;font-size:20px;justify-content:center;margin:8px 0 20px}
-.quote-status{padding:16px 0;margin:0 0 18px;border-bottom:1px solid var(--line-strong)}
-.quote-status.pending>b,.estimate-label{color:var(--err)}
+.new-quote{width:100%;min-height:64px;font-size:20px;justify-content:center;margin:0}
+.home-actions{display:grid;grid-template-columns:1fr;gap:10px;margin:8px 0 20px}
+.home-actions .paste-order{min-height:72px;font-size:20px;justify-content:center;flex-direction:column;gap:2px}
+.home-actions .paste-order small{font-size:13px;font-weight:500;opacity:.9}
+.home-actions .new-quote{min-height:52px;font-size:17px}
+@media(min-width:700px){.home-actions{grid-template-columns:1.4fr 1fr}.home-actions .new-quote{min-height:72px}}
+.quote-status{padding:8px 0 10px;margin:0 0 12px;border-bottom:1px solid var(--line-strong)}
+.quote-status .qs-row{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.quote-status .qs-row span{line-height:1.35}
+.quote-status .qs-row .btn{flex:0 0 auto}
+.quote-status.pending .qs-row>span>b:first-child,.estimate-label{color:var(--err)}
 .quote-status p{margin:6px 0 10px;line-height:1.5}
 .quote-status details{margin-top:12px}.quote-status li{margin:8px 0;line-height:1.5}
 .profile-details{margin:18px 0;padding:16px 0;border-block:1px solid var(--line)}
@@ -108,6 +116,7 @@ h3{font-size:14px;font-weight:750}
 /* Caja para pegar pedido de Clickie (compacta por defecto para priorizar la grilla) */
 .clickie-box{background:var(--card);border:1.5px solid var(--line-strong);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;gap:8px;box-shadow:0 2.5px 0 var(--line-strong)}
 .clickie-box.open{border:2px solid var(--ink);box-shadow:var(--tactile-ink)}
+.pick-job{margin:18px 0 8px}
 .clickie-hd{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .clickie-toggle{flex:1;min-width:0;border:none;background:none;padding:0;display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:800;color:var(--ink);text-align:left}
 .clickie-toggle .cbadge{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:999px;background:var(--ink);color:var(--on-slab);flex:none}
@@ -116,7 +125,7 @@ h3{font-size:14px;font-weight:750}
 .clickie-paste{border:1.5px solid var(--ink);background:var(--surface);color:var(--ink);border-radius:8px;padding:4px 9px;font-size:12px;font-weight:800;display:inline-flex;align-items:center;gap:4px;box-shadow:0 2px 0 var(--ink);transition:transform .08s;flex:none}
 .clickie-paste:active{transform:translateY(1.5px);box-shadow:0 0.5px 0 var(--ink)}
 .clickie-paste svg{width:14px;height:14px;color:var(--accent)}
-.clickie-box textarea{min-height:62px;border:1.5px solid var(--line-strong);border-radius:10px;background:var(--surface);padding:8px 10px;font-size:13.5px;font-weight:500;line-height:1.35}
+.clickie-box textarea{min-height:110px;border:1.5px solid var(--line-strong);border-radius:10px;background:var(--surface);padding:10px 12px;font-size:16px;font-weight:500;line-height:1.4}
 .clickie-acts{display:flex;gap:6px;align-items:center}
 
 /* Switch nativo compacto */
@@ -2408,7 +2417,7 @@ const S={
   newRepOpen:false,
   newRepDraft:"",
   clickieText:"",
-  clickieOpen:false,
+  clickieOpen:true,
   tSel:null,
   errs:{},
   note:null
@@ -2546,7 +2555,10 @@ function renderHome(){
   app.innerHTML=`
   <div class="top"><div><h1>Padilla</h1><p class="top-sub" style="margin:2px 0 0">Tu taller de un vistazo</p></div></div>
   ${S.installPrompt?`<button type="button" class="btn ghost sm" data-act="installapp">${svg("box")} Instalar en este celular</button>`:""}
-  <button type="button" class="btn primary new-quote" data-go="selector">${svg("plus")} Nuevo presupuesto</button>
+  <div class="home-actions">
+    <button type="button" class="btn primary paste-order" data-act="dashboardclickie" aria-label="Pegar pedido de Clickie"><span>${svg("copy")} Pegar pedido</span><small>Clickie, WhatsApp o mensaje</small></button>
+    <button type="button" class="btn ghost new-quote" data-go="selector">${svg("plus")} Nuevo presupuesto</button>
+  </div>
   ${draft&&JOBS.find(j=>j.id===draft.jobId)?`<div class="draft dashboard-draft">
     <button type="button" class="item cont" data-act="draft"><span class="t1">Continuar: ${esc(draft.cliente?draft.cliente+" · ":"")}${esc(draft.desc||"Presupuesto")}</span><span class="t2">Borrador sin terminar</span><span class="t3">${Number.isFinite(draft.total)?ars(draft.total):"Abrir"}</span></button>
     <button type="button" class="x" data-act="nodraft" aria-label="Descartar borrador">${svg("x")}</button>
@@ -2564,7 +2576,6 @@ function renderHome(){
     <ul class="dashboard-links">
       ${quick("taller","regla","Taller y cortes",pieces?pieces+" pieza"+(pieces!==1?"s":"")+" en el plan actual":"Prepará tu próximo plan de cortes","Abrir Taller")}
       ${quick("repuestos","box","Mis precios",own?own+" precio"+(own!==1?"s":"")+" propio"+(own!==1?"s":"")+" guardado"+(own!==1?"s":""):"Cargá los precios de tu proveedor","Abrir mis precios")}
-      ${quick("","copy","Pegar pedido de Clickie","Traé el pedido y revisá las medidas","Pegar pedido de Clickie",'data-act="dashboardclickie"')}
       ${quick("","layers","Copia de seguridad",lastBackup,"Abrir respaldos",'data-act="dashboardbackup"')}
     </ul>
   </section>
@@ -2581,28 +2592,29 @@ function renderHome(){
 function renderSelector(){
   bar.classList.add("hidden"); renderNav();
   const cOpen=S.clickieOpen||!!S.clickieText||!!S.errs.clickie;
-  app.innerHTML=`<div class="top"><div class="top-left"><button type="button" class="back" data-go="home" aria-label="Volver al inicio">${svg("back")}</button><h1>Nuevo presupuesto</h1></div></div><p>¿Qué trabajo vas a hacer?</p>
+  app.innerHTML=`<div class="top"><div class="top-left"><button type="button" class="back" data-go="home" aria-label="Volver al inicio">${svg("back")}</button><h1>Nuevo presupuesto</h1></div></div>
+  <section class="clickie-box ${cOpen?"open":""}" aria-label="Pegar pedido de Clickie">
+    <div class="clickie-hd">
+      <button type="button" class="clickie-toggle" data-act="clickietoggle" aria-expanded="${cOpen}">
+        ${svg("copy",'class="ico" style="color:var(--accent)"')}
+        <span>Pegar el pedido</span>
+        ${svg("chev",'class="chev"')}
+      </button>
+      ${cOpen?`<button type="button" class="clickie-paste" data-act="clickiepaste" aria-label="Pegar pedido desde el portapapeles">Pegar</button>`:""}
+    </div>
+    ${cOpen?`<textarea id="clickietxt" aria-label="Pedido del cliente" placeholder="Pegá acá el pedido tal cual te llegó. Ej: 2 rejas de ventana de 1,20 x 1,00 y una puerta reja de 0,90 x 2,00">${esc(S.clickieText)}</textarea>
+    ${S.errs.clickie?`<p class="field-err" role="alert">${esc(S.errs.clickie)}</p>`:""}
+    <div class="clickie-acts">
+      <button type="button" class="btn primary" style="flex:1" data-act="clickieload">Armar presupuesto →</button>
+      ${S.clickieText?`<button type="button" class="btn ghost sm" data-act="clickieclear" aria-label="Limpiar texto">${svg("x")}</button>`:""}
+    </div>`:""}
+  </section>
+  <p class="pick-job">O elegí el trabajo a mano:</p>
   <ul class="jobs" aria-label="Trabajos">
     ${["reja","puertitas","soldadura","pintura"].map(id=>JOBS.find(j=>j.id===id)).map(j=>`<li><button type="button" class="jrow" data-job="${j.id}">${svg(j.icon)}<span class="jt"><b>${esc(j.name)}</b><small>${esc(j.hint)}</small></span>${svg("chev",'class="jchev"')}</button></li>`).join("")}
   </ul>
 
   <details class="card"><summary>Otros trabajos</summary><ul class="jobs" aria-label="Otros trabajos">${ORDER.filter(id=>!["reja","puertitas","soldadura","pintura"].includes(id)).map(id=>JOBS.find(j=>j.id===id)).map(j=>`<li><button type="button" class="jrow" data-job="${j.id}">${svg(j.icon)}<span class="jt"><b>${esc(j.name)}</b><small>${esc(j.hint)}</small></span>${svg("chev",'class="jchev"')}</button></li>`).join("")}</ul></details>
-  <section class="clickie-box ${cOpen?"open":""}" aria-label="Pegar pedido de Clickie">
-    <div class="clickie-hd">
-      <button type="button" class="clickie-toggle" data-act="clickietoggle" aria-expanded="${cOpen}">
-        ${svg("copy",'class="ico" style="color:var(--accent)"')}
-        <span>Pegar pedido de Clickie</span>
-        ${svg("chev",'class="chev"')}
-      </button>
-      ${cOpen?`<button type="button" class="clickie-paste" data-act="clickiepaste" aria-label="Pegar pedido desde el portapapeles">Pegar</button>`:""}
-    </div>
-    ${cOpen?`<textarea id="clickietxt" aria-label="Pedido del cliente" placeholder="Ej: 2 rejas de ventana de 1,20 x 1,00 y una puerta reja de 0,90 x 2,00">${esc(S.clickieText)}</textarea>
-    ${S.errs.clickie?`<p class="field-err" role="alert">${esc(S.errs.clickie)}</p>`:""}
-    <div class="clickie-acts">
-      <button type="button" class="btn primary sm" style="flex:1" data-act="clickieload">Armar presupuesto →</button>
-      ${S.clickieText?`<button type="button" class="btn ghost sm" data-act="clickieclear" aria-label="Limpiar texto">${svg("x")}</button>`:""}
-    </div>`:""}
-  </section>
 
 `;
 }
@@ -3104,8 +3116,8 @@ function renderJob(){
 
   ${S.note&&st===1?`<div class="banner good">${svg("sparkle")}<div>${esc(S.note)}</div></div>`:""}
   <section class="quote-status ${res.estimated?"pending":"checked"}" data-pending-summary aria-label="Estado del presupuesto">
-    <b>${res.estimated?"Presupuesto estimado":"Precios cargados"}</b>
-    ${res.mats.some(m=>m.est&&m.qty>0)?`<p>Faltan confirmar ${res.mats.filter(m=>m.est&&m.qty>0).length} precios${res.mats.some(m=>m.est&&m.qty>0&&m.price===0)?"; hay materiales sin importe. El total es parcial.":"."}</p><button type="button" class="btn ghost sm" data-act="pendingprices">Revisar precios pendientes</button>`:""}
+    ${(()=>{const pend=res.mats.filter(m=>m.est&&m.qty>0), zero=pend.some(m=>m.price===0);
+      return `<div class="qs-row"><span><b>${res.estimated?"Estimado":"Precios cargados"}</b>${pend.length?` · ${pend.length} precio${pend.length!==1?"s":""} de referencia${zero?" · <b>total parcial</b>":""}`:""}</span>${pend.length?`<button type="button" class="btn ghost sm" data-act="pendingprices">Revisar</button>`:""}</div>`;})()}
     ${res.pendingStandards.length?`<details><summary>Detalles por confirmar (${res.pendingStandards.length})</summary><ul>${res.pendingStandards.map(w=>`<li>${esc(w)}</li>`).join("")}</ul></details>`:""}
   </section>
   ${Object.keys(S.qtyOv).length?`<p class="field-err">Cantidades modificadas a mano: el plan de cortes conserva las medidas. Revisá la compra antes de enviar.</p>`:""}
@@ -3479,7 +3491,6 @@ function loadFromClickie(rawText){
   S.opts.urgente=!!p.urgente;
   S.opts.clienteCompra=!!p.clienteCompra;
   renderJob();
-  toast("Presupuesto cargado desde Clickie");
 }
 
 /* ---------- EVENTOS ---------- */
@@ -3523,7 +3534,7 @@ app.addEventListener("click",e=>{
   if(d.act==="installapp"&&S.installPrompt){ const ev=S.installPrompt; S.installPrompt=null; ev.prompt(); ev.userChoice.finally(()=>{ if(S.screen==="home") renderSelector(); }); return; }
   if(d.act==="clickietoggle"){ S.clickieOpen=!S.clickieOpen; renderSelector(); if(S.clickieOpen){ const ta=document.getElementById("clickietxt"); if(ta) ta.focus(); } return; }
   if(d.act==="clickieload") return loadFromClickie();
-  if(d.act==="clickieclear"){ S.clickieText=""; S.errs.clickie=""; S.clickieOpen=false; return renderSelector(); }
+  if(d.act==="clickieclear"){ S.clickieText=""; S.errs.clickie=""; renderSelector(); document.getElementById("clickietxt")?.focus(); return; }
   if(d.act==="clickiepaste"){
     (async()=>{
       try{
